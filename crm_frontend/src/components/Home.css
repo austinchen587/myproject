@@ -1,0 +1,29 @@
+/* src/components/Home.css */
+home.container {
+    
+    background-size: cover;
+    background-position: center;
+    color: black !important; /* 自定义圆角 */
+    height: 100vh; /* 确保背景填满整个视图高度 */
+  }
+  
+  h1 {
+    color: #fff;
+  }
+  
+  p.lead {
+    font-size: 1.5rem;
+    color: #ddd;
+  }
+  
+  .btn-primary {
+    padding: 10px 30px;
+  }
+  
+  .btn-secondary {
+    padding: 10px 30px;
+  }
+  
+  .vh-100 {
+    height: 100vh;
+  }

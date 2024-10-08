@@ -1,0 +1,39 @@
+/* src/components/CustomerDetail.css */
+.customer-detail-container .container {
+  margin-top: 20px;
+}
+
+.customer-detail-container .card {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.customer-detail-container .card-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.customer-detail-container .card-body {
+  padding: 20px;
+}
+
+.customer-detail-container .card-text {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.customer-detail-container h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.customer-detail-container p {
+  font-size: 16px;
+  color: #333;
+}
+
+.customer-detail-container .card p strong {
+  color: #007bff;
+}
