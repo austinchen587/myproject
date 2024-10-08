@@ -3,12 +3,12 @@ home.container {
     
     background-size: cover;
     background-position: center;
-    color: black !important; /* 自定义圆角 */
+    color: white !important; /* 自定义圆角 */
     height: 100vh; /* 确保背景填满整个视图高度 */
   }
   
   h1 {
-    color: #fff;
+    color: white !important;
   }
   
   p.lead {
