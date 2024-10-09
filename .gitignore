@@ -1,1 +1,7 @@
 crm_backend/crm_backend/settings.py
+__pycache__/
+*.pyc
+venv/
+node_modules/
+crm_frontend/node_modules/
+crm_frontend/*.lock
