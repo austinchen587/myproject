@@ -1,0 +1,41 @@
+.date-filter {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    background-color: #f9f9fb;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 320px; /* 控制最大宽度以适应左侧布局 */
+}
+
+.date-input {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.date-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.date-input-field {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.date-input-field:focus {
+    border-color: #007aff;
+    box-shadow: 0 0 6px rgba(0, 122, 255, 0.3);
+    outline: none;
+}
+
+.date-input-field:hover {
+    border-color: #aaa;
+}

@@ -1,0 +1,92 @@
+.add-customer-container {
+    background: linear-gradient(135deg, #f0f0f5 0%, #ffffff 100%); /* 柔和的渐变背景 */
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); /* 轻微阴影，增强立体感 */
+    max-width: 600px;
+    margin: 40px auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .add-customer-container:hover {
+    transform: translateY(-5px); /* 鼠标悬停时轻微浮起 */
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15); /* 增强悬停时的阴影 */
+  }
+  
+  .form-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  .add-customer-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-group label {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .form-control {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: #fff;
+  }
+  
+  .form-control:focus {
+    border-color: #007aff; /* 苹果蓝色高亮 */
+    box-shadow: 0 0 8px rgba(0, 122, 255, 0.4);
+    outline: none;
+  }
+  
+  .submit-btn {
+    background-color: #007aff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .submit-btn:hover {
+    background-color: #005bb5;
+    transform: translateY(-2px); /* 鼠标悬停时轻微上升 */
+  }
+  
+  .submit-btn:active {
+    background-color: #004a99;
+    transform: translateY(0);
+  }
+  
+  @media (max-width: 768px) {
+    .add-customer-container {
+      padding: 16px;
+    }
+  
+    .form-title {
+      font-size: 22px;
+    }
+  
+    .form-control,
+    .submit-btn {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
