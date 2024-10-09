@@ -1,0 +1,30 @@
+.sortable-header {
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    background-color: #f9f9f9; /* 表头背景色 */
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    user-select: none; /* 禁止文本选择，提升点击体验 */
+}
+
+.sortable-header:hover {
+    background-color: #e6e6e6; /* 悬停时背景变亮 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 悬停时增加轻微阴影 */
+}
+
+.sortable-header.active {
+    background-color: #d0e8ff; /* 激活状态时背景色变为淡蓝色 */
+    color: #007aff; /* 激活状态时文字变为苹果蓝色 */
+}
+
+.direction-icon {
+    margin-left: 4px; /* 图标与文字之间的间距 */
+    font-size: 12px; /* 图标略小于文字 */
+    transition: transform 0.3s ease; /* 图标的旋转效果 */
+}
+
+.sortable-header.active .direction-icon {
+    transform: translateY(-1px); /* 激活状态时图标微微上升，增强视觉效果 */
+}

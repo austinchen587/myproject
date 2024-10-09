@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './LoginForm.css'; // 确保引入了上面的 CSS 文件
 
 const LoginForm = ({ onLogin }) => {
     const [username, setUsername] = useState('');
@@ -6,11 +7,11 @@ const LoginForm = ({ onLogin }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onLogin({ username, password }); // 将用户输入的用户名和密码传递给父组件
+        onLogin({ username, password });
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="formlogin">
             <div>
                 <label>用户名:</label>
                 <input
