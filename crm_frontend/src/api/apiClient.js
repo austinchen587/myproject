@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // 创建一个 axios 实例，并配置基础 URL 和请求超时时间
 const apiClient = axios.create({
-    baseURL: 'http://47.96.183.161/api', // 设置后端 API 的基础 URL
+    baseURL: 'http://47.96.21.74/api', // 设置后端 API 的基础 URL
     timeout: 10000, // 设置请求超时时间（可根据需求调整）
     withCredentials: true, // 允许跨域请求附带 cookie
 });

@@ -49,6 +49,8 @@ const AddCustomer = () => {
     <div className="add-customer-container">
       <h1 className="form-title">添加客户</h1>
       <form onSubmit={handleSubmit} className="add-customer-form">
+
+        {/* Text Fields */}
         {[
           { label: '姓名', name: 'name', type: 'text', required: true },
           { label: '电话', name: 'phone', type: 'text', required: true },
@@ -70,6 +72,7 @@ const AddCustomer = () => {
           </div>
         ))}
 
+        {/* Select Fields */}
         <div className="form-group">
           <label htmlFor="education">学历:</label>
           <select
@@ -86,8 +89,84 @@ const AddCustomer = () => {
           </select>
         </div>
 
-        {/* Repeat other select and checkbox fields similarly */}
-        
+        <div className="form-group">
+          <label htmlFor="major_category">专业类别:</label>
+          <select
+            className="form-control"
+            name="major_category"
+            value={customerData.major_category}
+            onChange={handleChange}
+          >
+            <option value="IT">IT</option>
+            <option value="非IT">教育</option>
+            <option value="未知">未知</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="status">状态:</label>
+          <select
+            className="form-control"
+            name="status"
+            value={customerData.status}
+            onChange={handleChange}
+          >
+            <option value="在职">在职</option>
+            <option value="待业">待业</option>
+            <option value="未知">未知</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="intention">意向程度:</label>
+          <select
+            className="form-control"
+            name="intention"
+            value={customerData.intention}
+            onChange={handleChange}
+          >
+            <option value="低">低</option>
+            <option value="中">中</option>
+            <option value="高">高</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="data_source">数据来源:</label>
+          <select
+            className="form-control"
+            name="data_source"
+            value={customerData.data_source}
+            onChange={handleChange}
+          >
+            <option value="AI数据">AI数据</option>
+            <option value="视频号">视频号</option>
+            <option value="未知">其他</option>
+          </select>
+        </div>
+
+        {/* Checkbox Fields */}
+        {[
+          { label: '是否成交', name: 'is_closed' },
+          { label: '是否接受邀请', name: 'is_invited' },
+          { label: '是否入群', name: 'is_joined' },
+          { label: '参加第一次直播', name: 'attended_first_live' },
+          { label: '参加第二次直播', name: 'attended_second_live' },
+        ].map((checkbox) => (
+          <div className="form-group" key={checkbox.name}>
+            <label htmlFor={checkbox.name}>
+              <input
+                type="checkbox"
+                name={checkbox.name}
+                checked={customerData[checkbox.name]}
+                onChange={handleChange}
+              />
+              {checkbox.label}
+            </label>
+          </div>
+        ))}
+
+        {/* Textarea */}
         <div className="form-group">
           <label htmlFor="description">客户描述:</label>
           <textarea
