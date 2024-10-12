@@ -1,34 +1,27 @@
 // 这个文件专门处理用户登录相关的 API 调用
 import apiClient from './apiClient'; // 导入配置好的 axios 实例
 
+// 登录用户并存储 access_token 和 refresh_token
 export const loginUser = async (credentials) => {
-    try {
-        const response = await apiClient.post('login/', credentials);
-        
-        // 打印后端返回的数据
-        console.log('Response Data:', response.data);
-        
-        // 确保从 response.data 中获取正确的 token 字段
-        const { access_token, refresh_token } = response.data;
-        
-        // 打印 token 信息，帮助调试
-        console.log('Access Token:', access_token);
-        console.log('Refresh Token:', refresh_token);
-        
-        // 存储 token
-        localStorage.setItem('access_token', access_token);  // 存储访问 token
-        localStorage.setItem('refresh_token', refresh_token);  // 存储刷新 token
-        
-        // 检查 token 是否存储成功
-        console.log('Stored Access Token:', localStorage.getItem('access_token'));
-        console.log('Stored Refresh Token:', localStorage.getItem('refresh_token'));
-        
-        return response.data; // 返回 token 或者其他登录信息
-    } catch (error) {
-        // 打印错误信息
-        console.error('Login failed:', error.response ? error.response.data : error.message);
-        throw error;
-    }
+  try {
+      const response = await apiClient.post('login/', credentials);
+
+      // 从响应中获取令牌
+      const { access_token, refresh_token } = response.data;
+      if (!access_token || !refresh_token) {
+          throw new Error('Missing tokens in the response.');
+      }
+
+      // 存储令牌到 localStorage
+      localStorage.setItem('access_token', access_token);
+      localStorage.setItem('refresh_token', refresh_token);
+
+      return response.data; // 返回响应数据
+  } catch (error) {
+      // 捕获错误并返回给调用者
+      console.error('登录失败:', error.response ? error.response.data : error.message);
+      throw error;
+  }
 };
 
 // 示例：调用登录函数
@@ -43,22 +36,35 @@ loginUser({
 
 
 
-// 获取当前登录用户信息
+// 获取当前用户信息
 export const getCurrentUser = async () => {
-    const accessToken = localStorage.getItem('access_token');  // 确保从本地存储中获取 access_token
-    try {
-      // 获取当前登录用户时，确保包含 Authorization 头
+  const accessToken = localStorage.getItem('access_token');
+  
+  if (!accessToken) {
+      // 如果没有 access_token，直接引导用户重新登录
+      console.error('Access token missing. Redirecting to login.');
+      window.location.href = '/login';
+      return;
+  }
+
+  try {
+      // 使用 access_token 获取当前登录用户信息
       const response = await apiClient.get('/current-user/', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`  // 从 localStorage 中获取 access_token
-        }
+          headers: {
+              Authorization: `Bearer ${accessToken}`
+          }
       });
       return response.data;
-    } catch (error) {
-      console.error('获取当前用户失败:', error);
+  } catch (error) {
+      console.error('Failed to fetch current user:', error);
+
+      // 清除过期令牌并引导用户登录
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      window.location.href = '/login';
       throw error;
-    }
-  };
+  }
+};
 
 
   export const registerUser = async (userData) => {
