@@ -39,29 +39,50 @@ apiClient.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// 响应拦截器：处理 401 错误以刷新 token
 apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+
+        // 如果返回 401 且没有尝试过刷新令牌
         if (error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
+
             try {
+                // 获取 refresh_token
                 const refreshToken = localStorage.getItem('refresh_token');
+
+                // 检查 refresh_token 是否存在
+                if (!refreshToken) {
+                    console.error('Refresh token is missing. Redirecting to login.');
+                    window.location.href = '/login'; // 跳转到登录页面
+                    return Promise.reject(error);
+                }
+
+                // 尝试刷新 token
                 const refreshResponse = await apiClient.post('/token/refresh/', { refresh: refreshToken });
                 const newAccessToken = refreshResponse.data.access;
 
-                // 更新 access_token
+                // 更新新的 access_token
                 localStorage.setItem('access_token', newAccessToken);
                 originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
 
-                // 重试原来的请求
+                // 重新发送原来的请求
                 return apiClient(originalRequest);
             } catch (err) {
                 console.error('Token refresh failed:', err);
+
+                // 清除过期的令牌，避免无限循环
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+
+                // 跳转到登录页面
+                window.location.href = '/login';
                 return Promise.reject(err);
             }
         }
+
+        // 返回其他错误
         return Promise.reject(error);
     }
 );

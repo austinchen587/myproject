@@ -98,7 +98,7 @@ const AddCustomer = () => {
             onChange={handleChange}
           >
             <option value="IT">IT</option>
-            <option value="非IT">教育</option>
+            <option value="非IT">非IT</option>
             <option value="未知">未知</option>
           </select>
         </div>
