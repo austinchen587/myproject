@@ -11,6 +11,7 @@ from django.db.models import Q
 from datetime import datetime, timedelta
 from django.utils.timezone import make_aware
 
+
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
@@ -85,3 +86,5 @@ def add_customer(request):
         else:
             print(serializer.errors)  # 打印错误，方便调试
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+

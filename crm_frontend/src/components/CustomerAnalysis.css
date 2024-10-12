@@ -1,0 +1,108 @@
+/* 整体容器美化 */
+.customer-analysis-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    margin: 0 auto;
+    width: auto;  /* 自动根据内容适应宽度 */
+    max-width: 100%;  /* 确保不会超出页面宽度 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;  /* 允许水平方向滚动 */
+  }
+  
+  /* 表格容器美化，确保表格不超出容器 */
+  .table-container {
+    width: auto;  /* 自动根据内容适应宽度 */
+    max-width: 100%;  /* 确保表格不会超出页面宽度 */
+    margin: 0 auto;
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* 表格美化 */
+  table {
+    width: auto;  /* 根据表格内容自适应宽度 */
+    min-width: 1000px; /* 确保表格有足够的最小宽度 */
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  th, td {
+    padding: 14px 18px;
+    text-align: center;
+  }
+  
+  th {
+    background-color: #f1f3f5;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap; /* 防止标题换行 */
+  }
+  
+  td {
+    color: #555;
+    word-wrap: break-word; /* 让单元格内容自动换行 */
+  }
+  
+  /* 表格行样式 */
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  tr:hover {
+    background-color: #eaeaea;
+  }
+  
+  /* 控制单元格宽度 */
+  th, td {
+    min-width: 120px;
+    max-width: 200px;
+  }
+  
+  /* 选择框美化 */
+  select {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background-color: #fff;
+    margin-right: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  
+  select:hover {
+    border-color: #888;
+  }
+  
+  /* 汇总信息美化 */
+  .summary {
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .summary p {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  /* 加载中状态 */
+  .loading-indicator {
+    text-align: center;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  /* 错误状态 */
+  .error-message {
+    color: red;
+    text-align: center;
+    font-size: 18px;
+  }

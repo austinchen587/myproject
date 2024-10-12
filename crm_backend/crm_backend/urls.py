@@ -25,5 +25,6 @@ urlpatterns = [
     path('', include('sales.urls')),
     path('', include('customers.urls')),
     #path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('', include('analytics.urls')),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

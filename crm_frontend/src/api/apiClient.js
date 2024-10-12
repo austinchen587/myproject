@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // 创建一个 axios 实例，并配置基础 URL 和请求超时时间
 const apiClient = axios.create({
-    baseURL: 'http://47.96.21.74/api', // 设置后端 API 的基础 URL
+    baseURL: 'http://47.96.183.161/api', // 设置后端 API 的基础 URL
     timeout: 10000, // 设置请求超时时间（可根据需求调整）
     withCredentials: true, // 允许跨域请求附带 cookie
 });
@@ -48,6 +48,12 @@ apiClient.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem('refresh_token');
+                
+                if (!refreshToken) {
+                    console.error('No refresh token found.');
+                    return Promise.reject('No refresh token found');
+                }
+
                 const refreshResponse = await apiClient.post('/token/refresh/', { refresh: refreshToken });
                 const newAccessToken = refreshResponse.data.access;
 
@@ -59,6 +65,10 @@ apiClient.interceptors.response.use(
                 return apiClient(originalRequest);
             } catch (err) {
                 console.error('Token refresh failed:', err);
+                // 清除过期令牌并跳转到登录页
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                window.location.href = '/login'; // 跳转到登录页面
                 return Promise.reject(err);
             }
         }
@@ -66,7 +76,7 @@ apiClient.interceptors.response.use(
     }
 );
 
-
-
-
 export default apiClient;
+
+
+

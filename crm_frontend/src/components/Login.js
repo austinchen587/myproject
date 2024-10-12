@@ -4,31 +4,36 @@ import LoginForm from './LoginForm'; // 引入登录表单组件
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
-
 const Login = ({ setCurrentUser }) => {
     const [message, setMessage] = useState(''); // 显示登录信息
     const navigate = useNavigate();
 
     // 处理登录逻辑
     const handleLogin = async (credentials) => {
+        // 简单前端校验，确保用户名和密码不为空
+        if (!credentials.username || !credentials.password) {
+            setMessage('用户名和密码不能为空');
+            return;
+        }
+
         try {
-            const data = await loginUser(credentials); // 发送登录请求
+            // 调用 loginUser 函数进行登录
+            const data = await loginUser(credentials);
             setMessage('登录成功');
 
-            // 确保 token 已存储后再调用 getCurrentUser
-            localStorage.setItem('access_token', data.access_token);
-            localStorage.setItem('refresh_token', data.refresh_token);            
-
-            console.log('Access Token:', localStorage.getItem('access_token')); // 检查获取到的 access_token
-
-            // 获取当前用户信息
+            // 获取当前用户信息并更新到父组件
             const user = await getCurrentUser();
-            setCurrentUser(user); // 更新当前用户信息
+            setCurrentUser(user);
 
             // 跳转到客户列表页面
             navigate('/customers');
         } catch (error) {
-            setMessage('登录失败，请检查用户名和密码');
+            // 根据错误响应，显示相应的错误消息
+            if (error.response && error.response.data) {
+                setMessage(`登录失败: ${error.response.data.detail || '请检查用户名和密码'}`);
+            } else {
+                setMessage('登录失败，网络连接错误');
+            }
             console.error('登录出错:', error);
         }
     };
