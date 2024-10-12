@@ -7,6 +7,7 @@ import CustomerDetail from '../components/CustomerDetail';
 import EditCustomer from '../components/EditCustomer';
 import Home from '../components/Home';
 import RegisterUser from '../components/Register';
+import CustomerAnalysis from '../components/CustomerAnalysis';
 
 
 const AppRoutes = () => {
@@ -22,6 +23,7 @@ const AppRoutes = () => {
                 <Route path="/add-customer" element={<AddCustomer currentUser={currentUser} />} />  {/* 添加客户页面 */}
                 <Route path="/customer/:id" element={<CustomerDetail currentUser={currentUser} />} />  {/* 客户详情路由 */}
                 <Route path="/edit-customer/:id" element={<EditCustomer currentUser={currentUser} />} />  {/* 添加编辑客户的路由 */}
+                <Route path="/customer-analysis" element={<CustomerAnalysis currentUser={currentUser} />} />  {/* 添加编辑客户的路由 */}
                 {/* 可以添加更多路由 */}
             </Routes>
         </Router>
