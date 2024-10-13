@@ -104,7 +104,7 @@ const CustomerAnalysis = () => {
           <thead>
             <tr>
               <th>用户</th>
-              <th>总客户数 (%)</th>
+              <th>总客户数</th>  {/* 直接显示总客户数 */}
               <th>高意向比例 (%)</th>
               <th>中意向比例 (%)</th>
               <th>低意向比例 (%)</th>
@@ -118,8 +118,8 @@ const CustomerAnalysis = () => {
           <tbody>
             {data.map((row, index) => (
               <tr key={index}>
-                <td>{row['created_by__username']}</td>
-                <td>{((row.total_customers / totalGroupCustomers) * 100).toFixed(2)}%</td>
+                <td>{row['created_by__username']}</td>  {/* 用户名 */}
+                <td>{row.total_customers}</td>  {/* 直接显示总客户数 */}
                 <td style={getColorForText(row.intention_high_ratio, averages.intention_high_ratio)}>{row.intention_high_ratio.toFixed(2)}%</td>
                 <td style={getColorForText(row.intention_mid_ratio, averages.intention_mid_ratio, true)}>{row.intention_mid_ratio.toFixed(2)}%</td>
                 <td style={getColorForText(row.intention_low_ratio, averages.intention_low_ratio, true)}>{row.intention_low_ratio.toFixed(2)}%</td>
@@ -134,7 +134,7 @@ const CustomerAnalysis = () => {
             {/* 添加平均值行 */}
             <tr>
               <td><strong>全组平均值</strong></td>
-              <td>{totalGroupCustomers > 0 ? ((summary.total_customers / totalGroupCustomers) * 100).toFixed(2) : '0'}%</td>
+              <td>{summary.total_customers}</td>  {/* 全组总客户数 */}
               <td>{totalGroupCustomers > 0 ? averages.intention_high_ratio.toFixed(2) : '0'}%</td>
               <td>{totalGroupCustomers > 0 ? averages.intention_mid_ratio.toFixed(2) : '0'}%</td>
               <td>{totalGroupCustomers > 0 ? averages.intention_low_ratio.toFixed(2) : '0'}%</td>
@@ -150,7 +150,7 @@ const CustomerAnalysis = () => {
 
       <div className="summary">
         <h3>汇总信息：</h3>
-        <p>总客户数: {summary.total_customers}</p>
+        <p>总客户数: {summary.total_customers}</p>  {/* 全组总客户数 */}
         <p>成交客户数: {summary.total_closed}</p>
       </div>
     </div>
