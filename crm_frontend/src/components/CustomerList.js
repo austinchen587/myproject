@@ -19,6 +19,9 @@ const CustomerList = () => {
     const [endDate, setEndDate] = useState('');
     const [selectedOwner, setSelectedOwner] = useState('');
     const [selectedIntention, setSelectedIntention] = useState('');
+    const [filterExclamation, setFilterExclamation] = useState(false); // 用于感叹号筛选
+    const [searchPhone, setSearchPhone] = useState(''); // 用于手机号筛选
+    const [phoneInput, setPhoneInput] = useState(''); // 用户输入的手机号
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,11 +29,15 @@ const CustomerList = () => {
         const savedEndDate = localStorage.getItem('endDate');
         const savedOwner = localStorage.getItem('selectedOwner');
         const savedIntention = localStorage.getItem('selectedIntention');
+        const savedFilterExclamation = localStorage.getItem('filterExclamation') === 'true';
+        const savedSearchPhone = localStorage.getItem('searchPhone') || '';
 
         if (savedStartDate) setStartDate(savedStartDate);
         if (savedEndDate) setEndDate(savedEndDate);
         if (savedOwner) setSelectedOwner(savedOwner);
         if (savedIntention) setSelectedIntention(savedIntention);
+        setFilterExclamation(savedFilterExclamation);
+        setSearchPhone(savedSearchPhone);
 
         const fetchUser = async () => {
             try {
@@ -48,13 +55,15 @@ const CustomerList = () => {
         localStorage.setItem('endDate', endDate);
         localStorage.setItem('selectedOwner', selectedOwner);
         localStorage.setItem('selectedIntention', selectedIntention);
-    }, [startDate, endDate, selectedOwner, selectedIntention]);
+        localStorage.setItem('filterExclamation', filterExclamation);
+        localStorage.setItem('searchPhone', searchPhone); // 存储手机号筛选
+    }, [startDate, endDate, selectedOwner, selectedIntention, filterExclamation, searchPhone]);
 
     useEffect(() => {
         if (currentUser) {
             fetchCustomers();
         }
-    }, [currentUser, startDate, endDate, sortField, sortDirection]);
+    }, [currentUser, startDate, endDate, sortField, sortDirection, filterExclamation, searchPhone]);
 
     const fetchCustomers = async () => {
         try {
@@ -93,9 +102,23 @@ const CustomerList = () => {
         setSelectedIntention(intention);
     };
 
+    const handleExclamationFilter = (event) => {
+        setFilterExclamation(event.target.checked);
+    };
+
+    const handlePhoneInputChange = (event) => {
+        setPhoneInput(event.target.value);
+    };
+
+    const handlePhoneSearch = () => {
+        setSearchPhone(phoneInput); // 点击按钮后执行手机号筛选
+    };
+
     const filteredCustomers = customers
         .filter((customer) => (selectedOwner ? customer.created_by === selectedOwner : true))
-        .filter((customer) => (selectedIntention ? customer.intention === selectedIntention : true));
+        .filter((customer) => (selectedIntention ? customer.intention === selectedIntention : true))
+        .filter((customer) => (filterExclamation ? customer.created_by !== customer.updated_by : true)) // 筛选带感叹号的客户
+        .filter((customer) => (searchPhone ? customer.phone.includes(searchPhone) : true)); // 筛选符合手机号的客户
 
     const handleSort = (field) => {
         const direction = sortField === field && sortDirection === 'asc' ? 'desc' : 'asc';
@@ -140,14 +163,42 @@ const CustomerList = () => {
                     onSelectIntention={handleIntentionSelect}
                 />
 
+                {/* 新增的感叹号筛选复选框 */}
+                <div className="form-check ml-3">
+                    <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={filterExclamation}
+                        onChange={handleExclamationFilter}
+                    />
+                    <label className="form-check-label">
+                        只显示名字带感叹号的客户
+                    </label>
+                </div>
+
+                {/* 新增手机号筛选 */}
+                <div className="ml-3">
+                    <label>输入手机号筛选：</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="输入手机号"
+                        value={phoneInput}
+                        onChange={handlePhoneInputChange}
+                    />
+                    <button className="btn btn-primary mt-2" onClick={handlePhoneSearch}>
+                        确定
+                    </button>
+                </div>
+
                 <button
-                    className="btn btn-secondary mr-2"
+                    className="btn btn-secondary ml-2"
                     onClick={() => navigate('/customer-analysis', { state: { currentUser } })}
                 >
                     分析数据
                 </button>
 
-                <button className="btn btn-primary" onClick={() => navigate('/add-customer')}>
+                <button className="btn btn-primary ml-2" onClick={() => navigate('/add-customer')}>
                     添加客户
                 </button>
             </div>
