@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './CustomerList.css';
+import './CustomerList.css'; // 使用局部样式
 import { deleteCustomer, getCustomers } from '../api/customerApi';
 import { getCurrentUser } from '../api/authApi';
 import DateFilter from './DateFilter';
 import OwnerFilter from './OwnerFilter';
 import IntentionFilter from './IntentionFilter';
-import { FaCheckCircle, FaTimesCircle, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaArrowUp, FaArrowDown, FaExclamationCircle } from 'react-icons/fa'; // 导入感叹号图标
 
 const CustomerList = () => {
     const [customers, setCustomers] = useState([]);
@@ -21,7 +21,6 @@ const CustomerList = () => {
     const [selectedIntention, setSelectedIntention] = useState('');
     const navigate = useNavigate();
 
-    // 从 localStorage 中加载筛选状态
     useEffect(() => {
         const savedStartDate = localStorage.getItem('startDate');
         const savedEndDate = localStorage.getItem('endDate');
@@ -44,7 +43,6 @@ const CustomerList = () => {
         fetchUser();
     }, []);
 
-    // 在筛选条件变更时，保存到 localStorage
     useEffect(() => {
         localStorage.setItem('startDate', startDate);
         localStorage.setItem('endDate', endDate);
@@ -125,7 +123,7 @@ const CustomerList = () => {
     }
 
     return (
-        <div className="customer-list table-responsive">
+        <div className="customer-list-container">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <DateFilter
                     initialStartDate={startDate}
@@ -142,7 +140,6 @@ const CustomerList = () => {
                     onSelectIntention={handleIntentionSelect}
                 />
 
-                {/* 新增的跳转到分析页面的按钮，并传递 currentUser */}
                 <button
                     className="btn btn-secondary mr-2"
                     onClick={() => navigate('/customer-analysis', { state: { currentUser } })}
@@ -175,7 +172,12 @@ const CustomerList = () => {
                         {filteredCustomers.length > 0 ? (
                             filteredCustomers.map((customer) => (
                                 <tr key={customer.id}>
-                                    <td>{customer.name}</td>
+                                    <td>
+                                        {customer.name}{' '}
+                                        {customer.created_by !== customer.updated_by && (
+                                            <FaExclamationCircle className="text-danger" />
+                                        )}
+                                    </td>
                                     <td>{customer.phone}</td>
                                     <td>{new Date(customer.created_at).toLocaleDateString()}</td>
                                     <td>{customer.created_by}</td>
