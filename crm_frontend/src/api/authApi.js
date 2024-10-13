@@ -63,8 +63,8 @@ export const getCurrentUser = async () => {
       localStorage.removeItem('refresh_token');
       window.location.href = '/login';
       throw error;
-  }
-};
+    }
+  };
 
 
   export const registerUser = async (userData) => {

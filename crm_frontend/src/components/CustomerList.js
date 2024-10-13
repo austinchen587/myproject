@@ -122,6 +122,15 @@ const CustomerList = () => {
                     selectedIntention={selectedIntention}
                     onSelectIntention={handleIntentionSelect}
                 />
+
+                {/* 新增的跳转到分析页面的按钮，并传递 currentUser */}
+                <button
+                    className="btn btn-secondary mr-2"
+                    onClick={() => navigate('/customer-analysis', { state: { currentUser } })}
+                >
+                    分析数据
+                </button>
+
                 <button className="btn btn-primary" onClick={() => navigate('/add-customer')}>
                     添加客户
                 </button>
