@@ -10,19 +10,22 @@ class CustomerAnalysisViewSet(viewsets.ViewSet):
         user = request.user
         report_type = request.query_params.get('report_type', 'daily')
         group_id = request.query_params.get('group_id', None)
-        end_date = datetime.today()
+        start_date = request.query_params.get('start_date', None)
+        end_date = request.query_params.get('end_date', None) or datetime.today()
 
-        # 日期范围处理
-        if report_type == 'daily':
-            start_date = end_date - timedelta(days=1)
-        elif report_type == 'weekly': 
-            start_date = end_date - timedelta(weeks=1)
-        elif report_type == 'monthly':
-            start_date = end_date - timedelta(days=30)
+        # 处理自定义日期范围
+        if start_date:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
         else:
-            start_date = None
+            # 根据报表类型设置默认时间范围
+            if report_type == 'daily':
+                start_date = end_date - timedelta(days=1)
+            elif report_type == 'weekly': 
+                start_date = end_date - timedelta(weeks=1)
+            elif report_type == 'monthly':
+                start_date = end_date - timedelta(days=30)
 
-        # 获取组长用户并确保组长和组员的数据都可以返回
+        # 根据用户权限筛选数据
         if user.role == 'user':
             customers = Customer.objects.filter(created_by=user)
         elif user.role == 'group_leader':
@@ -36,8 +39,7 @@ class CustomerAnalysisViewSet(viewsets.ViewSet):
                 customers = Customer.objects.all()
 
         # 日期过滤
-        if start_date:
-            customers = customers.filter(created_at__range=[start_date, end_date])
+        customers = customers.filter(created_at__range=[start_date, end_date])
 
         # 返回组长信息
         group_leaders = SalesUser.objects.filter(role='group_leader').values('id', 'username')
@@ -95,6 +97,6 @@ class CustomerAnalysisViewSet(viewsets.ViewSet):
             'data': customers_data,
             'summary': summary,
             'averages': averages,
-            'total_group_customers': total_group_customers,  # 返回全组总客户数
+            'total_group_customers': total_group_customers,
             'group_leaders': list(group_leaders)
         })
