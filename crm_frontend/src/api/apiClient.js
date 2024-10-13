@@ -51,15 +51,6 @@ apiClient.interceptors.response.use(
             try {
                 // 获取 refresh_token
                 const refreshToken = localStorage.getItem('refresh_token');
-
-                // 检查 refresh_token 是否存在
-                if (!refreshToken) {
-                    console.error('Refresh token is missing. Redirecting to login.');
-                    window.location.href = '/login'; // 跳转到登录页面
-                    return Promise.reject(error);
-                }
-
-                // 尝试刷新 token
                 const refreshResponse = await apiClient.post('/token/refresh/', { refresh: refreshToken });
                 const newAccessToken = refreshResponse.data.access;
 
@@ -71,13 +62,6 @@ apiClient.interceptors.response.use(
                 return apiClient(originalRequest);
             } catch (err) {
                 console.error('Token refresh failed:', err);
-
-                // 清除过期的令牌，避免无限循环
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('refresh_token');
-
-                // 跳转到登录页面
-                window.location.href = '/login';
                 return Promise.reject(err);
             }
         }
@@ -87,7 +71,7 @@ apiClient.interceptors.response.use(
     }
 );
 
-
-
-
 export default apiClient;
+
+
+
