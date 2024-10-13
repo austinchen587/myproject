@@ -33,7 +33,7 @@ class CustomerResource(resources.ModelResource):
             'city', 'intention', 'is_closed', 'is_invited', 'is_joined', 
             'data_source', 'attended_first_live', 'attended_second_live', 
             'first_day_watch_duration', 'second_day_watch_duration', 'created_by', 
-            'updated_by', 'created_at', 'updated_at', 'description'
+            'updated_by', 'created_at', 'updated_at', 'description','is_contacted','is_wechat_added',
         )
         export_order = fields
 

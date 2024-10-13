@@ -1,0 +1,60 @@
+.customer-filters-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px;
+    background-color: #f5f5f7; /* 苹果风的浅灰色背景 */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 轻微阴影，增添质感 */
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .customer-filters-container:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* 鼠标悬停时加深阴影 */
+  }
+  
+  .form-control {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    width: 180px;
+  }
+  
+  .form-control:focus {
+    border-color: #007aff; /* 苹果风的蓝色边框 */
+    outline: none;
+  }
+  
+  .form-check-input {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .form-check-label {
+    font-size: 16px;
+    color: #333; /* 深色字体，保持简洁 */
+    margin-left: 10px;
+  }
+  
+  .btn-primary {
+    background-color: #007aff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    background-color: #005bb5; /* 深蓝色，鼠标悬停时 */
+  }
+  
+  label {
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+  }

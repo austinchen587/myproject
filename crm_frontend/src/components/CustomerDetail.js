@@ -70,6 +70,14 @@ const CustomerDetail = () => {
               <td>{customer.data_source}</td>
             </tr>
             <tr>
+              <th>是否接通</th>
+              <td>{customer.is_connected ? '是' : '否'}</td>
+            </tr>
+            <tr>
+              <th>是否加微信</th>
+              <td>{customer.is_wechat_added ? '是' : '否'}</td>
+            </tr>
+            <tr>
               <th>是否邀约</th>
               <td>{customer.is_invited ? '是' : '否'}</td>
             </tr>
