@@ -9,12 +9,13 @@ const CustomerAnalysis = () => {
     total_customers: 0,
     intention_high_ratio: 0,
     intention_mid_ratio: 0,
-    intention_low_ratio: 0,
     invited_ratio: 0,
     joined_ratio: 0,
     attended_first_live_ratio: 0,
     attended_second_live_ratio: 0,
     closed_ratio: 0,
+    contacted_ratio: 0,  // 接通率
+    wechat_added_ratio: 0,  // 加微信率
   });
   const [totalGroupCustomers, setTotalGroupCustomers] = useState(0); // 全组总客户数
   const [loading, setLoading] = useState(true);
@@ -126,7 +127,8 @@ const CustomerAnalysis = () => {
             <th>总客户数 (%)</th>
             <th>高意向比例 (%)</th>
             <th>中意向比例 (%)</th>
-            <th>低意向比例 (%)</th>
+            <th>接通率 (%)</th> {/* 接通率移到邀约前 */}
+            <th>加微信率 (%)</th> {/* 加微信率移到邀约前 */}
             <th>邀约比例 (%)</th>
             <th>入群比例 (%)</th>
             <th>第一天直播比例 (%)</th>
@@ -141,7 +143,8 @@ const CustomerAnalysis = () => {
               <td>{row.total_customers}</td>
               <td>{row.intention_high_ratio.toFixed(2)}%</td>
               <td>{row.intention_mid_ratio.toFixed(2)}%</td>
-              <td>{row.intention_low_ratio.toFixed(2)}%</td>
+              <td>{row.contacted_ratio.toFixed(2)}%</td> {/* 接通率 */}
+              <td>{row.wechat_added_ratio.toFixed(2)}%</td> {/* 加微信率 */}
               <td>{row.invited_ratio.toFixed(2)}%</td>
               <td>{row.joined_ratio.toFixed(2)}%</td>
               <td>{row.attended_first_live_ratio.toFixed(2)}%</td>
@@ -156,7 +159,8 @@ const CustomerAnalysis = () => {
             <td>{summary.total_customers}</td>
             <td>{averages.intention_high_ratio.toFixed(2)}%</td>
             <td>{averages.intention_mid_ratio.toFixed(2)}%</td>
-            <td>{averages.intention_low_ratio.toFixed(2)}%</td>
+            <td>{averages.contacted_ratio.toFixed(2)}%</td> {/* 接通率 */}
+            <td>{averages.wechat_added_ratio.toFixed(2)}%</td> {/* 加微信率 */}
             <td>{averages.invited_ratio.toFixed(2)}%</td>
             <td>{averages.joined_ratio.toFixed(2)}%</td>
             <td>{averages.attended_first_live_ratio.toFixed(2)}%</td>

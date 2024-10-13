@@ -25,6 +25,7 @@ const CustomerList = () => {
     const [isWechatAddedFilter, setIsWechatAddedFilter] = useState(false);
     const [attendedFirstLiveFilter, setAttendedFirstLiveFilter] = useState(false);
     const [attendedSecondLiveFilter, setAttendedSecondLiveFilter] = useState(false);
+    const [dataSourceFilter, setDataSourceFilter] = useState(''); // 新增数据来源筛选
 
     const navigate = useNavigate();
 
@@ -67,7 +68,7 @@ const CustomerList = () => {
         if (currentUser) {
             fetchCustomers();
         }
-    }, [currentUser, startDate, endDate, sortField, sortDirection, filterExclamation, searchPhone, isContactedFilter, isWechatAddedFilter, attendedFirstLiveFilter, attendedSecondLiveFilter]);
+    }, [currentUser, startDate, endDate, sortField, sortDirection, filterExclamation, searchPhone, isContactedFilter, isWechatAddedFilter, attendedFirstLiveFilter, attendedSecondLiveFilter, dataSourceFilter]);
 
     const fetchCustomers = async () => {
         try {
@@ -118,6 +119,10 @@ const CustomerList = () => {
         setSearchPhone(phone);
     };
 
+    const handleDataSourceSelect = (dataSource) => {
+        setDataSourceFilter(dataSource); // 设置数据来源筛选
+    };
+
     const filteredCustomers = customers
         .filter((customer) => (selectedOwner ? customer.created_by === selectedOwner : true))
         .filter((customer) => (selectedIntention ? customer.intention === selectedIntention : true))
@@ -126,7 +131,8 @@ const CustomerList = () => {
         .filter((customer) => (isContactedFilter ? customer.is_contacted : true))
         .filter((customer) => (isWechatAddedFilter ? customer.is_wechat_added : true))
         .filter((customer) => (attendedFirstLiveFilter ? customer.attended_first_live : true))
-        .filter((customer) => (attendedSecondLiveFilter ? customer.attended_second_live : true));
+        .filter((customer) => (attendedSecondLiveFilter ? customer.attended_second_live : true))
+        .filter((customer) => (dataSourceFilter ? customer.data_source === dataSourceFilter : true)); // 过滤数据来源
 
     const handleSort = (field) => {
         const direction = sortField === field && sortDirection === 'asc' ? 'desc' : 'asc';
@@ -174,10 +180,12 @@ const CustomerList = () => {
                     onIsWechatAddedFilterChange={setIsWechatAddedFilter}
                     onAttendedFirstLiveFilterChange={setAttendedFirstLiveFilter}
                     onAttendedSecondLiveFilterChange={setAttendedSecondLiveFilter}
+                    onDataSourceSelect={handleDataSourceSelect} // 传递数据来源筛选处理函数
                     isContactedFilter={isContactedFilter}
                     isWechatAddedFilter={isWechatAddedFilter}
                     attendedFirstLiveFilter={attendedFirstLiveFilter}
                     attendedSecondLiveFilter={attendedSecondLiveFilter}
+                    dataSourceFilter={dataSourceFilter} // 传递当前数据来源筛选值
                 />
 
                 <button
