@@ -66,6 +66,8 @@ class Customer(models.Model):
     is_invited = models.BooleanField(default=False, verbose_name='是否邀约')  # 是否邀约字段
     is_joined = models.BooleanField(default=False, verbose_name='是否入群')  # 是否入群字段
     data_source = models.CharField(max_length=100, choices=DATA_SOURCE_CHOICES, default='ai', verbose_name='数据来源')
+    is_contacted = models.BooleanField(default=False, verbose_name='是否接通')  # 新增字段：是否接通
+    is_wechat_added = models.BooleanField(default=False, verbose_name='是否加微信')  # 新增字段：是否加微信
 
     attended_first_live = models.BooleanField(default=False, verbose_name='参加第一天直播')  # 参加第一天直播字段
     attended_second_live = models.BooleanField(default=False, verbose_name='参加第二天直播')  # 参加第二天直播字段

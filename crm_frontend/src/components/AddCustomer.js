@@ -20,6 +20,8 @@ const AddCustomer = () => {
     attended_second_live: false,
     first_day_watch_duration: 0,
     second_day_watch_duration: 0,
+    is_connected: false, // 是否接通
+    is_wechat_added: false, // 是否加微信
     description: '',
     intention: '低'
   });
@@ -50,29 +52,76 @@ const AddCustomer = () => {
       <h1 className="form-title">添加客户</h1>
       <form onSubmit={handleSubmit} className="add-customer-form">
 
-        {/* Text Fields */}
-        {[
-          { label: '姓名', name: 'name', type: 'text', required: true },
-          { label: '电话', name: 'phone', type: 'text', required: true },
-          { label: '就业意向城市', name: 'address', type: 'text' },
-          { label: '当前所在城市', name: 'city', type: 'text' },
-          { label: '第一天观看时长', name: 'first_day_watch_duration', type: 'number' },
-          { label: '第二天观看时长', name: 'second_day_watch_duration', type: 'number' },
-        ].map((input) => (
-          <div className="form-group" key={input.name}>
-            <label htmlFor={input.name}>{input.label}:</label>
-            <input
-              type={input.type}
-              className="form-control"
-              name={input.name}
-              value={customerData[input.name]}
-              onChange={handleChange}
-              required={input.required}
-            />
-          </div>
-        ))}
+        {/* 数据来源 */}
+        <div className="form-group">
+          <label htmlFor="data_source">数据来源:</label>
+          <select
+            className="form-control"
+            name="data_source"
+            value={customerData.data_source}
+            onChange={handleChange}
+          >
+            <option value="AI数据">AI数据</option>
+            <option value="视频号">视频号</option>
+            <option value="未知">其他</option>
+          </select>
+        </div>
 
-        {/* Select Fields */}
+        {/* 是否接通 */}
+        <div className="form-group">
+          <label htmlFor="is_connected">
+            <input
+              type="checkbox"
+              name="is_connected"
+              checked={customerData.is_connected}
+              onChange={handleChange}
+            />
+            是否接通
+          </label>
+        </div>
+
+        {/* 意向程度 */}
+        <div className="form-group">
+          <label htmlFor="intention">意向程度:</label>
+          <select
+            className="form-control"
+            name="intention"
+            value={customerData.intention}
+            onChange={handleChange}
+          >
+            <option value="低">低</option>
+            <option value="中">中</option>
+            <option value="高">高</option>
+          </select>
+        </div>
+
+        {/* 姓名 */}
+        <div className="form-group">
+          <label htmlFor="name">姓名:</label>
+          <input
+            type="text"
+            className="form-control"
+            name="name"
+            value={customerData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        {/* 电话 */}
+        <div className="form-group">
+          <label htmlFor="phone">电话:</label>
+          <input
+            type="text"
+            className="form-control"
+            name="phone"
+            value={customerData.phone}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        {/* 学历 */}
         <div className="form-group">
           <label htmlFor="education">学历:</label>
           <select
@@ -89,6 +138,7 @@ const AddCustomer = () => {
           </select>
         </div>
 
+        {/* 专业类别 */}
         <div className="form-group">
           <label htmlFor="major_category">专业类别:</label>
           <select
@@ -103,6 +153,7 @@ const AddCustomer = () => {
           </select>
         </div>
 
+        {/* 状态 */}
         <div className="form-group">
           <label htmlFor="status">状态:</label>
           <select
@@ -117,56 +168,133 @@ const AddCustomer = () => {
           </select>
         </div>
 
+        {/* 当前所在城市 */}
         <div className="form-group">
-          <label htmlFor="intention">意向程度:</label>
-          <select
+          <label htmlFor="city">当前所在城市:</label>
+          <input
+            type="text"
             className="form-control"
-            name="intention"
-            value={customerData.intention}
+            name="city"
+            value={customerData.city}
             onChange={handleChange}
-          >
-            <option value="低">低</option>
-            <option value="中">中</option>
-            <option value="高">高</option>
-          </select>
+          />
         </div>
 
+        {/* 就业意向城市 */}
         <div className="form-group">
-          <label htmlFor="data_source">数据来源:</label>
-          <select
+          <label htmlFor="address">就业意向城市:</label>
+          <input
+            type="text"
             className="form-control"
-            name="data_source"
-            value={customerData.data_source}
+            name="address"
+            value={customerData.address}
             onChange={handleChange}
-          >
-            <option value="AI数据">AI数据</option>
-            <option value="视频号">视频号</option>
-            <option value="未知">其他</option>
-          </select>
+          />
         </div>
 
-        {/* Checkbox Fields */}
-        {[
-          { label: '是否成交', name: 'is_closed' },
-          { label: '是否接受邀请', name: 'is_invited' },
-          { label: '是否入群', name: 'is_joined' },
-          { label: '参加第一次直播', name: 'attended_first_live' },
-          { label: '参加第二次直播', name: 'attended_second_live' },
-        ].map((checkbox) => (
-          <div className="form-group" key={checkbox.name}>
-            <label htmlFor={checkbox.name}>
-              <input
-                type="checkbox"
-                name={checkbox.name}
-                checked={customerData[checkbox.name]}
-                onChange={handleChange}
-              />
-              {checkbox.label}
-            </label>
-          </div>
-        ))}
+        {/* 是否加微信 */}
+        <div className="form-group">
+          <label htmlFor="is_wechat_added">
+            <input
+              type="checkbox"
+              name="is_wechat_added"
+              checked={customerData.is_wechat_added}
+              onChange={handleChange}
+            />
+            是否加微信
+          </label>
+        </div>
 
-        {/* Textarea */}
+        {/* 是否接受邀请 */}
+        <div className="form-group">
+          <label htmlFor="is_invited">
+            <input
+              type="checkbox"
+              name="is_invited"
+              checked={customerData.is_invited}
+              onChange={handleChange}
+            />
+            是否接受邀请
+          </label>
+        </div>
+
+        {/* 是否入群 */}
+        <div className="form-group">
+          <label htmlFor="is_joined">
+            <input
+              type="checkbox"
+              name="is_joined"
+              checked={customerData.is_joined}
+              onChange={handleChange}
+            />
+            是否入群
+          </label>
+        </div>
+
+        {/* 参加第一次直播 */}
+        <div className="form-group">
+          <label htmlFor="attended_first_live">
+            <input
+              type="checkbox"
+              name="attended_first_live"
+              checked={customerData.attended_first_live}
+              onChange={handleChange}
+            />
+            参加第一次直播
+          </label>
+        </div>
+
+        {/* 第一日观看时长 */}
+        <div className="form-group">
+          <label htmlFor="first_day_watch_duration">第一天观看时长:</label>
+          <input
+            type="number"
+            className="form-control"
+            name="first_day_watch_duration"
+            value={customerData.first_day_watch_duration}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* 参加第二次直播 */}
+        <div className="form-group">
+          <label htmlFor="attended_second_live">
+            <input
+              type="checkbox"
+              name="attended_second_live"
+              checked={customerData.attended_second_live}
+              onChange={handleChange}
+            />
+            参加第二次直播
+          </label>
+        </div>
+
+        {/* 第二日观看时长 */}
+        <div className="form-group">
+          <label htmlFor="second_day_watch_duration">第二天观看时长:</label>
+          <input
+            type="number"
+            className="form-control"
+            name="second_day_watch_duration"
+            value={customerData.second_day_watch_duration}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* 是否成交 */}
+        <div className="form-group">
+          <label htmlFor="is_closed">
+            <input
+              type="checkbox"
+              name="is_closed"
+              checked={customerData.is_closed}
+              onChange={handleChange}
+            />
+            是否成交
+          </label>
+        </div>
+
+        {/* 客户描述 */}
         <div className="form-group">
           <label htmlFor="description">客户描述:</label>
           <textarea

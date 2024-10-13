@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './CustomerList.css'; // 使用局部样式
+import './CustomerList.css'; 
 import { deleteCustomer, getCustomers } from '../api/customerApi';
 import { getCurrentUser } from '../api/authApi';
 import DateFilter from './DateFilter';
-import OwnerFilter from './OwnerFilter';
-import IntentionFilter from './IntentionFilter';
-import { FaCheckCircle, FaTimesCircle, FaArrowUp, FaArrowDown, FaExclamationCircle } from 'react-icons/fa'; // 导入感叹号图标
+import CustomerSearchFilters from './CustomerSearchFilters'; 
+import { FaCheckCircle, FaTimesCircle, FaArrowUp, FaArrowDown, FaExclamationCircle } from 'react-icons/fa';
 
 const CustomerList = () => {
     const [customers, setCustomers] = useState([]);
@@ -19,9 +18,14 @@ const CustomerList = () => {
     const [endDate, setEndDate] = useState('');
     const [selectedOwner, setSelectedOwner] = useState('');
     const [selectedIntention, setSelectedIntention] = useState('');
-    const [filterExclamation, setFilterExclamation] = useState(false); // 用于感叹号筛选
-    const [searchPhone, setSearchPhone] = useState(''); // 用于手机号筛选
-    const [phoneInput, setPhoneInput] = useState(''); // 用户输入的手机号
+    const [filterExclamation, setFilterExclamation] = useState(false);
+    const [searchPhone, setSearchPhone] = useState(''); 
+    const [ownerOptions, setOwnerOptions] = useState([]); 
+    const [isContactedFilter, setIsContactedFilter] = useState(false);
+    const [isWechatAddedFilter, setIsWechatAddedFilter] = useState(false);
+    const [attendedFirstLiveFilter, setAttendedFirstLiveFilter] = useState(false);
+    const [attendedSecondLiveFilter, setAttendedSecondLiveFilter] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -56,14 +60,14 @@ const CustomerList = () => {
         localStorage.setItem('selectedOwner', selectedOwner);
         localStorage.setItem('selectedIntention', selectedIntention);
         localStorage.setItem('filterExclamation', filterExclamation);
-        localStorage.setItem('searchPhone', searchPhone); // 存储手机号筛选
+        localStorage.setItem('searchPhone', searchPhone);
     }, [startDate, endDate, selectedOwner, selectedIntention, filterExclamation, searchPhone]);
 
     useEffect(() => {
         if (currentUser) {
             fetchCustomers();
         }
-    }, [currentUser, startDate, endDate, sortField, sortDirection, filterExclamation, searchPhone]);
+    }, [currentUser, startDate, endDate, sortField, sortDirection, filterExclamation, searchPhone, isContactedFilter, isWechatAddedFilter, attendedFirstLiveFilter, attendedSecondLiveFilter]);
 
     const fetchCustomers = async () => {
         try {
@@ -80,6 +84,10 @@ const CustomerList = () => {
 
             const response = await getCustomers(start, end, sortField, sortDirection);
             setCustomers(response);
+
+            const owners = [...new Set(response.map((customer) => customer.created_by))];
+            setOwnerOptions(owners);
+
             setErrorMessage('');
         } catch (error) {
             setErrorMessage('获取客户数据时出错');
@@ -102,23 +110,23 @@ const CustomerList = () => {
         setSelectedIntention(intention);
     };
 
-    const handleExclamationFilter = (event) => {
-        setFilterExclamation(event.target.checked);
+    const handleExclamationFilterChange = (checked) => {
+        setFilterExclamation(checked);
     };
 
-    const handlePhoneInputChange = (event) => {
-        setPhoneInput(event.target.value);
-    };
-
-    const handlePhoneSearch = () => {
-        setSearchPhone(phoneInput); // 点击按钮后执行手机号筛选
+    const handlePhoneSearch = (phone) => {
+        setSearchPhone(phone);
     };
 
     const filteredCustomers = customers
         .filter((customer) => (selectedOwner ? customer.created_by === selectedOwner : true))
         .filter((customer) => (selectedIntention ? customer.intention === selectedIntention : true))
-        .filter((customer) => (filterExclamation ? customer.created_by !== customer.updated_by : true)) // 筛选带感叹号的客户
-        .filter((customer) => (searchPhone ? customer.phone.includes(searchPhone) : true)); // 筛选符合手机号的客户
+        .filter((customer) => (filterExclamation ? customer.created_by !== customer.updated_by : true))
+        .filter((customer) => (searchPhone ? customer.phone.includes(searchPhone) : true))
+        .filter((customer) => (isContactedFilter ? customer.is_contacted : true))
+        .filter((customer) => (isWechatAddedFilter ? customer.is_wechat_added : true))
+        .filter((customer) => (attendedFirstLiveFilter ? customer.attended_first_live : true))
+        .filter((customer) => (attendedSecondLiveFilter ? customer.attended_second_live : true));
 
     const handleSort = (field) => {
         const direction = sortField === field && sortDirection === 'asc' ? 'desc' : 'asc';
@@ -153,43 +161,24 @@ const CustomerList = () => {
                     initialEndDate={endDate}
                     onDateChange={handleDateChange}
                 />
-                <OwnerFilter
-                    owners={customers.map((customer) => customer.created_by)}
+                <CustomerSearchFilters
+                    onOwnerSelect={handleOwnerSelect}
+                    onIntentionSelect={handleIntentionSelect}
+                    onExclamationFilterChange={handleExclamationFilterChange}
+                    onPhoneSearch={handlePhoneSearch}
                     selectedOwner={selectedOwner}
-                    onSelectOwner={handleOwnerSelect}
-                />
-                <IntentionFilter
                     selectedIntention={selectedIntention}
-                    onSelectIntention={handleIntentionSelect}
+                    filterExclamation={filterExclamation}
+                    ownerOptions={ownerOptions}
+                    onIsContactedFilterChange={setIsContactedFilter}
+                    onIsWechatAddedFilterChange={setIsWechatAddedFilter}
+                    onAttendedFirstLiveFilterChange={setAttendedFirstLiveFilter}
+                    onAttendedSecondLiveFilterChange={setAttendedSecondLiveFilter}
+                    isContactedFilter={isContactedFilter}
+                    isWechatAddedFilter={isWechatAddedFilter}
+                    attendedFirstLiveFilter={attendedFirstLiveFilter}
+                    attendedSecondLiveFilter={attendedSecondLiveFilter}
                 />
-
-                {/* 新增的感叹号筛选复选框 */}
-                <div className="form-check ml-3">
-                    <input
-                        className="form-check-input"
-                        type="checkbox"
-                        checked={filterExclamation}
-                        onChange={handleExclamationFilter}
-                    />
-                    <label className="form-check-label">
-                        只显示名字带感叹号的客户
-                    </label>
-                </div>
-
-                {/* 新增手机号筛选 */}
-                <div className="ml-3">
-                    <label>输入手机号筛选：</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="输入手机号"
-                        value={phoneInput}
-                        onChange={handlePhoneInputChange}
-                    />
-                    <button className="btn btn-primary mt-2" onClick={handlePhoneSearch}>
-                        确定
-                    </button>
-                </div>
 
                 <button
                     className="btn btn-secondary ml-2"
@@ -211,6 +200,8 @@ const CustomerList = () => {
                             <th onClick={() => handleSort('created_at')}>创建时间</th>
                             <th onClick={() => handleSort('created_by')}>归属人</th>
                             <th onClick={() => handleSort('intention')}>意向程度</th>
+                            <th onClick={() => handleSort('is_contacted')}>是否接通</th>
+                            <th onClick={() => handleSort('is_wechat_added')}>是否加微信</th>
                             <th>是否邀约</th>
                             <th>是否入群</th>
                             <th>参加第一天直播</th>
@@ -236,6 +227,20 @@ const CustomerList = () => {
                                         {customer.intention === '高' && <FaArrowUp className="text-success" />}
                                         {customer.intention === '中' && <FaArrowDown className="text-warning" />}
                                         {customer.intention === '低' && <FaArrowDown className="text-danger" />}
+                                    </td>
+                                    <td>
+                                        {customer.is_contacted ? (
+                                            <FaCheckCircle className="text-success" />
+                                        ) : (
+                                            <FaTimesCircle className="text-danger" />
+                                        )}
+                                    </td>
+                                    <td>
+                                        {customer.is_wechat_added ? (
+                                            <FaCheckCircle className="text-success" />
+                                        ) : (
+                                            <FaTimesCircle className="text-danger" />
+                                        )}
                                     </td>
                                     <td>
                                         {customer.is_invited ? (
@@ -291,7 +296,7 @@ const CustomerList = () => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="11" className="text-center">
+                                <td colSpan="13" className="text-center">
                                     当前没有客户信息。
                                 </td>
                             </tr>
