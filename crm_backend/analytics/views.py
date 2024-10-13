@@ -55,15 +55,17 @@ class CustomerAnalysisViewSet(viewsets.ViewSet):
             attended_first_live_customers=Count(Case(When(attended_first_live=True, then=1))),
             attended_second_live_customers=Count(Case(When(attended_second_live=True, then=1))),
             joined_customers=Count(Case(When(is_joined=True, then=1))),
-            intention_low=Count(Case(When(intention='低', then=1))),
             intention_mid=Count(Case(When(intention='中', then=1))),
             intention_high=Count(Case(When(intention='高', then=1))),
+            contacted_customers=Count(Case(When(is_contacted=True, then=1))),  # 接通率
+            wechat_added_customers=Count(Case(When(is_wechat_added=True, then=1))),  # 加微信率
             closed_ratio=ExpressionWrapper(F('closed_customers') * 100.0 / F('total_customers'), output_field=FloatField()),
             invited_ratio=ExpressionWrapper(F('invited_customers') * 100.0 / F('total_customers'), output_field=FloatField()),
             attended_first_live_ratio=ExpressionWrapper(F('attended_first_live_customers') * 100.0 / F('total_customers'), output_field=FloatField()),
             attended_second_live_ratio=ExpressionWrapper(F('attended_second_live_customers') * 100.0 / F('total_customers'), output_field=FloatField()),
             joined_ratio=ExpressionWrapper(F('joined_customers') * 100.0 / F('total_customers'), output_field=FloatField()),
-            intention_low_ratio=ExpressionWrapper(F('intention_low') * 100.0 / F('total_customers'), output_field=FloatField()),
+            contacted_ratio=ExpressionWrapper(F('contacted_customers') * 100.0 / F('total_customers'), output_field=FloatField()),  # 接通率
+            wechat_added_ratio=ExpressionWrapper(F('wechat_added_customers') * 100.0 / F('total_customers'), output_field=FloatField()),  # 加微信率
             intention_mid_ratio=ExpressionWrapper(F('intention_mid') * 100.0 / F('total_customers'), output_field=FloatField()),
             intention_high_ratio=ExpressionWrapper(F('intention_high') * 100.0 / F('total_customers'), output_field=FloatField())
         )
@@ -76,21 +78,23 @@ class CustomerAnalysisViewSet(viewsets.ViewSet):
             'attended_first_live': customers.filter(attended_first_live=True).count(),
             'attended_second_live': customers.filter(attended_second_live=True).count(),
             'joined_customers': customers.filter(is_joined=True).count(),
-            'intention_low': customers.filter(intention='低').count(),
             'intention_mid': customers.filter(intention='中').count(),
             'intention_high': customers.filter(intention='高').count(),
+            'contacted_customers': customers.filter(is_contacted=True).count(),  # 接通总数
+            'wechat_added_customers': customers.filter(is_wechat_added=True).count(),  # 加微信总数
         }
 
         # 计算平均值 (averages)
         averages = {
             'intention_high_ratio': customers.filter(intention='高').count() / total_group_customers * 100 if total_group_customers > 0 else 0,
             'intention_mid_ratio': customers.filter(intention='中').count() / total_group_customers * 100 if total_group_customers > 0 else 0,
-            'intention_low_ratio': customers.filter(intention='低').count() / total_group_customers * 100 if total_group_customers > 0 else 0,
             'invited_ratio': customers.filter(is_invited=True).count() / total_group_customers * 100 if total_group_customers > 0 else 0,
             'joined_ratio': customers.filter(is_joined=True).count() / total_group_customers * 100 if total_group_customers > 0 else 0,
             'attended_first_live_ratio': customers.filter(attended_first_live=True).count() / total_group_customers * 100 if total_group_customers > 0 else 0,
             'attended_second_live_ratio': customers.filter(attended_second_live=True).count() / total_group_customers * 100 if total_group_customers > 0 else 0,
             'closed_ratio': customers.filter(is_closed=True).count() / total_group_customers * 100 if total_group_customers > 0 else 0,
+            'contacted_ratio': customers.filter(is_contacted=True).count() / total_group_customers * 100 if total_group_customers > 0 else 0,  # 接通率
+            'wechat_added_ratio': customers.filter(is_wechat_added=True).count() / total_group_customers * 100 if total_group_customers > 0 else 0,  # 加微信率
         }
 
         return Response({

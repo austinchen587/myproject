@@ -13,11 +13,13 @@ const CustomerSearchFilters = ({
   onIsContactedFilterChange,
   onIsWechatAddedFilterChange,
   onAttendedFirstLiveFilterChange,
-  onAttendedSecondLiveFilterChange, 
+  onAttendedSecondLiveFilterChange,
+  onDataSourceSelect,  // 添加数据来源筛选
   isContactedFilter,
   isWechatAddedFilter,
   attendedFirstLiveFilter,
-  attendedSecondLiveFilter
+  attendedSecondLiveFilter,
+  dataSourceFilter,     // 传递当前数据来源筛选值
 }) => {
   const [phoneInput, setPhoneInput] = useState(''); // 用于手机号输入
 
@@ -62,6 +64,21 @@ const CustomerSearchFilters = ({
           <option value="高">高</option>
           <option value="中">中</option>
           <option value="低">低</option>
+        </select>
+      </div>
+
+      {/* 数据来源筛选 */}
+      <div>
+        <label>数据来源：</label>
+        <select
+          className="form-control"
+          value={dataSourceFilter}
+          onChange={(e) => onDataSourceSelect(e.target.value)} // 处理数据来源选择变化
+        >
+          <option value="">全部</option>
+          <option value="AI数据">AI数据</option>
+          <option value="视频号">视频号</option>
+          <option value="其他">其他</option>
         </select>
       </div>
 
