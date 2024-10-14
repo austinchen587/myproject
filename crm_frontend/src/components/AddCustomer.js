@@ -20,7 +20,7 @@ const AddCustomer = () => {
     attended_second_live: false,
     first_day_watch_duration: 0,
     second_day_watch_duration: 0,
-    is_connected: false, // 是否接通
+    is_contacted: false, // 是否接通
     is_wechat_added: false, // 是否加微信
     description: '',
     intention: '低'
@@ -28,6 +28,7 @@ const AddCustomer = () => {
 
   const navigate = useNavigate();
 
+  // 处理表单字段的变化，包括复选框的布尔值
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setCustomerData((prevData) => ({
@@ -36,12 +37,17 @@ const AddCustomer = () => {
     }));
   };
 
+  // 提交表单的处理函数
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 打印检查是否接通的状态是否为 true
+    console.log("是否接通:", customerData.is_contacted);
+
     try {
-      await addCustomer(customerData);
+      await addCustomer(customerData); // 提交客户数据
       alert('客户添加成功！');
-      navigate('/customers');
+      navigate('/customers'); // 提交成功后跳转到客户列表
     } catch (error) {
       alert('添加客户失败');
     }
@@ -69,12 +75,12 @@ const AddCustomer = () => {
 
         {/* 是否接通 */}
         <div className="form-group">
-          <label htmlFor="is_connected">
+          <label htmlFor="is_contacted">
             <input
               type="checkbox"
-              name="is_connected"
-              checked={customerData.is_connected}
-              onChange={handleChange}
+              name="is_contacted"
+              checked={customerData.is_contacted}
+              onChange={handleChange} // 确保复选框的状态在变化时被正确更新
             />
             是否接通
           </label>
