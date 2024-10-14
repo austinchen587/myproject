@@ -71,7 +71,7 @@ const CustomerDetail = () => {
             </tr>
             <tr>
               <th>是否接通</th>
-              <td>{customer.is_connected ? '是' : '否'}</td>
+              <td>{customer.is_contacted ? '是' : '否'}</td>
             </tr>
             <tr>
               <th>是否加微信</th>
@@ -124,7 +124,7 @@ const CustomerDetail = () => {
             <tr>
               <th>描述</th>
               <td style={{ color: isUpdatedByDifferentUser ? 'red' : 'black' }}>
-                {customer.description || '无描述'}
+                {customer.description || '你什么也没有写'}
               </td>
             </tr>
           </tbody>
