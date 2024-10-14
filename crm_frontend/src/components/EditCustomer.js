@@ -8,23 +8,25 @@ const EditCustomer = () => {
 
   // 初始化客户数据状态
   const [customer, setCustomer] = useState({
+    data_source: '',
+    is_contacted: false,    // 是否接通
+    intention: '低',        // 默认意向程度
     name: '',
     phone: '',
     education: '',
     major_category: '',
     status: '',
-    address: '',
     city: '',
-    is_closed: false,
+    address: '',
+    is_wechat_added: false, // 是否加微信
     is_invited: false,
     is_joined: false,
-    data_source: '',
     attended_first_live: false,
-    attended_second_live: false,
     first_day_watch_duration: 0,
+    attended_second_live: false,
     second_day_watch_duration: 0,
+    is_closed: false,
     description: '',
-    intention: '低',  // 默认意向程度
   });
 
   useEffect(() => {
@@ -65,6 +67,49 @@ const EditCustomer = () => {
     <div className="container">
       <h2>编辑客户</h2>
       <form onSubmit={handleSubmit}>
+        
+        {/* 数据来源 */}
+        <div className="form-group">
+          <label>数据来源</label>
+          <select
+            className="form-control"
+            name="data_source"
+            value={customer.data_source}
+            onChange={handleInputChange}
+          >
+            <option value="AI数据">AI数据</option>
+            <option value="视频号">视频号</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+
+        {/* 是否接通 */}
+        <div className="form-check">
+          <input
+            type="checkbox"
+            className="form-check-input"
+            name="is_contacted"
+            checked={customer.is_contacted}
+            onChange={handleInputChange}
+          />
+          <label className="form-check-label">是否接通</label>
+        </div>
+
+        {/* 意向程度 */}
+        <div className="form-group">
+          <label>意向程度</label>
+          <select
+            className="form-control"
+            name="intention"
+            value={customer.intention}
+            onChange={handleInputChange}
+          >
+            <option value="低">低</option>
+            <option value="中">中</option>
+            <option value="高">高</option>
+          </select>
+        </div>
+
         <div className="form-group">
           <label>姓名</label>
           <input
@@ -100,7 +145,7 @@ const EditCustomer = () => {
             <option value="大专以下">大专以下</option>
             <option value="大专">大专</option>
             <option value="本科">本科</option>
-            <option value="研究生及以上<">研究生及以上</option>
+            <option value="研究生及以上">研究生及以上</option>
             <option value="未知">未知</option>
           </select>
         </div>
@@ -134,18 +179,6 @@ const EditCustomer = () => {
         </div>
 
         <div className="form-group">
-          <label>就业意向城市</label>
-          <input
-            type="text"
-            className="form-control"
-            name="address"
-            value={customer.address}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-
-        <div className="form-group">
           <label>当前所在城市</label>
           <input
             type="text"
@@ -157,15 +190,28 @@ const EditCustomer = () => {
           />
         </div>
 
+        <div className="form-group">
+          <label>就业意向城市</label>
+          <input
+            type="text"
+            className="form-control"
+            name="address"
+            value={customer.address}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+
+        {/* 是否加微信 */}
         <div className="form-check">
           <input
             type="checkbox"
             className="form-check-input"
-            name="is_closed"
-            checked={customer.is_closed}
+            name="is_wechat_added"
+            checked={customer.is_wechat_added}
             onChange={handleInputChange}
           />
-          <label className="form-check-label">是否成交</label>
+          <label className="form-check-label">是否加微信</label>
         </div>
 
         <div className="form-check">
@@ -190,20 +236,6 @@ const EditCustomer = () => {
           <label className="form-check-label">是否入群</label>
         </div>
 
-        <div className="form-group">
-          <label>数据来源</label>
-          <select
-            className="form-control"
-            name="data_source"
-            value={customer.data_source}
-            onChange={handleInputChange}
-          >
-            <option value="AI数据">AI数据</option>
-            <option value="视频号">视频号</option>
-            <option value="其他">其他</option>
-          </select>
-        </div>
-
         <div className="form-check">
           <input
             type="checkbox"
@@ -213,17 +245,6 @@ const EditCustomer = () => {
             onChange={handleInputChange}
           />
           <label className="form-check-label">参加第一天直播</label>
-        </div>
-
-        <div className="form-check">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            name="attended_second_live"
-            checked={customer.attended_second_live}
-            onChange={handleInputChange}
-          />
-          <label className="form-check-label">参加第二天直播</label>
         </div>
 
         <div className="form-group">
@@ -238,6 +259,17 @@ const EditCustomer = () => {
           />
         </div>
 
+        <div className="form-check">
+          <input
+            type="checkbox"
+            className="form-check-input"
+            name="attended_second_live"
+            checked={customer.attended_second_live}
+            onChange={handleInputChange}
+          />
+          <label className="form-check-label">参加第二天直播</label>
+        </div>
+
         <div className="form-group">
           <label>第二天观看时长</label>
           <input
@@ -250,19 +282,15 @@ const EditCustomer = () => {
           />
         </div>
 
-        {/* 意向程度 */}
-        <div className="form-group">
-          <label>意向程度</label>
-          <select
-            className="form-control"
-            name="intention"
-            value={customer.intention}
+        <div className="form-check">
+          <input
+            type="checkbox"
+            className="form-check-input"
+            name="is_closed"
+            checked={customer.is_closed}
             onChange={handleInputChange}
-          >
-            <option value="低">低</option>
-            <option value="中">中</option>
-            <option value="高">高</option>
-          </select>
+          />
+          <label className="form-check-label">是否成交</label>
         </div>
 
         <div className="form-group">
