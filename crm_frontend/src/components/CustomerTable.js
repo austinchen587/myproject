@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle, FaExclamationCircle } from 'react-icons/fa';
 import './CustomerTable.css'; // 引入局部样式
 
-// 计算创建时间和更新时间之间的天数差
 const calculateDaysSinceUpdate = (createdAt, updatedAt) => {
   const createdDate = new Date(createdAt);
   const updatedDate = new Date(updatedAt);
@@ -11,7 +10,7 @@ const calculateDaysSinceUpdate = (createdAt, updatedAt) => {
   return Math.ceil(differenceInTime / (1000 * 60 * 60 * 24)); // 返回天数差
 };
 
-const CustomerTable = ({ customers, onDelete, currentUser }) => (
+const CustomerTable = ({ customers, onDelete, currentUser, isViewOnly = false }) => (
   <div className="table-container">
     <table className="customer-table">
       <thead>
@@ -25,7 +24,7 @@ const CustomerTable = ({ customers, onDelete, currentUser }) => (
           <th>7天成交</th>
           <th>14天成交</th>
           <th>21天成交</th>
-          <th>未更新的天数</th> {/* 更新后的列名 */}
+          <th>未更新的天数</th>
           <th>操作</th>
         </tr>
       </thead>
@@ -66,23 +65,22 @@ const CustomerTable = ({ customers, onDelete, currentUser }) => (
                 )}
               </td>
               <td>
-                {calculateDaysSinceUpdate(customer.created_at, customer.updated_at)} 天 {/* 更新后的列 */}
+                {calculateDaysSinceUpdate(customer.created_at, customer.updated_at)} 天
               </td>
               <td>
                 <div className="btn-group">
                   <Link to={`/customer/${customer.id}`} className="btn btn-info">
                     详情
                   </Link>
-                  <Link to={`/edit-customer/${customer.id}`} className="btn btn-warning">
-                    更新
-                  </Link>
-                  {currentUser?.role === 'admin' && (
-                    <button
-                      onClick={() => onDelete(customer.id)}
-                      className="btn btn-danger"
-                    >
-                      删除
-                    </button>
+                  {!isViewOnly && currentUser?.role === 'admin' && (
+                    <>
+                      <Link to={`/edit-customer/${customer.id}`} className="btn btn-warning">
+                        更新
+                      </Link>
+                      <button onClick={() => onDelete(customer.id)} className="btn btn-danger">
+                        删除
+                      </button>
+                    </>
                   )}
                 </div>
               </td>
