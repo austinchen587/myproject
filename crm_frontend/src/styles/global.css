@@ -1,0 +1,44 @@
+/* 全局 CSS 样式 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('/public/images/pexels.jpg'); /* 正确的图片路径 */
+    background-size: cover; /* 背景图片适应屏幕大小 */
+    background-position: center;
+    background-attachment: fixed; /* 背景固定不滚动 */
+    background-repeat: no-repeat;
+    color: #333; /* 全局文本颜色 */
+}
+
+/* 页面内容的布局 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 按钮样式 */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* 输入框和选择框样式 */
+input, select {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
