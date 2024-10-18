@@ -18,10 +18,10 @@ const CustomerList = () => {
     deal14Days: false,
     deal21Days: false,
     searchPhone: '',
-    startDate: '',
-    endDate: '',
+    startDate: '',  // 默认一周前的开始日期
+    endDate: '',    // 默认今天的结束日期
   });
-  const [sort, setSort] = useState({ field: 'created_at', direction: 'asc' });
+  const [sort, setSort] = useState({ field: 'created_at', direction: 'desc' }); // 默认降序
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
@@ -29,6 +29,24 @@ const CustomerList = () => {
   const [studentBatchOptions, setStudentBatchOptions] = useState([]); // 期数学员选项
   const navigate = useNavigate();
 
+  // 计算默认的一周前的日期
+  const getDefaultDateRange = () => {
+    const today = new Date();
+    const lastWeek = new Date(today);
+    lastWeek.setDate(today.getDate() - 7); // 获取一周前的日期
+    return {
+      startDate: lastWeek.toISOString().split('T')[0], // 转化为 YYYY-MM-DD 格式
+      endDate: today.toISOString().split('T')[0],      // 转化为 YYYY-MM-DD 格式
+    };
+  };
+
+  // 初次加载时设置默认日期
+  useEffect(() => {
+    const { startDate, endDate } = getDefaultDateRange();
+    setFilters((prev) => ({ ...prev, startDate, endDate }));
+  }, []);
+
+  // 获取当前用户信息
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -41,9 +59,10 @@ const CustomerList = () => {
     fetchUser();
   }, []);
 
+  // 获取客户数据
   useEffect(() => {
     if (currentUser) fetchCustomers();
-  }, [currentUser, sort]);
+  }, [currentUser, filters.startDate, filters.endDate, sort]);
 
   const fetchCustomers = async () => {
     try {
