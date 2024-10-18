@@ -1,0 +1,83 @@
+.edit-system-data-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .custom-input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s;
+  }
+  
+  .custom-input:focus {
+    border-color: #007aff;
+    outline: none;
+  }
+  
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .form-check-input {
+    width: 20px;
+    height: 20px;
+    accent-color: #007aff;
+  }
+  
+  .form-check-label {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  @media (max-width: 600px) {
+    .edit-system-data-form-container {
+      padding: 15px;
+    }
+  
+    .section-title {
+      font-size: 20px;
+    }
+  
+    .form-label {
+      font-size: 14px;
+    }
+  
+    .form-check-label {
+      font-size: 14px;
+    }
+  
+    .custom-input {
+      font-size: 14px;
+    }
+  }
