@@ -1,75 +1,70 @@
+/* 搜索筛选容器 */
 .search-filters-container {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
   gap: 15px;
-  padding: 15px;
-  background-color: #f7f7f9;
-  border-radius: 10px;
+  background-color: #f5f5f5;
+  border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.filter-group {
+/* 筛选项的基本样式 */
+.filter-select,
+.filter-input {
   flex: 1;
   min-width: 150px;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-right: 10px;
+  box-sizing: border-box;
 }
 
-.filter-select, .filter-input {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: border-color 0.2s ease-in-out;
-}
-
-.filter-select:focus, .filter-input:focus {
-  border-color: #007aff;
-  outline: none;
-}
-
+/* 按钮样式 */
 .search-btn {
-  margin-top: 5px;
   background-color: #007aff;
-  color: white;
   border: none;
-  border-radius: 5px;
-  padding: 8px 12px;
-  font-size: 16px;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.3s;
 }
 
 .search-btn:hover {
   background-color: #005bb5;
 }
 
-.filter-checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
+/* 复选框和标签的布局 */
 .checkbox-item {
   display: flex;
   align-items: center;
+  margin-right: 15px;
 }
 
-.checkbox-input {
+.filter-checkbox {
   margin-right: 5px;
 }
 
-.checkbox-label {
-  font-size: 16px;
-}
-
+/* 响应式布局调整 */
 @media (max-width: 768px) {
   .search-filters-container {
     flex-direction: column;
+    align-items: stretch;
   }
 
-  .filter-group, .filter-checkbox-group {
+  .filter-select,
+  .filter-input {
+    margin-bottom: 10px;
     width: 100%;
+  }
+
+  .checkbox-item {
+    justify-content: flex-start;
   }
 }

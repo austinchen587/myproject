@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCustomers, deleteCustomer } from '../api/customerApi';
-import { getCurrentUser } from '../api/authApi';
-import CustomerSearchFilters from './CustomerSearchFilters';
-import CustomerTable from './CustomerTable';
-import DateFilter from './DateFilter';
-import './CustomerList.css';
+import { getCustomers } from '../api/customerApi';  // 从API获取客户数据
+import CustomerSearchFilters from './CustomerSearchFilters'; // 复用之前的筛选组件
+import CustomerTable from './CustomerTable'; // 复用之前的表格组件
+import DateFilter from './DateFilter'; // 复用日期筛选
+import './CustomerList.css'; // 可复用样式
 
-const CustomerList = () => {
+const AllCustomersList = () => {
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [filters, setFilters] = useState({
@@ -18,66 +17,59 @@ const CustomerList = () => {
     deal14Days: false,
     deal21Days: false,
     searchPhone: '',
-    startDate: '',  // 默认一周前的开始日期
-    endDate: '',    // 默认今天的结束日期
-    filterExclamation: false, // 红色感叹号筛选
+    startDate: '',  // 默认值为空
+    endDate: '',
   });
   const [sort, setSort] = useState({ field: 'created_at', direction: 'desc' }); // 默认降序
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
-  const [currentUser, setCurrentUser] = useState(null);
   const [ownerOptions, setOwnerOptions] = useState([]);
   const [studentBatchOptions, setStudentBatchOptions] = useState([]); // 期数学员选项
-  const navigate = useNavigate();
 
-  // 计算默认的一周前的日期
+  // 计算默认的3天前的日期
   const getDefaultDateRange = () => {
     const today = new Date();
-    const lastWeek = new Date(today);
-    lastWeek.setDate(today.getDate() - 7); // 获取一周前的日期
+    const lastThreeDays = new Date(today);
+    lastThreeDays.setDate(today.getDate() - 3); // 默认加载3天前的数据
     return {
-      startDate: lastWeek.toISOString().split('T')[0], // 转化为 YYYY-MM-DD 格式
-      endDate: today.toISOString().split('T')[0],      // 转化为 YYYY-MM-DD 格式
+      startDate: lastThreeDays.toISOString().split('T')[0], // 格式化为 YYYY-MM-DD
+      endDate: today.toISOString().split('T')[0],
     };
   };
 
-  // 初次加载时设置默认日期
+  // 初次加载时设置默认的时间范围为3天内
   useEffect(() => {
     const { startDate, endDate } = getDefaultDateRange();
     setFilters((prev) => ({ ...prev, startDate, endDate }));
   }, []);
 
-  // 获取当前用户信息
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await getCurrentUser();
-        setCurrentUser(user);
-      } catch (error) {
-        console.error('获取用户信息失败:', error);
-      }
-    };
-    fetchUser();
-  }, []);
-
   // 获取客户数据
   useEffect(() => {
-    if (currentUser) fetchCustomers();
-  }, [currentUser, filters.startDate, filters.endDate, sort]);
+    fetchCustomers();
+  }, [filters.startDate, filters.endDate, sort]);
 
   const fetchCustomers = async () => {
     try {
       setLoading(true);
       const response = await getCustomers(filters.startDate, filters.endDate, sort.field, sort.direction);
-      setCustomers(response);
 
-      const owners = [...new Set(response.map((customer) => customer.created_by))];
+      // 仅筛选出创建时间在3天内的客户
+      const filteredByDate = response.filter((customer) => {
+        const customerCreatedAt = new Date(customer.created_at);
+        const startDate = new Date(filters.startDate);
+        const endDate = new Date(filters.endDate);
+        return customerCreatedAt >= startDate && customerCreatedAt <= endDate;
+      });
+
+      setCustomers(filteredByDate);
+
+      const owners = [...new Set(filteredByDate.map((customer) => customer.created_by))];
       setOwnerOptions(owners);
 
-      const studentBatches = [...new Set(response.map((customer) => customer.student_batch))].filter(Boolean); // 获取学员期数选项
+      const studentBatches = [...new Set(filteredByDate.map((customer) => customer.student_batch))].filter(Boolean);
       setStudentBatchOptions(studentBatches);
 
-      applyFilters(response);
+      applyFilters(filteredByDate);
     } catch (error) {
       setErrorMessage('获取客户数据时出错');
     } finally {
@@ -85,11 +77,10 @@ const CustomerList = () => {
     }
   };
 
+  // 应用筛选条件
   const applyFilters = (customerList) => {
     const filtered = customerList.filter((customer) => {
-      const { owner, dataSource, studentBatch, deal7Days, deal14Days, deal21Days, searchPhone, filterExclamation } = filters;
-
-      const hasExclamation = customer.created_by !== customer.updated_by; // 红色感叹号逻辑
+      const { owner, dataSource, studentBatch, deal7Days, deal14Days, deal21Days, searchPhone } = filters;
 
       return (
         (!owner || customer.created_by === owner) &&
@@ -98,8 +89,7 @@ const CustomerList = () => {
         (!searchPhone || customer.phone.includes(searchPhone)) &&
         (!deal7Days || customer.deal_7_days_checked) &&
         (!deal14Days || customer.deal_14_days_checked) &&
-        (!deal21Days || customer.deal_21_days_checked) &&
-        (!filterExclamation || hasExclamation) // 如果选择了红色感叹号筛选，则必须匹配
+        (!deal21Days || customer.deal_21_days_checked)
       );
     });
 
@@ -110,16 +100,10 @@ const CustomerList = () => {
     applyFilters(customers);
   }, [filters, customers]);
 
-  const handleDelete = async (id) => {
-    try {
-      await deleteCustomer(id);
-      fetchCustomers();
-    } catch (error) {
-      console.error('删除客户失败:', error);
-    }
-  };
-
+  // 更新筛选条件
   const handleFilterChange = (newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }));
+
+  // 处理日期选择的变化
   const handleDateChange = (startDate, endDate) => setFilters((prev) => ({ ...prev, startDate, endDate }));
 
   return (
@@ -132,23 +116,14 @@ const CustomerList = () => {
           ownerOptions={ownerOptions}
           studentBatchOptions={studentBatchOptions}
         />
-        <div className="button-group">
-          <button
-            className="btn btn-primary add-customer-btn"
-            onClick={() => navigate('/add-customer')}
-          >
-            添加客户
-          </button>
-          <button
-            className="btn btn-secondary view-all-customers-btn ml-3"
-            onClick={() => navigate('/all-customers')}
-          >
-            查看所有客户
-          </button>
-        </div>
       </div>
 
-      <CustomerTable customers={filteredCustomers} onDelete={handleDelete} currentUser={currentUser} />
+      <CustomerTable
+        customers={filteredCustomers}
+        onDelete={() => {}} // 禁止删除，传入空函数
+        currentUser={null} // 禁止编辑，传入 null，限制功能
+        isViewOnly // 增加只读模式
+      />
 
       {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
       {loading && <div className="loading-indicator">加载中...</div>}
@@ -156,4 +131,4 @@ const CustomerList = () => {
   );
 };
 
-export default CustomerList;
+export default AllCustomersList;

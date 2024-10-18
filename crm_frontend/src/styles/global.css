@@ -13,9 +13,9 @@ body {
 
 /* 页面内容的布局 */
 .container {
-    max-width: 1200px;
+    max-width: 1900px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px; /* 调整 container 的 padding 值，使得边距更小 */
 }
 
 /* 按钮样式 */
@@ -23,7 +23,7 @@ button {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 8px 16px; /* 减少按钮的 padding 值 */
     border-radius: 5px;
     cursor: pointer;
 }
@@ -34,7 +34,7 @@ button:hover {
 
 /* 输入框和选择框样式 */
 input, select {
-    padding: 10px;
+    padding: 8px; /* 减少 input 和 select 的 padding */
     margin: 5px 0;
     border-radius: 5px;
     border: 1px solid #ccc;
