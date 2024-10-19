@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background-image: url('/public/images/pexels.jpg'); /* 正确的图片路径 */
+    background-image: url('/public/images/83.jpg'); /* 正确的图片路径 */
     background-size: cover; /* 背景图片适应屏幕大小 */
     background-position: center;
     background-attachment: fixed; /* 背景固定不滚动 */

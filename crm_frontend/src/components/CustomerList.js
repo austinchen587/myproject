@@ -10,44 +10,34 @@ import './CustomerList.css';
 const CustomerList = () => {
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
-  const [filters, setFilters] = useState({
-    owner: '',
-    dataSource: '',
-    studentBatch: '',
-    deal7Days: false,
-    deal14Days: false,
-    deal21Days: false,
-    searchPhone: '',
-    startDate: '',  // 默认一周前的开始日期
-    endDate: '',    // 默认今天的结束日期
-    filterExclamation: false, // 红色感叹号筛选
+  const [filters, setFilters] = useState(() => {
+    const savedFilters = sessionStorage.getItem('customerListFilters');
+    return savedFilters ? JSON.parse(savedFilters) : {
+      owner: '',
+      dataSource: '',
+      studentBatch: '',
+      deal7Days: false,
+      deal14Days: false,
+      deal21Days: false,
+      searchPhone: '',
+      startDate: '',
+      endDate: '',
+      filterExclamation: false,
+    };
   });
-  const [sort, setSort] = useState({ field: 'created_at', direction: 'desc' }); // 默认降序
+
+  const [sort, setSort] = useState(() => {
+    const savedSort = sessionStorage.getItem('customerListSort');
+    return savedSort ? JSON.parse(savedSort) : { field: 'created_at', direction: 'desc' };
+  });
+
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
   const [ownerOptions, setOwnerOptions] = useState([]);
-  const [studentBatchOptions, setStudentBatchOptions] = useState([]); // 期数学员选项
+  const [studentBatchOptions, setStudentBatchOptions] = useState([]);
   const navigate = useNavigate();
 
-  // 计算默认的一周前的日期
-  const getDefaultDateRange = () => {
-    const today = new Date();
-    const lastWeek = new Date(today);
-    lastWeek.setDate(today.getDate() - 7); // 获取一周前的日期
-    return {
-      startDate: lastWeek.toISOString().split('T')[0], // 转化为 YYYY-MM-DD 格式
-      endDate: today.toISOString().split('T')[0],      // 转化为 YYYY-MM-DD 格式
-    };
-  };
-
-  // 初次加载时设置默认日期
-  useEffect(() => {
-    const { startDate, endDate } = getDefaultDateRange();
-    setFilters((prev) => ({ ...prev, startDate, endDate }));
-  }, []);
-
-  // 获取当前用户信息
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -60,10 +50,9 @@ const CustomerList = () => {
     fetchUser();
   }, []);
 
-  // 获取客户数据
   useEffect(() => {
     if (currentUser) fetchCustomers();
-  }, [currentUser, filters.startDate, filters.endDate, sort]);
+  }, [currentUser, filters, sort]);
 
   const fetchCustomers = async () => {
     try {
@@ -74,7 +63,7 @@ const CustomerList = () => {
       const owners = [...new Set(response.map((customer) => customer.created_by))];
       setOwnerOptions(owners);
 
-      const studentBatches = [...new Set(response.map((customer) => customer.student_batch))].filter(Boolean); // 获取学员期数选项
+      const studentBatches = [...new Set(response.map((customer) => customer.student_batch))].filter(Boolean);
       setStudentBatchOptions(studentBatches);
 
       applyFilters(response);
@@ -88,9 +77,7 @@ const CustomerList = () => {
   const applyFilters = (customerList) => {
     const filtered = customerList.filter((customer) => {
       const { owner, dataSource, studentBatch, deal7Days, deal14Days, deal21Days, searchPhone, filterExclamation } = filters;
-
-      const hasExclamation = customer.created_by !== customer.updated_by; // 红色感叹号逻辑
-
+      const hasExclamation = customer.created_by !== customer.updated_by;
       return (
         (!owner || customer.created_by === owner) &&
         (!dataSource || customer.data_source === dataSource) &&
@@ -99,10 +86,9 @@ const CustomerList = () => {
         (!deal7Days || customer.deal_7_days_checked) &&
         (!deal14Days || customer.deal_14_days_checked) &&
         (!deal21Days || customer.deal_21_days_checked) &&
-        (!filterExclamation || hasExclamation) // 如果选择了红色感叹号筛选，则必须匹配
+        (!filterExclamation || hasExclamation)
       );
     });
-
     setFilteredCustomers(filtered);
   };
 
@@ -110,45 +96,50 @@ const CustomerList = () => {
     applyFilters(customers);
   }, [filters, customers]);
 
-  const handleDelete = async (id) => {
-    try {
-      await deleteCustomer(id);
-      fetchCustomers();
-    } catch (error) {
-      console.error('删除客户失败:', error);
-    }
+  const handleFilterChange = (newFilters) => {
+    const updatedFilters = { ...filters, ...newFilters };
+    setFilters(updatedFilters);
+    sessionStorage.setItem('customerListFilters', JSON.stringify(updatedFilters));
   };
 
-  const handleFilterChange = (newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }));
-  const handleDateChange = (startDate, endDate) => setFilters((prev) => ({ ...prev, startDate, endDate }));
+  const handleDateChange = (startDate, endDate) => {
+    const updatedFilters = { ...filters, startDate, endDate };
+    setFilters(updatedFilters);
+    sessionStorage.setItem('customerListFilters', JSON.stringify(updatedFilters));
+  };
 
   return (
     <div className="customer-list-container">
       <div className="filters-container">
-        <DateFilter initialStartDate={filters.startDate} initialEndDate={filters.endDate} onDateChange={handleDateChange} />
-        <CustomerSearchFilters
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          ownerOptions={ownerOptions}
-          studentBatchOptions={studentBatchOptions}
+        <DateFilter 
+          initialStartDate={filters.startDate} 
+          initialEndDate={filters.endDate} 
+          onDateChange={handleDateChange} 
+        />
+        <CustomerSearchFilters 
+          filters={filters} 
+          onFilterChange={handleFilterChange} 
+          ownerOptions={ownerOptions} 
+          studentBatchOptions={studentBatchOptions} 
         />
         <div className="button-group">
-          <button
-            className="btn btn-primary add-customer-btn"
-            onClick={() => navigate('/add-customer')}
-          >
+          <button className="btn btn-primary" onClick={() => navigate('/add-customer')}>
             添加客户
           </button>
-          <button
-            className="btn btn-secondary view-all-customers-btn ml-3"
-            onClick={() => navigate('/all-customers')}
-          >
+          <button className="btn btn-secondary" onClick={() => navigate('/all-customers')}>
             查看所有客户
           </button>
         </div>
       </div>
 
-      <CustomerTable customers={filteredCustomers} onDelete={handleDelete} currentUser={currentUser} />
+      <CustomerTable 
+        customers={filteredCustomers} 
+        onDelete={async (id) => {
+          await deleteCustomer(id);
+          fetchCustomers();
+        }} 
+        currentUser={currentUser} 
+      />
 
       {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
       {loading && <div className="loading-indicator">加载中...</div>}

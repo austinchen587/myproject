@@ -1,70 +1,54 @@
-/* 搜索筛选容器 */
-.search-filters-container {
+/* Wrapper for the search filters */
+.search-filters-wrapper {
+  width: 100%;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+/* Ensure everything is in one row */
+.search-filters-row {
+  display: flex;
+  flex-wrap: nowrap;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
   gap: 15px;
-  background-color: #f5f5f5;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1900px; /* 控制最大宽度 */
+  overflow-x: auto; /* 允许超出时水平滚动 */
 }
 
-/* 筛选项的基本样式 */
-.filter-select,
-.filter-input {
-  flex: 1;
-  min-width: 150px;
-  padding: 10px;
-  border-radius: 8px;
+/* Styling for inputs and selects */
+.search-filters-row select,
+.search-filters-row input[type="text"] {
+  flex: 0 1 180px; /* 固定宽度并保持自适应 */
+  padding: 8px;
   border: 1px solid #ccc;
-  font-size: 1rem;
-  margin-right: 10px;
-  box-sizing: border-box;
+  border-radius: 6px;
 }
 
-/* 按钮样式 */
-.search-btn {
+/* Phone search container styling */
+.phone-search-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.phone-search-container button {
+  padding: 8px 12px;
   background-color: #007aff;
-  border: none;
   color: white;
-  padding: 10px 15px;
-  border-radius: 8px;
-  font-weight: bold;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
-.search-btn:hover {
+.phone-search-container button:hover {
   background-color: #005bb5;
 }
 
-/* 复选框和标签的布局 */
+/* Checkbox group styling */
 .checkbox-item {
   display: flex;
   align-items: center;
-  margin-right: 15px;
-}
-
-.filter-checkbox {
-  margin-right: 5px;
-}
-
-/* 响应式布局调整 */
-@media (max-width: 768px) {
-  .search-filters-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filter-select,
-  .filter-input {
-    margin-bottom: 10px;
-    width: 100%;
-  }
-
-  .checkbox-item {
-    justify-content: flex-start;
-  }
+  gap: 5px;
 }
