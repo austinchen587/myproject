@@ -10,14 +10,14 @@ const AllCustomersList = () => {
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [filters, setFilters] = useState({
-    owner: '',
+    owner: '', // 去除归属人过滤的必要性
     dataSource: '',
     studentBatch: '',
     deal7Days: false,
     deal14Days: false,
     deal21Days: false,
     searchPhone: '',
-    startDate: '',  // 默认值为空
+    startDate: '',
     endDate: '',
   });
   const [sort, setSort] = useState({ field: 'created_at', direction: 'desc' }); // 默认降序
@@ -53,7 +53,7 @@ const AllCustomersList = () => {
       setLoading(true);
       const response = await getCustomers(filters.startDate, filters.endDate, sort.field, sort.direction);
 
-      // 仅筛选出创建时间在3天内的客户
+      // 筛选出符合日期范围的客户
       const filteredByDate = response.filter((customer) => {
         const customerCreatedAt = new Date(customer.created_at);
         const startDate = new Date(filters.startDate);
@@ -80,10 +80,9 @@ const AllCustomersList = () => {
   // 应用筛选条件
   const applyFilters = (customerList) => {
     const filtered = customerList.filter((customer) => {
-      const { owner, dataSource, studentBatch, deal7Days, deal14Days, deal21Days, searchPhone } = filters;
+      const { dataSource, studentBatch, deal7Days, deal14Days, deal21Days, searchPhone } = filters;
 
       return (
-        (!owner || customer.created_by === owner) &&
         (!dataSource || customer.data_source === dataSource) &&
         (!studentBatch || customer.student_batch === studentBatch) &&
         (!searchPhone || customer.phone.includes(searchPhone)) &&
