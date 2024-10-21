@@ -1,54 +1,56 @@
-/* Wrapper for the search filters */
 .search-filters-wrapper {
-  width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 15px;
+  margin: 20px 0;
+  padding: 10px;
 }
 
-/* Ensure everything is in one row */
-.search-filters-row {
+.search-filters-container {
   display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 15px;
+  max-width: 1900px;
   width: 100%;
-  max-width: 1900px; /* 控制最大宽度 */
-  overflow-x: auto; /* 允许超出时水平滚动 */
-}
-
-/* Styling for inputs and selects */
-.search-filters-row select,
-.search-filters-row input[type="text"] {
-  flex: 0 1 180px; /* 固定宽度并保持自适应 */
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-/* Phone search container styling */
-.phone-search-container {
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 5px;
 }
 
-.phone-search-container button {
-  padding: 8px 12px;
+.filter-select,
+.phone-input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  width: 180px;
+}
+
+.search-button {
+  padding: 10px 20px;
+  border: none;
   background-color: #007aff;
   color: white;
-  border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.phone-search-container button:hover {
+.search-button:hover {
   background-color: #005bb5;
 }
 
-/* Checkbox group styling */
+.checkbox-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 .checkbox-item {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+.phone-search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }

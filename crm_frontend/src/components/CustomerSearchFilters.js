@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CustomerSearchFilters.css';
 
-const CustomerSearchFilters = ({ filters, onFilterChange, ownerOptions, studentBatchOptions }) => {
+const CustomerSearchFilters = ({
+  filters,
+  onFilterChange,
+  ownerOptions = [],
+  studentBatchOptions = [],
+}) => {
   const [phoneInput, setPhoneInput] = useState(filters.searchPhone || '');
 
   const handleInputChange = (e) => {
@@ -18,24 +23,49 @@ const CustomerSearchFilters = ({ filters, onFilterChange, ownerOptions, studentB
     onFilterChange({ searchPhone: phoneInput });
   };
 
+  // 保证在ownerOptions或studentBatchOptions为空时显示提示
+  const renderOptions = (options) =>
+    options.length > 0 ? (
+      options.map((option, index) => (
+        <option key={index} value={option}>
+          {option}
+        </option>
+      ))
+    ) : (
+      <option value="" disabled>
+        暂无数据
+      </option>
+    );
+
   return (
     <div className="search-filters-wrapper">
-      <div className="search-filters-row">
-        <select name="owner" value={filters.owner} onChange={handleInputChange}>
+      <div className="search-filters-container">
+        <select
+          name="owner"
+          value={filters.owner}
+          onChange={handleInputChange}
+          className="filter-select"
+        >
           <option value="">归属人</option>
-          {ownerOptions.map((owner, index) => (
-            <option key={index} value={owner}>{owner}</option>
-          ))}
+          {renderOptions(ownerOptions)}
         </select>
 
-        <select name="studentBatch" value={filters.studentBatch} onChange={handleInputChange}>
+        <select
+          name="studentBatch"
+          value={filters.studentBatch}
+          onChange={handleInputChange}
+          className="filter-select"
+        >
           <option value="">期数学员</option>
-          {studentBatchOptions.map((batch, index) => (
-            <option key={index} value={batch}>{batch}</option>
-          ))}
+          {renderOptions(studentBatchOptions)}
         </select>
 
-        <select name="dataSource" value={filters.dataSource} onChange={handleInputChange}>
+        <select
+          name="dataSource"
+          value={filters.dataSource}
+          onChange={handleInputChange}
+          className="filter-select"
+        >
           <option value="">数据来源</option>
           <option value="AI数据">AI数据</option>
           <option value="视频号">视频号</option>
@@ -58,38 +88,25 @@ const CustomerSearchFilters = ({ filters, onFilterChange, ownerOptions, studentB
             placeholder="输入电话号码"
             value={phoneInput}
             onChange={(e) => setPhoneInput(e.target.value)}
+            className="phone-input"
           />
-          <button onClick={handlePhoneSearch}>搜索</button>
+          <button onClick={handlePhoneSearch} className="search-button">
+            搜索
+          </button>
         </div>
 
-        <div className="checkbox-item">
-          <input
-            type="checkbox"
-            name="deal7Days"
-            checked={filters.deal7Days}
-            onChange={handleCheckboxChange}
-          />
-          <label>7天成交</label>
-        </div>
-
-        <div className="checkbox-item">
-          <input
-            type="checkbox"
-            name="deal14Days"
-            checked={filters.deal14Days}
-            onChange={handleCheckboxChange}
-          />
-          <label>14天成交</label>
-        </div>
-
-        <div className="checkbox-item">
-          <input
-            type="checkbox"
-            name="deal21Days"
-            checked={filters.deal21Days}
-            onChange={handleCheckboxChange}
-          />
-          <label>21天成交</label>
+        <div className="checkbox-group">
+          {['7天成交', '14天成交', '21天成交'].map((label, index) => (
+            <div className="checkbox-item" key={index}>
+              <input
+                type="checkbox"
+                name={`deal${7 * (index + 1)}Days`}
+                checked={filters[`deal${7 * (index + 1)}Days`]}
+                onChange={handleCheckboxChange}
+              />
+              <label>{label}</label>
+            </div>
+          ))}
         </div>
       </div>
     </div>

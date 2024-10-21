@@ -64,24 +64,30 @@ const CustomerTable = ({ customers, onDelete, currentUser, isViewOnly = false })
                   <FaTimesCircle className="icon-danger" />
                 )}
               </td>
-              <td>
-                {calculateDaysSinceUpdate(customer.created_at, customer.updated_at)} 天
-              </td>
+              <td>{calculateDaysSinceUpdate(customer.created_at, customer.updated_at)} 天</td>
               <td>
                 <div className="btn-group">
                   <Link to={`/customer/${customer.id}`} className="btn btn-info">
                     详情
                   </Link>
-                  {!isViewOnly && currentUser?.role === 'admin' && (
-                    <>
+                  
+                  {/* 显示更新按钮的逻辑 */}
+                  {!isViewOnly &&
+                    (currentUser.role === 'admin' || 
+                    customer.created_by === currentUser.username) && (
                       <Link to={`/edit-customer/${customer.id}`} className="btn btn-warning">
                         更新
                       </Link>
+                    )}
+
+                  {/* 显示删除按钮（仅组长或管理员） */}
+                  {!isViewOnly &&
+                    (currentUser.role === 'admin' ||
+                      (currentUser.group_id && currentUser.group_id === customer.group_id)) && (
                       <button onClick={() => onDelete(customer.id)} className="btn btn-danger">
                         删除
                       </button>
-                    </>
-                  )}
+                    )}
                 </div>
               </td>
             </tr>

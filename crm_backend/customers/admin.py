@@ -1,46 +1,38 @@
-from django.contrib import admin
-from .models import Customer
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
-from import_export import resources, fields
-from import_export.widgets import ForeignKeyWidget
-from django.contrib.auth import get_user_model
-
-# 获取用户模型
-User = get_user_model()
+from django.contrib import admin
+from .models import Customer
 
 class CustomerResource(resources.ModelResource):
-    # 明确指定id字段
-    id = fields.Field(column_name='id', attribute='id')
-
-    # 处理外键字段的显示（如created_by, updated_by）
-    created_by = fields.Field(
-        column_name='created_by',
-        attribute='created_by',
-        widget=ForeignKeyWidget(User, 'username')  # 用username显示创建人
-    )
-    
-    updated_by = fields.Field(
-        column_name='updated_by',
-        attribute='updated_by',
-        widget=ForeignKeyWidget(User, 'username')  # 用username显示修改人
-    )
 
     class Meta:
         model = Customer
+        # 导入models.py定义的所有字段
         fields = (
-            'id', 'name', 'phone', 'education', 'major_category', 'status', 'address', 
-            'city', 'intention', 'is_closed', 'is_invited', 'is_joined', 
-            'data_source', 'attended_first_live', 'attended_second_live', 
-            'first_day_watch_duration', 'second_day_watch_duration', 'created_by', 
-            'updated_by', 'created_at', 'updated_at', 'description','is_contacted','is_wechat_added',
+            'id', 'name', 'phone', 'education', 'major_category', 'status', 
+            'student_batch', 'address', 'city', 'intention', 
+            'customer_needs_analysis', 'customer_personality_analysis', 
+            'cloud_computing_promotion_content', 'is_closed', 'is_invited', 'is_joined', 
+            'is_contacted', 'is_wechat_added', 'wechat_name', 'data_source', 
+            'attended_first_live', 'attended_second_live', 
+            'first_day_watch_duration', 'second_day_watch_duration', 
+            'first_day_feedback', 'second_day_feedback', 'persona_chat', 
+            'additional_students', 'comments_count', 
+            'deal_7_days_checked', 'deal_7_days_text', 
+            'deal_14_days_checked', 'deal_14_days_text', 
+            'deal_21_days_checked', 'deal_21_days_text', 
+            'is_course_reminder', 'created_by', 'updated_by', 
+            'created_at', 'updated_at', 'description'
         )
-        export_order = fields
+        # 配置导入选项
+        import_id_fields = ['id']
+        skip_unchanged = True  # 跳过没有变更的行
+        report_skipped = True  # 报告跳过的行
 
-
+# 在admin界面中注册模型和资源
 @admin.register(Customer)
 class CustomerAdmin(ImportExportModelAdmin):
-    resource_class = CustomerResource  # 设置导入导出资源
-    list_display = ('name', 'phone','created_by', 'intention','is_invited','is_joined','is_closed', 'attended_first_live', 'attended_second_live','created_at')
-    search_fields = ('name', 'phone','data_source')
-    list_filter = ('is_closed', 'attended_first_live', 'attended_second_live')
+    resource_class = CustomerResource
+    list_display = ('name', 'phone', 'education', 'major_category', 'status', 'city', 'is_closed')
+    search_fields = ('name', 'phone', 'city')
+    list_filter = ('education', 'status', 'is_closed')
