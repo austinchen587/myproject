@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#m94tl5zgbezx4w$9$@)0jq#fx8x@@egfmfjqtnpw&rnyn-9^1'
+SECRET_KEY = '(b@*w23irxhn*1_zcexfs0xid=9#ymk(m^%w-+ov-(mo-inh@('
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -136,7 +136,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'api/static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = '/home/myproject/crm_backend/static'
 
 # Default primary key field type
@@ -154,7 +154,7 @@ CORS_ALLOW_CREDENTIALS = True
 # CSRF 设置
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:9000',
-    'http://47.96.183.161',
+    'http://47.96.21.74',
 ]
 
 REST_FRAMEWORK = {
