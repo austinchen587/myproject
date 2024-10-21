@@ -10,6 +10,13 @@ import './CustomerList.css';
 const CustomerList = () => {
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
+  const [ownerOptions, setOwnerOptions] = useState([]);
+  const [studentBatchOptions, setStudentBatchOptions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
+
   const [filters, setFilters] = useState(() => {
     const savedFilters = sessionStorage.getItem('customerListFilters');
     return savedFilters ? JSON.parse(savedFilters) : {
@@ -30,13 +37,6 @@ const CustomerList = () => {
     const savedSort = sessionStorage.getItem('customerListSort');
     return savedSort ? JSON.parse(savedSort) : { field: 'created_at', direction: 'desc' };
   });
-
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [currentUser, setCurrentUser] = useState(null);
-  const [ownerOptions, setOwnerOptions] = useState([]);
-  const [studentBatchOptions, setStudentBatchOptions] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -60,11 +60,12 @@ const CustomerList = () => {
       const response = await getCustomers(filters.startDate, filters.endDate, sort.field, sort.direction);
       setCustomers(response);
 
+      // 提取归属人和期数学员选项
       const owners = [...new Set(response.map((customer) => customer.created_by))];
-      setOwnerOptions(owners);
+      const batches = [...new Set(response.map((customer) => customer.student_batch))];
 
-      const studentBatches = [...new Set(response.map((customer) => customer.student_batch))].filter(Boolean);
-      setStudentBatchOptions(studentBatches);
+      setOwnerOptions(owners.filter(Boolean));
+      setStudentBatchOptions(batches.filter(Boolean));
 
       applyFilters(response);
     } catch (error) {
@@ -76,16 +77,14 @@ const CustomerList = () => {
 
   const applyFilters = (customerList) => {
     const filtered = customerList.filter((customer) => {
-      const { owner, dataSource, studentBatch, deal7Days, deal14Days, deal21Days, searchPhone, filterExclamation } = filters;
+      const { owner, dataSource, studentBatch, searchPhone, filterExclamation } = filters;
       const hasExclamation = customer.created_by !== customer.updated_by;
+
       return (
         (!owner || customer.created_by === owner) &&
         (!dataSource || customer.data_source === dataSource) &&
         (!studentBatch || customer.student_batch === studentBatch) &&
         (!searchPhone || customer.phone.includes(searchPhone)) &&
-        (!deal7Days || customer.deal_7_days_checked) &&
-        (!deal14Days || customer.deal_14_days_checked) &&
-        (!deal21Days || customer.deal_21_days_checked) &&
         (!filterExclamation || hasExclamation)
       );
     });
@@ -103,9 +102,7 @@ const CustomerList = () => {
   };
 
   const handleDateChange = (startDate, endDate) => {
-    const updatedFilters = { ...filters, startDate, endDate };
-    setFilters(updatedFilters);
-    sessionStorage.setItem('customerListFilters', JSON.stringify(updatedFilters));
+    handleFilterChange({ startDate, endDate });
   };
 
   return (
