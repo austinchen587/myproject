@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'import_export',
     'django_extensions',
     'analytics',
+    'rest_framework_simplejwt.token_blacklist',
+    
 ]
 
 MIDDLEWARE = [
@@ -136,7 +138,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'api/static/'
 STATIC_ROOT = '/home/myproject/crm_backend/static'
 
 # Default primary key field type
@@ -167,8 +169,9 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1000000),  # 可以调整过期时间
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=10000),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=100),  # 可以调整过期时间
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=700),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    
 }
