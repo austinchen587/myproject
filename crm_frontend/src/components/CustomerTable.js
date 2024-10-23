@@ -3,13 +3,6 @@ import { Link } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle, FaExclamationCircle } from 'react-icons/fa';
 import './CustomerTable.css'; // 引入局部样式
 
-const calculateDaysSinceUpdate = (createdAt, updatedAt) => {
-  const createdDate = new Date(createdAt);
-  const updatedDate = new Date(updatedAt);
-  const differenceInTime = Math.abs(updatedDate - createdDate);
-  return Math.ceil(differenceInTime / (1000 * 60 * 60 * 24)); // 返回天数差
-};
-
 const CustomerTable = ({ customers, onDelete, currentUser, isViewOnly = false }) => (
   <div className="table-container">
     <table className="customer-table">
@@ -21,10 +14,10 @@ const CustomerTable = ({ customers, onDelete, currentUser, isViewOnly = false })
           <th>创建时间</th>
           <th>数据来源</th>
           <th>期数学员</th>
-          <th>7天成交</th>
-          <th>14天成交</th>
-          <th>21天成交</th>
-          <th>未更新的天数</th>
+          <th>是否邀约</th>
+          <th>是否加微信</th>
+          <th>是否入群</th>
+          <th>客户描述</th>
           <th>操作</th>
         </tr>
       </thead>
@@ -43,35 +36,45 @@ const CustomerTable = ({ customers, onDelete, currentUser, isViewOnly = false })
               <td>{new Date(customer.created_at).toLocaleDateString()}</td>
               <td>{customer.data_source}</td>
               <td>{customer.student_batch || 'N/A'}</td>
+              
+              {/* 是否邀约 */}
               <td>
-                {customer.deal_7_days_checked ? (
+                {customer.is_invited ? (
                   <FaCheckCircle className="icon-success" />
                 ) : (
                   <FaTimesCircle className="icon-danger" />
                 )}
               </td>
+
+              {/* 是否加微信 */}
               <td>
-                {customer.deal_14_days_checked ? (
+                {customer.is_wechat_added ? (
                   <FaCheckCircle className="icon-success" />
                 ) : (
                   <FaTimesCircle className="icon-danger" />
                 )}
               </td>
+
+              {/* 是否入群 */}
               <td>
-                {customer.deal_21_days_checked ? (
+                {customer.is_joined ? (
                   <FaCheckCircle className="icon-success" />
                 ) : (
                   <FaTimesCircle className="icon-danger" />
                 )}
               </td>
-              <td>{calculateDaysSinceUpdate(customer.created_at, customer.updated_at)} 天</td>
+
+              {/* 客户描述 */}
+              <td>{customer.description || '暂无描述'}</td>
+
+              {/* 操作列 */}
               <td>
                 <div className="btn-group">
                   <Link to={`/customer/${customer.id}`} className="btn btn-info">
                     详情
                   </Link>
                   
-                  {/* 显示更新按钮的逻辑 */}
+                  {/* 显示更新按钮 */}
                   {!isViewOnly &&
                     (currentUser.role === 'admin' || 
                     customer.created_by === currentUser.username) && (
@@ -80,7 +83,7 @@ const CustomerTable = ({ customers, onDelete, currentUser, isViewOnly = false })
                       </Link>
                     )}
 
-                  {/* 显示删除按钮（仅组长或管理员） */}
+                  {/* 显示删除按钮（组长或管理员） */}
                   {!isViewOnly &&
                     (currentUser.role === 'admin' ||
                       (currentUser.group_id && currentUser.group_id === customer.group_id)) && (
