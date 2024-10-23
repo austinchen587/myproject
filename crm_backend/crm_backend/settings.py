@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'import_export',
     'django_extensions',
     'analytics',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -167,9 +168,9 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=100),  # 可以调整过期时间
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=700),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': False,
-    
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1000000),  # 可以调整过期时间
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=10000),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
+
