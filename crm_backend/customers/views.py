@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Customer
 from .forms import CustomerForm
+from django.http import JsonResponse
 
 @login_required
 def customerlist(request):
@@ -129,16 +130,8 @@ def customer_detail(request, id):
 # 删除客户视图
 @login_required
 def delete_customer(request, id):
-    customer = get_object_or_404(Customer, id=id)
-
-    # 权限检查
-    if request.user.role == 'user':
-        messages.error(request, '您没有权限删除此客户')
-        return redirect('customerlist')
-    elif request.user.role == 'group_leader' and customer.created_by.group_leader != request.user:
-        messages.error(request, '您只能删除本组的客户')
-        return redirect('customerlist')
-
-    customer.delete()
-    messages.success(request, '客户删除成功')
-    return redirect('customerlist')
+    if request.method == "POST":
+        customer = get_object_or_404(Customer, id=id)
+        customer.delete()
+        return JsonResponse({"success": True, "message": "客户删除成功"})
+    return JsonResponse({"success": False, "message": "请求无效"})

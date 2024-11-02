@@ -162,7 +162,7 @@
     <div class="container">
         <h2>客户列表</h2>
 
-        <!-- 时间和筛选器表单 -->
+        <!-- 筛选器表单 -->
         <form method="get" action="{% url 'customerlist' %}">
             <label for="start_date">开始日期:</label>
             <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
@@ -248,7 +248,7 @@
                 <tbody>
                     {% if customers %}
                         {% for customer in customers %}
-                            <tr>
+                            <tr id="customer-row-{{ customer.id }}">
                                 <td>{{ customer.name }}</td>
                                 <td>{{ customer.phone }}</td>
                                 <td>{{ customer.created_by }}</td>
@@ -283,8 +283,26 @@
         function deleteCustomer(button) {
             const customerId = button.getAttribute("data-id");
             if (confirm("确定要删除这个客户吗？")) {
-                alert('删除客户 ' + customerId);
-                // 添加AJAX请求或表单提交以完成删除操作
+                fetch(`/delete_customer/${customerId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        document.getElementById(`customer-row-${customerId}`).remove();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("删除请求出错:", error);
+                    alert("删除失败，请稍后重试。");
+                });
             }
         }
     </script>
