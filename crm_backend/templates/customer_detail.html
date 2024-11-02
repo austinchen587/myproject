@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户详情</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #007aff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        th {
+            width: 30%;
+            color: #007aff;
+            font-weight: 600;
+        }
+
+        td ul {
+            padding-left: 1em;
+            list-style-type: disc;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            th, td {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>客户详情</h2>
+        <table>
+            <tr>
+                <th>姓名</th>
+                <td>{{ customer.name }}</td>
+            </tr>
+            <tr>
+                <th>电话</th>
+                <td>{{ customer.phone }}</td>
+            </tr>
+            <tr>
+                <th>学历</th>
+                <td>{{ customer.education }}</td>
+            </tr>
+            <tr>
+                <th>专业类别</th>
+                <td>{{ customer.major_category }}</td>
+            </tr>
+            <tr>
+                <th>状态</th>
+                <td>{{ customer.status }}</td>
+            </tr>
+            <tr>
+                <th>期数学员</th>
+                <td>{{ customer.student_batch }}</td>
+            </tr>
+            <tr>
+                <th>就业意向城市</th>
+                <td>{{ customer.address }}</td>
+            </tr>
+            <tr>
+                <th>当前所在城市</th>
+                <td>{{ customer.city }}</td>
+            </tr>
+            <tr>
+                <th>意向程度</th>
+                <td>{{ customer.intention }}</td>
+            </tr>
+            <tr>
+                <th>是否邀约</th>
+                <td>{{ customer.is_invited|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>是否加微信</th>
+                <td>{{ customer.is_wechat_added|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>是否入群</th>
+                <td>{{ customer.is_joined|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>是否成交</th>
+                <td>{{ customer.is_closed|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>数据来源</th>
+                <td>{{ customer.data_source }}</td>
+            </tr>
+            <tr>
+                <th>客户微信名</th>
+                <td>{{ customer.wechat_name }}</td>
+            </tr>
+
+            <!-- 多选字段 -->
+            <tr>
+                <th>客户挖需分析</th>
+                <td>
+                    {% if customer.customer_needs_analysis %}
+                        <ul>
+                            {% for need in customer.customer_needs_analysis %}
+                                <li>{{ need }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        无
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>客户性格分析</th>
+                <td>
+                    {% if customer.customer_personality_analysis %}
+                        <ul>
+                            {% for personality in customer.customer_personality_analysis %}
+                                <li>{{ personality }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        无
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>云计算推广内容</th>
+                <td>
+                    {% if customer.cloud_computing_promotion_content %}
+                        <ul>
+                            {% for promotion in customer.cloud_computing_promotion_content %}
+                                <li>{{ promotion }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        无
+                    {% endif %}
+                </td>
+            </tr>
+
+            <!-- 出勤和反馈信息 -->
+            <tr>
+                <th>参加第一天直播</th>
+                <td>{{ customer.attended_first_live|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>第一日观看时长</th>
+                <td>{{ customer.first_day_watch_duration }}</td>
+            </tr>
+            <tr>
+                <th>参加第二天直播</th>
+                <td>{{ customer.attended_second_live|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>第二日观看时长</th>
+                <td>{{ customer.second_day_watch_duration }}</td>
+            </tr>
+            <tr>
+                <th>第一天观后反馈</th>
+                <td>{{ customer.first_day_feedback }}</td>
+            </tr>
+            <tr>
+                <th>第二天观后反馈</th>
+                <td>{{ customer.second_day_feedback }}</td>
+            </tr>
+
+            <!-- 其他信息 -->
+            <tr>
+                <th>是否进行人设聊天</th>
+                <td>{{ customer.persona_chat|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>是否有马甲加学员</th>
+                <td>{{ customer.additional_students|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>是否有评论</th>
+                <td>{{ customer.comments_count|yesno:"是,否" }}</td>
+            </tr>
+
+            <!-- 成交分析 -->
+            <tr>
+                <th>7天成交</th>
+                <td>{{ customer.deal_7_days_checked|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>7天成交说明</th>
+                <td>{{ customer.deal_7_days_text }}</td>
+            </tr>
+            <tr>
+                <th>14天成交</th>
+                <td>{{ customer.deal_14_days_checked|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>14天成交说明</th>
+                <td>{{ customer.deal_14_days_text }}</td>
+            </tr>
+            <tr>
+                <th>21天成交</th>
+                <td>{{ customer.deal_21_days_checked|yesno:"是,否" }}</td>
+            </tr>
+            <tr>
+                <th>21天成交说明</th>
+                <td>{{ customer.deal_21_days_text }}</td>
+            </tr>
+
+            <!-- 其他元数据 -->
+            <tr>
+                <th>创建人</th>
+                <td>{{ customer.created_by }}</td>
+            </tr>
+            <tr>
+                <th>最后修改人</th>
+                <td>{{ customer.updated_by }}</td>
+            </tr>
+            <tr>
+                <th>创建时间</th>
+                <td>{{ customer.created_at }}</td>
+            </tr>
+            <tr>
+                <th>修改时间</th>
+                <td>{{ customer.updated_at }}</td>
+            </tr>
+            <tr>
+                <th>客户描述</th>
+                <td>{{ customer.description|default:"暂无描述" }}</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

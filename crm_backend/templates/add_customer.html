@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加客户</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h2 {
+            color: #007aff;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        form label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            color: #333;
+        }
+
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007aff;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: #007aff;
+            color: white;
+            font-size: 1rem;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        #conditional-fields, #wechat-name-field {
+            display: none;
+        }
+
+        h3 {
+            margin-top: 20px;
+            color: #007aff;
+            font-size: 1.2rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            form label, button {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <script>
+        function toggleInvitationFields() {
+            const isInvited = document.getElementById("id_is_invited");
+            const conditionalFields = document.getElementById("conditional-fields");
+
+            conditionalFields.style.display = isInvited.checked ? "block" : "none";
+        }
+
+        function toggleWeChatFields() {
+            const isWeChatAdded = document.getElementById("id_is_wechat_added");
+            const weChatNameField = document.getElementById("wechat-name-field");
+
+            weChatNameField.style.display = isWeChatAdded.checked ? "block" : "none";
+        }
+
+        window.onload = function() {
+            toggleInvitationFields();
+            toggleWeChatFields();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>添加客户</h2>
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- 电话号码和期期学员 -->
+            <label for="id_phone">电话号码:</label>
+            <input type="text" id="id_phone" name="phone" required pattern="\d{11}" title="请输入11位数字">
+
+            <label for="id_student_batch">期期学员:</label>
+            {{ form.student_batch }}
+
+            <!-- 是否接受邀约 -->
+            <label for="id_is_invited">是否接受邀约:</label>
+            {{ form.is_invited }}
+
+            <!-- 后续表单部分 - 根据是否接受邀约控制显示 -->
+            <div id="conditional-fields">
+                <label for="id_project_type">选择项目:</label>
+                {{ form.project_type }}
+
+                <!-- 是否添加微信 -->
+                <label for="id_is_wechat_added">是否添加微信:</label>
+                {{ form.is_wechat_added }}
+
+                <!-- 客户微信名 -->
+                <div id="wechat-name-field">
+                    <label for="id_wechat_name">客户微信名:</label>
+                    {{ form.wechat_name }}
+                </div>
+
+                <!-- 是否加入微信群 -->
+                <label for="id_is_joined">是否加入微信群:</label>
+                {{ form.is_joined }}
+
+                <!-- 客户情况 -->
+                <h3>客户情况</h3>
+                <label for="id_name">姓名:</label>
+                {{ form.name }}
+
+                <label for="id_age">年龄:</label>
+                <input type="number" id="id_age" name="age">
+
+                {{ form.education.label }} {{ form.education }}
+                {{ form.major_category.label }} {{ form.major_category }}
+                {{ form.status.label }} {{ form.status }}
+                {{ form.city.label }} {{ form.city }}
+                {{ form.description.label }} {{ form.description }}
+
+                <!-- 多选复选框 -->
+                <h3>客户需求分析</h3>
+                {{ form.customer_needs_analysis }}
+                <h3>客户性格分析</h3>
+                {{ form.customer_personality_analysis }}
+                <h3>云计算推广内容</h3>
+                {{ form.cloud_computing_promotion_content }}
+
+                <!-- 是否到课提醒 -->
+                <label for="id_is_course_reminder">是否到课提醒:</label>
+                {{ form.is_course_reminder }}
+
+                <!-- 出勤和反馈 -->
+                <h3>出勤和反馈</h3>
+                <label for="id_attended_first_live">参加第一天直播:</label>
+                {{ form.attended_first_live }}
+                <label for="id_first_day_watch_duration">第一天观看时长:</label>
+                {{ form.first_day_watch_duration }}
+
+                <label for="id_attended_second_live">参加第二天直播:</label>
+                {{ form.attended_second_live }}
+                <label for="id_second_day_watch_duration">第二天观看时长:</label>
+                {{ form.second_day_watch_duration }}
+
+                <label for="id_additional_students">马甲加学员:</label>
+                {{ form.additional_students }}
+                <label for="id_comments_count">评论数:</label>
+                {{ form.comments_count }}
+
+                <!-- 第一、二天观后沟通 -->
+                <label for="id_first_day_feedback">第一天观后反馈:</label>
+                {{ form.first_day_feedback }}
+                <label for="id_second_day_feedback">第二天观后反馈:</label>
+                {{ form.second_day_feedback }}
+
+                <!-- 成交分析 -->
+                <h3>成交分析</h3>
+                <label for="id_deal_7_days_checked">7天成交:</label>
+                {{ form.deal_7_days_checked }}
+                <label for="id_deal_7_days_text">7天成交说明:</label>
+                {{ form.deal_7_days_text }}
+
+                <label for="id_deal_14_days_checked">14天成交:</label>
+                {{ form.deal_14_days_checked }}
+                <label for="id_deal_14_days_text">14天成交说明:</label>
+                {{ form.deal_14_days_text }}
+
+                <label for="id_deal_21_days_checked">21天成交:</label>
+                {{ form.deal_21_days_checked }}
+                <label for="id_deal_21_days_text">21天成交说明:</label>
+                {{ form.deal_21_days_text }}
+            </div>
+
+            <button type="submit">提交</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("id_is_invited").addEventListener("change", toggleInvitationFields);
+        document.getElementById("id_is_wechat_added").addEventListener("change", toggleWeChatFields);
+    </script>
+</body>
+</html>

@@ -92,6 +92,9 @@ class Customer(models.Model):
 
     description = models.TextField(blank=True, null=True, verbose_name='客户描述')
 
+    # 增加一个主管点评字段
+    supervisor_comments = models.TextField(blank=True, null=True, verbose_name='主管点评')
+
     def __str__(self):
         return self.name
 

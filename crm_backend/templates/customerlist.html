@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户列表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1900px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #007aff;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        form label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="date"],
+        input[type="text"],
+        select,
+        button[type="submit"] {
+            padding: 8px;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        button[type="submit"] {
+            background-color: #007aff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #005bb5;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #007aff;
+            color: white;
+            font-weight: bold;
+        }
+
+        table td {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .table-container {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #777;
+        }
+
+        .button-group a,
+        .button-group button {
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007aff;
+            margin: 0 4px;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .button-group a:hover,
+        .button-group button:hover {
+            background-color: #005bb5;
+        }
+
+        .button-group button.delete {
+            background-color: #e74c3c;
+        }
+
+        .button-group button.delete:hover {
+            background-color: #c0392b;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            form, .button-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            table th, table td {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>客户列表</h2>
+
+        <!-- 时间和筛选器表单 -->
+        <form method="get" action="{% url 'customerlist' %}">
+            <label for="start_date">开始日期:</label>
+            <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+
+            <label for="end_date">结束日期:</label>
+            <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+
+            <label for="phone">手机号:</label>
+            <input type="text" id="phone" name="phone" value="{{ phone_filter }}">
+
+            <label for="data_source">数据来源:</label>
+            <select id="data_source" name="data_source">
+                <option value="">全部</option>
+                <option value="AI数据" {% if data_source_filter == 'AI数据' %}selected{% endif %}>AI数据</option>
+                <option value="视频号" {% if data_source_filter == '视频号' %}selected{% endif %}>视频号</option>
+                <option value="其他" {% if data_source_filter == '其他' %}selected{% endif %}>其他</option>
+            </select>
+
+            <label for="student_batch">期数学员:</label>
+            <input type="text" id="student_batch" name="student_batch" value="{{ student_batch_filter }}">
+
+            <label for="is_contacted">是否接通:</label>
+            <select id="is_contacted" name="is_contacted">
+                <option value="">全部</option>
+                <option value="yes" {% if is_contacted_filter == 'yes' %}selected{% endif %}>是</option>
+                <option value="no" {% if is_contacted_filter == 'no' %}selected{% endif %}>否</option>
+            </select>
+
+            <label for="is_joined">是否入群:</label>
+            <select id="is_joined" name="is_joined">
+                <option value="">全部</option>
+                <option value="yes" {% if is_joined_filter == 'yes' %}selected{% endif %}>是</option>
+                <option value="no" {% if is_joined_filter == 'no' %}selected{% endif %}>否</option>
+            </select>
+
+            <label for="is_closed">是否成交:</label>
+            <select id="is_closed" name="is_closed">
+                <option value="">全部</option>
+                <option value="yes" {% if is_closed_filter == 'yes' %}selected{% endif %}>是</option>
+                <option value="no" {% if is_closed_filter == 'no' %}selected{% endif %}>否</option>
+            </select>
+
+            <!-- 归属人筛选 -->
+            <label for="created_by">归属人:</label>
+            <select id="created_by" name="created_by">
+                <option value="">全部</option>
+                {% for user in all_users %}
+                    <option value="{{ user.id }}" {% if created_by_filter == user.id|stringformat:"s" %}selected{% endif %}>{{ user.username }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">筛选</button>
+        </form>
+
+        <!-- 添加客户按钮 -->
+        <div style="text-align: right; margin-bottom: 10px;">
+            <a href="{% url 'add_customer' %}" class="button-group">
+                <button type="button">添加客户</button>
+            </a>
+        </div>
+
+        <!-- 客户表格 -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>电话</th>
+                        <th>归属人</th>
+                        <th>创建时间</th>
+                        <th>数据来源</th>
+                        <th>期数学员</th>
+                        <th>是否接通</th>
+                        <th>是否邀约</th>
+                        <th>是否加微信</th>
+                        <th>是否入群</th>
+                        <th>是否成交</th>
+                        <th>客户描述</th>
+                        <th>主管点评</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if customers %}
+                        {% for customer in customers %}
+                            <tr>
+                                <td>{{ customer.name }}</td>
+                                <td>{{ customer.phone }}</td>
+                                <td>{{ customer.created_by }}</td>
+                                <td>{{ customer.created_at|date:"Y-m-d" }}</td>
+                                <td>{{ customer.data_source }}</td>
+                                <td>{{ customer.student_batch|default:"N/A" }}</td>
+                                <td>{% if customer.is_contacted %}✔️{% else %}✘{% endif %}</td>
+                                <td>{% if customer.is_invited %}✔️{% else %}✘{% endif %}</td>
+                                <td>{% if customer.is_wechat_added %}✔️{% else %}✘{% endif %}</td>
+                                <td>{% if customer.is_joined %}✔️{% else %}✘{% endif %}</td>
+                                <td>{% if customer.is_closed %}✔️{% else %}✘{% endif %}</td>
+                                <td>{{ customer.description|default:"暂无描述" }}</td>
+                                <td>{{ customer.supervisor_comments|default:"暂无点评" }}</td>
+                                <td class="button-group">
+                                    <a href="{% url 'customer_detail' customer.id %}">详情</a>
+                                    <a href="{% url 'edit_customer' customer.id %}">更新</a>
+                                    <button class="delete" data-id="{{ customer.id }}" onclick="deleteCustomer(this)">删除</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="14" class="no-data">暂无客户数据</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function deleteCustomer(button) {
+            const customerId = button.getAttribute("data-id");
+            if (confirm("确定要删除这个客户吗？")) {
+                alert('删除客户 ' + customerId);
+                // 添加AJAX请求或表单提交以完成删除操作
+            }
+        }
+    </script>
+</body>
+</html>

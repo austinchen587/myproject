@@ -1,13 +1,11 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import CustomerViewSet, add_customer
+# customers/urls.py
 
-# 初始化路由器
-router = DefaultRouter()
-router.register(r'customers', CustomerViewSet, basename='customer')  # 注册 ViewSet 路由
+from django.urls import path
+from .views import customerlist, add_customer, customer_detail, edit_customer
 
 urlpatterns = [
-    #path('list/', get_customers, name='get_customers'),  # get_customers 视图
-    path('add/', add_customer, name='add_customer'),     # POST 请求添加客户数据
-    path('', include(router.urls)),  # 使用 router 自动生成的 ViewSet 路由
+    path('customerlist/', customerlist, name='customerlist'),  # 定义 customerlist 路径
+    path('add_customer/', add_customer, name='add_customer'),  # 添加 add_customer 路径
+    path('customer/<int:id>/', customer_detail, name='customer_detail'),  # 详情页面
+    path('edit-customer/<int:id>/', edit_customer, name='edit_customer'),  # 编辑页面
 ]
