@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分析</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+        .filter-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .filter-section label,
+        .filter-section select {
+            font-size: 1em;
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        table th {
+            background-color: #007aff;
+            color: #fff;
+        }
+        .footer-row {
+            font-weight: bold;
+        }
+        .button-section {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px 15px;
+            font-size: 0.9em;
+            border: none;
+            border-radius: 5px;
+            background-color: #007aff;
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>数据分析</h2>
+
+        <!-- 筛选功能 -->
+        <div class="filter-section">
+            {% if user_role == 'admin' %}
+                <label for="user-select">选择用户:</label>
+                <select id="user-select" onchange="filterData()">
+                    <option value="">全部用户</option>
+                    {% for user in all_users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+                <label for="group-select">选择组:</label>
+                <select id="group-select" onchange="filterData()">
+                    <option value="">所有组</option>
+                    {% for leader in group_leaders %}
+                        <option value="{{ leader.id }}">{{ leader.username }}</option>
+                    {% endfor %}
+                </select>
+            {% elif user_role == 'group_leader' %}
+                <label for="user-select">选择组员:</label>
+                <select id="user-select" onchange="filterData()">
+                    <option value="">全部组员</option>
+                    {% for user in group_users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+        </div>
+
+        <!-- 数据分析表格 -->
+        <table>
+            <thead>
+                <tr>
+                    <th>学员期数</th>
+                    <th>是否接通</th>
+                    <th>是否邀约</th>
+                    <th>是否加微信</th>
+                    <th>是否入群</th>
+                    <th>是否成交</th>
+                    <th>本期学员总数</th>
+                </tr>
+            </thead>
+            <tbody id="data-rows">
+                {% for data in analysis_data %}
+                    <tr>
+                        <td>{{ data.student_batch }}</td>
+                        <td>{{ data.contacted_count }}</td>
+                        <td>{{ data.invited_count }}</td>
+                        <td>{{ data.wechat_added_count }}</td>
+                        <td>{{ data.joined_count }}</td>
+                        <td>{{ data.closed_count }}</td>
+                        <td>{{ data.total_count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="footer-row">
+                    <td>汇总</td>
+                    <td>{{ totals.contacted_count }}</td>
+                    <td>{{ totals.invited_count }}</td>
+                    <td>{{ totals.wechat_added_count }}</td>
+                    <td>{{ totals.joined_count }}</td>
+                    <td>{{ totals.closed_count }}</td>
+                    <td>{{ totals.overall_total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- 跳转按钮 -->
+        <div class="button-section">
+            <a href="{% url 'customerlist' %}" class="button">前往客户列表</a>
+        </div>
+    </div>
+
+    <script>
+        function filterData() {
+            const userSelect = document.getElementById("user-select");
+            const groupSelect = document.getElementById("group-select");
+
+            const selectedUser = userSelect ? userSelect.value : "";
+            const selectedGroup = groupSelect ? groupSelect.value : "";
+
+            fetch(`/data_analysis_json/?selected_user=${selectedUser}&selected_group=${selectedGroup}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById("data-rows");
+                    tableBody.innerHTML = "";
+
+                    let totals = { contacted: 0, invited: 0, wechat: 0, joined: 0, closed: 0, overall: 0 };
+                    data.forEach(row => {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${row.student_batch}</td>
+                            <td>${row.contacted_count}</td>
+                            <td>${row.invited_count}</td>
+                            <td>${row.wechat_added_count}</td>
+                            <td>${row.joined_count}</td>
+                            <td>${row.closed_count}</td>
+                            <td>${row.total_count}</td>
+                        `;
+                        tableBody.appendChild(tr);
+
+                        totals.contacted += row.contacted_count;
+                        totals.invited += row.invited_count;
+                        totals.wechat += row.wechat_added_count;
+                        totals.joined += row.joined_count;
+                        totals.closed += row.closed_count;
+                        totals.overall += row.total_count;
+                    });
+
+                    document.querySelector(".footer-row").innerHTML = `
+                        <td>汇总</td>
+                        <td>${totals.contacted}</td>
+                        <td>${totals.invited}</td>
+                        <td>${totals.wechat}</td>
+                        <td>${totals.joined}</td>
+                        <td>${totals.closed}</td>
+                        <td>${totals.overall}</td>
+                    `;
+                });
+        }
+    </script>
+</body>
+</html>

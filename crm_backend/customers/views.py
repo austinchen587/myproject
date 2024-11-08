@@ -6,6 +6,10 @@ from django.utils import timezone
 from .models import Customer
 from .forms import CustomerForm
 from django.http import JsonResponse
+from .models import Customer  # 假设Customer模型定义了相关字段
+from django.db.models import Count, Q
+
+
 
 @login_required
 def customerlist(request):
@@ -135,3 +139,86 @@ def delete_customer(request, id):
         customer.delete()
         return JsonResponse({"success": True, "message": "客户删除成功"})
     return JsonResponse({"success": False, "message": "请求无效"})
+
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
+@login_required
+def data_analysis(request):
+    return render(request, 'data_analysis.html')
+
+
+
+
+
+@login_required
+def data_analysis(request):
+    user = request.user
+    user_role = getattr(user, 'role', None)
+    
+    # 获取所有用户和组长
+    all_users = SalesUser.objects.all()
+    group_leaders = SalesUser.objects.filter(role='group_leader')
+
+    # 默认查询集，显示全部数据
+    customers = Customer.objects.all()
+
+    # 聚合数据按学员期数统计
+    analysis_data = customers.values('student_batch').annotate(
+        contacted_count=Count('id', filter=Q(is_contacted=True)),
+        invited_count=Count('id', filter=Q(is_invited=True)),
+        wechat_added_count=Count('id', filter=Q(is_wechat_added=True)),
+        joined_count=Count('id', filter=Q(is_joined=True)),
+        closed_count=Count('id', filter=Q(is_closed=True)),
+        total_count=Count('id')
+    )
+
+    # 计算汇总数据
+    totals = {
+        'contacted_count': sum([d['contacted_count'] for d in analysis_data]),
+        'invited_count': sum([d['invited_count'] for d in analysis_data]),
+        'wechat_added_count': sum([d['wechat_added_count'] for d in analysis_data]),
+        'joined_count': sum([d['joined_count'] for d in analysis_data]),
+        'closed_count': sum([d['closed_count'] for d in analysis_data]),
+        'overall_total': sum([d['total_count'] for d in analysis_data]),
+    }
+
+    return render(request, 'data_analysis.html', {
+        'analysis_data': analysis_data,
+        'totals': totals,
+        'user_role': user_role,
+        'all_users': all_users,
+        'group_leaders': group_leaders,
+    })
+
+
+def analysis_data_json(request):
+    selected_user = request.GET.get('selected_user', None)
+    selected_group = request.GET.get('selected_group', None)
+
+    # 默认查询集
+    customers = Customer.objects.all()
+
+    # 筛选选项
+    if selected_user:
+        customers = customers.filter(created_by_id=selected_user)
+    elif selected_group:
+        customers = customers.filter(created_by__group_leader_id=selected_group)
+
+    # 聚合数据按学员期数统计
+    analysis_data = customers.values('student_batch').annotate(
+        contacted_count=Count('id', filter=Q(is_contacted=True)),
+        invited_count=Count('id', filter=Q(is_invited=True)),
+        wechat_added_count=Count('id', filter=Q(is_wechat_added=True)),
+        joined_count=Count('id', filter=Q(is_joined=True)),
+        closed_count=Count('id', filter=Q(is_closed=True)),
+        total_count=Count('id')
+    )
+
+    # 返回 JSON 格式的分析数据
+    return JsonResponse(list(analysis_data), safe=False)

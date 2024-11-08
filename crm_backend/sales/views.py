@@ -12,9 +12,10 @@ def login_view(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
+        
         if user is not None:
             login(request, user)
-            return redirect('customerlist')  # 登录成功后重定向到 customerlist 页面
+            return redirect('dashboard')  # 登录成功后重定向到选择页面
         else:
             messages.error(request, '用户名或密码错误')
     

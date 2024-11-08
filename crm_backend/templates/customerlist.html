@@ -27,6 +27,7 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
         }
 
         h2 {
@@ -76,6 +77,8 @@
 
         .table-container {
             overflow-x: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
 
         table {
@@ -89,6 +92,7 @@
             padding: 10px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            white-space: nowrap;
         }
 
         table th {
@@ -102,10 +106,11 @@
             color: #555;
         }
 
-        .table-container {
-            margin-bottom: 20px;
-            border-radius: 10px;
-            overflow: hidden;
+        /* 固定宽度和换行处理 */
+        .description-column {
+            width: 200px; /* 固定宽度 */
+            white-space: normal; /* 换行 */
+            word-wrap: break-word;
         }
 
         .no-data {
@@ -154,6 +159,14 @@
             table th, table td {
                 font-size: 0.8rem;
                 padding: 8px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .table-container {
+                overflow-x: scroll;
             }
         }
     </style>
@@ -222,6 +235,9 @@
             <a href="{% url 'add_customer' %}" class="button-group">
                 <button type="button">添加客户</button>
             </a>
+            <a href="{% url 'data_analysis' %}" class="button-group">
+                <button type="button">数据分析</button>
+            </a>
         </div>
 
         <!-- 客户表格 -->
@@ -240,7 +256,7 @@
                         <th>是否加微信</th>
                         <th>是否入群</th>
                         <th>是否成交</th>
-                        <th>客户描述</th>
+                        <th class="description-column">客户描述</th>
                         <th>主管点评</th>
                         <th>操作</th>
                     </tr>
@@ -260,7 +276,7 @@
                                 <td>{% if customer.is_wechat_added %}✔️{% else %}✘{% endif %}</td>
                                 <td>{% if customer.is_joined %}✔️{% else %}✘{% endif %}</td>
                                 <td>{% if customer.is_closed %}✔️{% else %}✘{% endif %}</td>
-                                <td>{{ customer.description|default:"暂无描述" }}</td>
+                                <td class="description-column">{{ customer.description|default:"暂无描述" }}</td>
                                 <td>{{ customer.supervisor_comments|default:"暂无点评" }}</td>
                                 <td class="button-group">
                                     <a href="{% url 'customer_detail' customer.id %}">详情</a>
