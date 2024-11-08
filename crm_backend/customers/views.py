@@ -153,20 +153,27 @@ def data_analysis(request):
     return render(request, 'data_analysis.html')
 
 
-
-
-
 @login_required
 def data_analysis(request):
     user = request.user
     user_role = getattr(user, 'role', None)
     
-    # 获取所有用户和组长
-    all_users = SalesUser.objects.all()
-    group_leaders = SalesUser.objects.filter(role='group_leader')
-
-    # 默认查询集，显示全部数据
-    customers = Customer.objects.all()
+    # 获取所有用户（仅管理员）
+    all_users = SalesUser.objects.all() if user_role == 'admin' else None
+    
+    # 获取所有组长（仅管理员）
+    group_leaders = SalesUser.objects.filter(role='group_leader') if user_role == 'admin' else None
+    
+    # 获取组长的组员列表（仅组长）
+    group_users = SalesUser.objects.filter(group_leader=user) if user_role == 'group_leader' else None
+    
+    # 根据角色获取客户数据
+    if user_role == 'admin':
+        customers = Customer.objects.all()
+    elif user_role == 'group_leader':
+        customers = Customer.objects.filter(created_by__group_leader=user)
+    else:
+        customers = Customer.objects.filter(created_by=user)
 
     # 聚合数据按学员期数统计
     analysis_data = customers.values('student_batch').annotate(
@@ -194,23 +201,26 @@ def data_analysis(request):
         'user_role': user_role,
         'all_users': all_users,
         'group_leaders': group_leaders,
+        'group_users': group_users,  # 传递组员列表
     })
 
 
-def analysis_data_json(request):
-    selected_user = request.GET.get('selected_user', None)
-    selected_group = request.GET.get('selected_group', None)
 
-    # 默认查询集
+
+
+
+
+
+def analysis_data_json(request):
+    selected_user = request.GET.get('selected_user')
+    selected_group = request.GET.get('selected_group')
     customers = Customer.objects.all()
 
-    # 筛选选项
     if selected_user:
         customers = customers.filter(created_by_id=selected_user)
     elif selected_group:
         customers = customers.filter(created_by__group_leader_id=selected_group)
 
-    # 聚合数据按学员期数统计
     analysis_data = customers.values('student_batch').annotate(
         contacted_count=Count('id', filter=Q(is_contacted=True)),
         invited_count=Count('id', filter=Q(is_invited=True)),
@@ -220,5 +230,4 @@ def analysis_data_json(request):
         total_count=Count('id')
     )
 
-    # 返回 JSON 格式的分析数据
     return JsonResponse(list(analysis_data), safe=False)
