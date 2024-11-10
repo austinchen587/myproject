@@ -11,6 +11,9 @@ from .views import (
     dashboard,
     data_analysis,
     analysis_data_json,
+    get_completion_data,
+    
+    
 )
 
 urlpatterns = [
@@ -23,6 +26,10 @@ urlpatterns = [
     path('dashboard/', dashboard, name='dashboard'),
     path('data_analysis/', data_analysis, name='data_analysis'),
     path('data_analysis_json/', analysis_data_json, name='data_analysis_json'),  # 添加此行
+    path('get_completion_data/', get_completion_data, name='get_completion_data'),
+    
+ 
+    
    
 
 ]

@@ -10,6 +10,10 @@ from .models import Customer  # 假设Customer模型定义了相关字段
 from django.db.models import Count, Q
 
 
+from .utils import calculate_completion_rate
+from django.db.models import Avg
+
+
 
 @login_required
 def customerlist(request):
@@ -175,6 +179,10 @@ def data_analysis(request):
     else:
         customers = Customer.objects.filter(created_by=user)
 
+    # 检查获取到的客户数量
+    print(f"客户数量: {customers.count()}")  # 仅用于调试，可以在控制台查看输出
+
+
     # 聚合数据按学员期数统计
     analysis_data = customers.values('student_batch').annotate(
         contacted_count=Count('id', filter=Q(is_contacted=True)),
@@ -195,13 +203,17 @@ def data_analysis(request):
         'overall_total': sum([d['total_count'] for d in analysis_data]),
     }
 
+    # 获取所有学员期数
+    student_batches = Customer.objects.values_list('student_batch', flat=True).distinct().order_by('student_batch')
+
     return render(request, 'data_analysis.html', {
         'analysis_data': analysis_data,
         'totals': totals,
         'user_role': user_role,
         'all_users': all_users,
         'group_leaders': group_leaders,
-        'group_users': group_users,  # 传递组员列表
+        'group_users': group_users,
+        'student_batches': student_batches,  # 传递学员期数列表
     })
 
 
@@ -212,14 +224,27 @@ def data_analysis(request):
 
 
 def analysis_data_json(request):
+    user = request.user
+    user_role = getattr(user, 'role', None)
     selected_user = request.GET.get('selected_user')
     selected_group = request.GET.get('selected_group')
-    customers = Customer.objects.all()
+    batch_number = request.GET.get('batch_number')
 
+    # 根据角色获取客户数据
+    if user_role == 'admin':
+        customers = Customer.objects.all()
+    elif user_role == 'group_leader':
+        customers = Customer.objects.filter(created_by__group_leader=user)
+    else:
+        customers = Customer.objects.filter(created_by=user)
+
+    # 根据筛选条件进一步过滤客户数据
     if selected_user:
         customers = customers.filter(created_by_id=selected_user)
     elif selected_group:
         customers = customers.filter(created_by__group_leader_id=selected_group)
+    if batch_number:
+        customers = customers.filter(student_batch=batch_number)
 
     analysis_data = customers.values('student_batch').annotate(
         contacted_count=Count('id', filter=Q(is_contacted=True)),
@@ -228,6 +253,66 @@ def analysis_data_json(request):
         joined_count=Count('id', filter=Q(is_joined=True)),
         closed_count=Count('id', filter=Q(is_closed=True)),
         total_count=Count('id')
-    ).order_by('-student_batch')  # 降序排列
+    ).order_by('-student_batch')
 
     return JsonResponse(list(analysis_data), safe=False)
+
+
+
+
+
+def get_completion_data(request):
+    user = request.user
+    user_role = getattr(user, 'role', None)
+    user_id = request.GET.get('user_id')
+    group_id = request.GET.get('group_id')
+    batch_number = request.GET.get('batch_number')
+
+    # 根据角色获取客户数据
+    if user_role == 'admin':
+        customers = Customer.objects.all()
+    elif user_role == 'group_leader':
+        customers = Customer.objects.filter(created_by__group_leader=user)
+    else:
+        customers = Customer.objects.filter(created_by=user)
+
+    # 根据筛选条件进一步过滤客户数据
+    if user_id:
+        customers = customers.filter(created_by_id=user_id)
+    elif group_id:
+        customers = customers.filter(created_by__group_leader_id=group_id)
+    if batch_number:
+        customers = customers.filter(student_batch=batch_number)
+
+    total_customers = customers.count()
+
+    # 关键字段列表，用于计算完成度
+    fields = [
+        ('phone', '电话'), ('student_batch', '期数学员'), ('is_invited', '是否邀约'),
+        ('is_wechat_added', '是否加微信'), ('is_joined', '是否入群'), ('name', '姓名'),
+        ('education', '学历'), ('city', '所在城市'), ('intention', '意向程度'),
+        ('customer_needs_analysis', '需求分析'), ('customer_personality_analysis', '性格分析'),
+        ('cloud_computing_promotion_content', '推广内容'), ('is_closed', '是否成交'),
+        ('is_contacted', '是否接通'), ('data_source', '数据来源'), ('wechat_name', '客户微信名'),
+        ('attended_first_live', '参加第一天直播'), ('attended_second_live', '参加第二天直播'),
+        ('first_day_watch_duration', '第一天观看时长'), ('second_day_watch_duration', '第二天观看时长'),
+        ('first_day_feedback', '第一天反馈'), ('second_day_feedback', '第二天反馈'),
+        ('persona_chat', '人设聊天'), ('additional_students', '马甲加学员'),
+        ('comments_count', '评论数'), ('deal_7_days_checked', '7天成交'),
+        ('deal_14_days_checked', '14天成交'), ('deal_21_days_checked', '21天成交')
+    ]
+
+    # 计算完成度
+    field_completion = {label: 0 for _, label in fields}
+
+    for customer in customers:
+        for field, label in fields:
+            if getattr(customer, field):
+                field_completion[label] += 1
+
+    completion_rates = {
+        label: (count / total_customers * 100 if total_customers else 0)
+        for label, count in field_completion.items()
+    }
+
+    return JsonResponse({'completion_rates': completion_rates})

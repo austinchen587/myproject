@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>数据分析</title>
-    {% load static %} <!-- 加载 static 标签库 -->
+    {% load static %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* 样式代码 */
+        /* 页面整体和背景 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background: url("{% static 'images/pexels.jpg' %}") no-repeat center center fixed;
@@ -37,23 +38,29 @@
             font-size: 1em;
             margin-right: 10px;
         }
+        /* 表格样式 */
         table {
             width: 100%;
+            border-spacing: 0;
             border-collapse: collapse;
+            background: #fff;
             margin-top: 20px;
         }
         table th, table td {
-            padding: 12px;
-            border: 1px solid #ddd;
+            padding: 12px 15px;
+            border: 1px solid #e6e6e6;
             text-align: center;
         }
         table th {
-            background-color: #007aff;
-            color: #fff;
+            background-color: #f5f5f5;
+            color: #007aff;
+            font-weight: bold;
         }
         .footer-row {
             font-weight: bold;
+            background-color: #f9f9f9;
         }
+        /* 按钮样式 */
         .button-section {
             text-align: right;
             margin-top: 20px;
@@ -77,14 +84,14 @@
         <div class="filter-section">
             {% if user_role == 'admin' %}
                 <label for="user-select">选择用户:</label>
-                <select id="user-select" onchange="filterData()">
+                <select id="user-select" onchange="updateData()">
                     <option value="">全部用户</option>
                     {% for user in all_users %}
                         <option value="{{ user.id }}">{{ user.username }}</option>
                     {% endfor %}
                 </select>
                 <label for="group-select">选择组:</label>
-                <select id="group-select" onchange="filterData()">
+                <select id="group-select" onchange="updateData()">
                     <option value="">所有组</option>
                     {% for leader in group_leaders %}
                         <option value="{{ leader.id }}">{{ leader.username }}</option>
@@ -92,14 +99,24 @@
                 </select>
             {% elif user_role == 'group_leader' %}
                 <label for="user-select">选择组员:</label>
-                <select id="user-select" onchange="filterData()">
+                <select id="user-select" onchange="updateData()">
                     <option value="">全部组员</option>
                     {% for user in group_users %}
                         <option value="{{ user.id }}">{{ user.username }}</option>
                     {% endfor %}
                 </select>
             {% endif %}
+            <label for="batch-select">选择学员期数:</label>
+            <select id="batch-select" onchange="updateData()">
+                <option value="">全部期数</option>
+                {% for batch in student_batches %}
+                    <option value="{{ batch }}">{{ batch }}</option>
+                {% endfor %}
+            </select>
         </div>
+
+        <!-- 雷达图显示 -->
+        <canvas id="completionRadarChart" width="400" height="400"></canvas>
 
         <!-- 数据分析表格 -->
         <table>
@@ -115,27 +132,17 @@
                 </tr>
             </thead>
             <tbody id="data-rows">
-                {% for data in analysis_data %}
-                    <tr>
-                        <td>{{ data.student_batch }}</td>
-                        <td>{{ data.contacted_count }}</td>
-                        <td>{{ data.invited_count }}</td>
-                        <td>{{ data.wechat_added_count }}</td>
-                        <td>{{ data.joined_count }}</td>
-                        <td>{{ data.closed_count }}</td>
-                        <td>{{ data.total_count }}</td>
-                    </tr>
-                {% endfor %}
+                <!-- 表格内容将通过 JavaScript 动态加载 -->
             </tbody>
             <tfoot>
                 <tr class="footer-row">
                     <td>汇总</td>
-                    <td>{{ totals.contacted_count }}</td>
-                    <td>{{ totals.invited_count }}</td>
-                    <td>{{ totals.wechat_added_count }}</td>
-                    <td>{{ totals.joined_count }}</td>
-                    <td>{{ totals.closed_count }}</td>
-                    <td>{{ totals.overall_total }}</td>
+                    <td id="total-contacted"></td>
+                    <td id="total-invited"></td>
+                    <td id="total-wechat"></td>
+                    <td id="total-joined"></td>
+                    <td id="total-closed"></td>
+                    <td id="overall-total"></td>
                 </tr>
             </tfoot>
         </table>
@@ -147,14 +154,56 @@
     </div>
 
     <script>
-        function filterData() {
+        let radarChart;
+
+        function updateData() {
+            // 确保只有在元素存在时才读取其值
             const userSelect = document.getElementById("user-select");
             const groupSelect = document.getElementById("group-select");
+            const batchSelect = document.getElementById("batch-select");
 
-            const selectedUser = userSelect ? userSelect.value : "";
-            const selectedGroup = groupSelect ? groupSelect.value : "";
+            const userId = userSelect ? userSelect.value : "";
+            const groupId = groupSelect ? groupSelect.value : "";
+            const batchNumber = batchSelect ? batchSelect.value : "";
 
-            fetch(`/data_analysis_json/?selected_user=${selectedUser}&selected_group=${selectedGroup}`)
+            // 更新雷达图
+            fetch(`/get_completion_data/?user_id=${userId}&group_id=${groupId}&batch_number=${batchNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    const labels = Object.keys(data.completion_rates);
+                    const completionRates = Object.values(data.completion_rates);
+
+                    if (radarChart) {
+                        radarChart.destroy();
+                    }
+
+                    const ctx = document.getElementById("completionRadarChart").getContext("2d");
+                    radarChart = new Chart(ctx, {
+                        type: 'radar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: '完成度 (%)',
+                                data: completionRates,
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scale: {
+                                ticks: {
+                                    beginAtZero: true,
+                                    max: 100
+                                }
+                            }
+                        }
+                    });
+                });
+
+            // 更新表格
+            fetch(`/data_analysis_json/?selected_user=${userId}&selected_group=${groupId}&batch_number=${batchNumber}`)
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.getElementById("data-rows");
@@ -182,17 +231,16 @@
                         totals.overall += row.total_count;
                     });
 
-                    document.querySelector(".footer-row").innerHTML = `
-                        <td>汇总</td>
-                        <td>${totals.contacted}</td>
-                        <td>${totals.invited}</td>
-                        <td>${totals.wechat}</td>
-                        <td>${totals.joined}</td>
-                        <td>${totals.closed}</td>
-                        <td>${totals.overall}</td>
-                    `;
+                    document.getElementById("total-contacted").textContent = totals.contacted;
+                    document.getElementById("total-invited").textContent = totals.invited;
+                    document.getElementById("total-wechat").textContent = totals.wechat;
+                    document.getElementById("total-joined").textContent = totals.joined;
+                    document.getElementById("total-closed").textContent = totals.closed;
+                    document.getElementById("overall-total").textContent = totals.overall;
                 });
         }
+
+        document.addEventListener("DOMContentLoaded", updateData);
     </script>
 </body>
 </html>
