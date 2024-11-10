@@ -228,6 +228,6 @@ def analysis_data_json(request):
         joined_count=Count('id', filter=Q(is_joined=True)),
         closed_count=Count('id', filter=Q(is_closed=True)),
         total_count=Count('id')
-    )
+    ).order_by('-student_batch')  # 降序排列
 
     return JsonResponse(list(analysis_data), safe=False)
