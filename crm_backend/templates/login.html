@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
+    {% load static %} <!-- 加载 static 标签库 -->
     <style>
         /* 通用样式 */
         * {
@@ -18,7 +19,8 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f5f5f5;
+            background: url("{% static 'images/pexels.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
             color: #333;
         }
 
