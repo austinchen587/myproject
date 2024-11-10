@@ -77,6 +77,8 @@
 
         .table-container {
             overflow-x: auto;
+            max-height: 600px; /* 增加最大高度 */
+            overflow-y: auto; /* 添加纵向滚动条 */
             border-radius: 10px;
             margin-bottom: 20px;
         }
@@ -85,7 +87,18 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            position: relative; /* 让表格成为包含块 */
         }
+
+         /* 固定表头 */
+         thead {
+            position: sticky;
+            top: 0;
+            background-color: #007aff;
+            color: white;
+            z-index: 10;
+        }     
+        
 
         table th,
         table td {

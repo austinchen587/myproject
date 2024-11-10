@@ -1,5 +1,6 @@
 from django.db import models
 from sales.models import SalesUser
+from django.core.validators import MinValueValidator
 
 # 定义客户模型
 class Customer(models.Model):
@@ -22,7 +23,14 @@ class Customer(models.Model):
         ('待业', '待业'),
         ('未知', '未知'),
     ], default='待业', verbose_name='状态')
-    student_batch = models.CharField(max_length=20, default='0', verbose_name='期期学员')
+    #student_batch = models.CharField(max_length=20, default='0', verbose_name='期期学员')
+
+    student_batch = models.IntegerField(
+    default=0,
+    verbose_name='期期学员',
+    validators=[MinValueValidator(0)]
+)
+    
 
     address = models.CharField(max_length=255, blank=True, null=True, verbose_name='就业意向城市')
     city = models.CharField(max_length=255, default='Default City', verbose_name='当前所在城市')
