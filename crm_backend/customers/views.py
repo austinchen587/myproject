@@ -12,17 +12,21 @@ from django.db.models import Count, Q
 
 from .utils import calculate_completion_rate
 from django.db.models import Avg
-
+from django.shortcuts import redirect
+from django.urls import reverse
 
 
 @login_required
 def customerlist(request):
+    # 获取当前时间和默认的过去5天时间范围
     now = timezone.now()
     five_days_ago = now - timezone.timedelta(days=5)
-    start_date = request.GET.get('start_date', five_days_ago.strftime('%Y-%m-%d'))
-    end_date = request.GET.get('end_date', now.strftime('%Y-%m-%d'))
+    
+    # 如果没有筛选条件，则默认设置时间范围为过去5天
+    start_date = request.GET.get('start_date') or five_days_ago.strftime('%Y-%m-%d')
+    end_date = request.GET.get('end_date') or now.strftime('%Y-%m-%d')
 
-    # 获取筛选字段的参数
+    # 获取筛选条件的参数
     phone_filter = request.GET.get('phone', '')
     data_source_filter = request.GET.get('data_source', '')
     student_batch_filter = request.GET.get('student_batch', '')
@@ -59,8 +63,16 @@ def customerlist(request):
     # 获取所有归属人用于筛选选择框
     all_users = SalesUser.objects.all()
 
+    # 当前用户角色和组
     current_user_role = getattr(request.user, 'role', None)
     current_user_group_id = getattr(request.user, 'group_id', None)
+
+    # 检查是否需要高亮显示
+    for customer in customers:
+        if customer.created_by != customer.updated_by:
+            customer.needs_highlight = True
+        else:
+            customer.needs_highlight = False
 
     return render(request, 'customerlist.html', {
         'customers': customers,
@@ -77,6 +89,10 @@ def customerlist(request):
         'current_user_role': current_user_role,
         'current_user_group_id': current_user_group_id,
     })
+
+
+
+
 
 # 添加客户视图
 @login_required
@@ -107,6 +123,17 @@ def edit_customer(request, id):
         messages.error(request, '您只能编辑本组的客户')
         return redirect('customerlist')
 
+    # 获取筛选条件
+    start_date = request.GET.get('start_date', '')
+    end_date = request.GET.get('end_date', '')
+    phone = request.GET.get('phone', '')
+    data_source = request.GET.get('data_source', '')
+    student_batch = request.GET.get('student_batch', '')
+    is_contacted = request.GET.get('is_contacted', '')
+    is_joined = request.GET.get('is_joined', '')
+    is_closed = request.GET.get('is_closed', '')
+    created_by = request.GET.get('created_by', '')
+
     if request.method == 'POST':
         form = CustomerForm(request.POST, instance=customer)
         if form.is_valid():
@@ -114,10 +141,11 @@ def edit_customer(request, id):
             customer.updated_by = request.user  # 自动设置最后修改人
             customer.save()
             messages.success(request, '客户信息更新成功')
-            return redirect('customerlist')
+            # 保留筛选条件的重定向
+            return redirect(f"{reverse('customerlist')}?start_date={start_date}&end_date={end_date}&phone={phone}&data_source={data_source}&student_batch={student_batch}&is_contacted={is_contacted}&is_joined={is_joined}&is_closed={is_closed}&created_by={created_by}")
     else:
         form = CustomerForm(instance=customer)
-    
+
     return render(request, 'edit_customer.html', {'form': form, 'customer': customer})
 
 # 查看客户详情视图

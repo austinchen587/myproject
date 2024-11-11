@@ -135,6 +135,14 @@
             <label for="id_phone">电话号码:</label>
             <input type="text" id="id_phone" name="phone" required pattern="\d{11}" title="请输入11位数字">
 
+            <!-- 数据来源 -->
+            <label for="id_data_source">数据来源:</label>
+            {{ form.data_source }}
+
+            <!-- 是否接通 -->
+            <label for="id_is_contacted">是否接通:</label>
+            {{ form.is_contacted }}
+
             <label for="id_student_batch">期期学员:</label>
             {{ form.student_batch }}
 

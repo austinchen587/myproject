@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>客户列表</title>
-    {% load static %} <!-- 加载 static 标签库 -->
+    {% load static %}
     <style>
+        /* 基本样式 */
         * {
             margin: 0;
             padding: 0;
@@ -14,7 +15,6 @@
         }
 
         body {
-
             color: #333;
             padding: 20px;
             display: flex;
@@ -80,8 +80,8 @@
 
         .table-container {
             overflow-x: auto;
-            max-height: 600px; /* 增加最大高度 */
-            overflow-y: auto; /* 添加纵向滚动条 */
+            max-height: 600px;
+            overflow-y: auto;
             border-radius: 10px;
             margin-bottom: 20px;
         }
@@ -90,18 +90,16 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            position: relative; /* 让表格成为包含块 */
         }
 
-         /* 固定表头 */
-         thead {
+        /* 固定表头 */
+        thead {
             position: sticky;
             top: 0;
             background-color: #007aff;
             color: white;
             z-index: 10;
-        }     
-        
+        }
 
         table th,
         table td {
@@ -122,10 +120,18 @@
             color: #555;
         }
 
-        /* 固定宽度和换行处理 */
-        .description-column {
-            width: 200px; /* 固定宽度 */
-            white-space: normal; /* 换行 */
+        /* 高亮样式 */
+        .highlighted {
+            color: red !important;
+            background-color: rgba(255, 0, 0, 0.1); /* 可选：添加轻微的背景色 */
+        }
+
+        /* 客户描述和主管评论样式 */
+        .description-column, .supervisor-comments-column {
+            width: 200px;
+            max-height: 80px; /* 设置最大高度 */
+            overflow-y: auto; /* 超出内容时显示滚动条 */
+            white-space: normal;
             word-wrap: break-word;
         }
 
@@ -193,6 +199,7 @@
 
         <!-- 筛选器表单 -->
         <form method="get" action="{% url 'customerlist' %}">
+            <!-- 筛选条件 -->
             <label for="start_date">开始日期:</label>
             <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
 
@@ -234,7 +241,6 @@
                 <option value="no" {% if is_closed_filter == 'no' %}selected{% endif %}>否</option>
             </select>
 
-            <!-- 归属人筛选 -->
             <label for="created_by">归属人:</label>
             <select id="created_by" name="created_by">
                 <option value="">全部</option>
@@ -246,8 +252,8 @@
             <button type="submit">筛选</button>
         </form>
 
-        <!-- 添加客户按钮 -->
-        <div style="text-align: right; margin-bottom: 10px;">
+        <!-- 添加客户和数据分析按钮 -->
+        <div class="action-buttons">
             <a href="{% url 'add_customer' %}" class="button-group">
                 <button type="button">添加客户</button>
             </a>
@@ -273,14 +279,15 @@
                         <th>是否入群</th>
                         <th>是否成交</th>
                         <th class="description-column">客户描述</th>
-                        <th>主管点评</th>
+                        <th class="supervisor-comments-column">主管点评</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% if customers %}
                         {% for customer in customers %}
-                            <tr id="customer-row-{{ customer.id }}">
+                            <tr id="customer-row-{{ customer.id }}" 
+                                class="{% if customer.created_by.id != customer.updated_by.id %}highlighted{% endif %}">
                                 <td>{{ customer.name }}</td>
                                 <td>{{ customer.phone }}</td>
                                 <td>{{ customer.created_by }}</td>
@@ -293,10 +300,10 @@
                                 <td>{% if customer.is_joined %}✔️{% else %}✘{% endif %}</td>
                                 <td>{% if customer.is_closed %}✔️{% else %}✘{% endif %}</td>
                                 <td class="description-column">{{ customer.description|default:"暂无描述" }}</td>
-                                <td>{{ customer.supervisor_comments|default:"暂无点评" }}</td>
+                                <td class="supervisor-comments-column">{{ customer.supervisor_comments|default:"暂无点评" }}</td>
                                 <td class="button-group">
                                     <a href="{% url 'customer_detail' customer.id %}">详情</a>
-                                    <a href="{% url 'edit_customer' customer.id %}">更新</a>
+                                    <a href="{% url 'edit_customer' customer.id %}?start_date={{ start_date }}&end_date={{ end_date }}&phone={{ phone_filter }}&data_source={{ data_source_filter }}&student_batch={{ student_batch_filter }}&is_contacted={{ is_contacted_filter }}&is_joined={{ is_joined_filter }}&is_closed={{ is_closed_filter }}&created_by={{ created_by_filter }}">更新</a>
                                     <button class="delete" data-id="{{ customer.id }}" onclick="deleteCustomer(this)">删除</button>
                                 </td>
                             </tr>
