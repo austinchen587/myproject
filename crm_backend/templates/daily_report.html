@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日报 - 客户数据分析</title>
+    {% load static %}
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #e0eafc);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            overflow-x: hidden;
+            background: url("{% static 'images/pexels.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+        
+        .container {
+            width: auto;
+            max-width: 100%;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 1.6em;
+            color: #007aff;
+            margin-bottom: 20px;
+        }
+        
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            table-layout: auto;
+        }
+        
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 0.95em;
+            white-space: nowrap;
+        }
+        
+        th {
+            background-color: #f5f5f5;
+            color: #555;
+            font-weight: bold;
+        }
+        
+        .summary {
+            font-weight: bold;
+            color: #e63946;
+            background-color: #f9f9f9;
+        }
+        
+        /* 高亮样式 */
+        .highlight {
+            background-color: #fffbe6;
+        }
+        
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-form label {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .filter-form input[type="date"],
+        .filter-form select,
+        .filter-form button {
+            padding: 8px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        
+        .filter-form button {
+            background-color: #007aff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .filter-form button:hover {
+            background-color: #005bb5;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .button-group a {
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007aff;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+        }
+        
+        .button-group a:hover {
+            background-color: #005bb5;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 0.85em;
+            }
+            
+            h2 {
+                font-size: 1.4em;
+            }
+            
+            .filter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>日报 - 客户数据分析</h2>
+
+    <!-- 日期筛选和组长筛选器 -->
+    <form method="get" action="{% url 'daily_report' %}" class="filter-form">
+        <label for="date">选择日期:</label>
+        <input type="date" id="date" name="date" value="{{ selected_date|default:today_date }}" max="{{ today_date }}">
+
+        {% if user_role == 'admin' %}
+        <label for="group_leader">选择组长:</label>
+        <select name="group_leader" id="group_leader">
+            <option value="">请选择组长</option>
+            {% for leader in group_leaders %}
+                <option value="{{ leader.id }}" {% if selected_leader_id == leader.id|stringformat:"s" %}selected{% endif %}>{{ leader.username }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+        <button type="submit">筛选</button>
+    </form>
+
+    <!-- 数据透视表 -->
+    <table>
+        <thead>
+            <tr>
+                <th>用户名</th>
+                <th>今日数据量</th>
+                <th>是否接通数</th>
+                <th>接通百分比</th>
+                <th>是否邀约数</th>
+                <th>邀约百分比</th>
+                <th>是否加微信数</th>
+                <th>加微信百分比</th>
+                <th>是否入群数</th>
+                <th>入群百分比</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in report_data|dictsortreversed:"is_joined_percent" %}
+                <tr class="{% if data.is_joined_percent < total_summary.is_joined_percent %}highlight{% endif %}">
+                    <td>{{ data.username }}</td>
+                    <td>{{ data.total_phone_count }}</td>
+                    <td>{{ data.is_contacted_count }}</td>
+                    <td>{{ data.is_contacted_percent }}%</td>
+                    <td>{{ data.is_invited_count }}</td>
+                    <td>{{ data.is_invited_percent }}%</td>
+                    <td>{{ data.is_wechat_added_count }}</td>
+                    <td>{{ data.is_wechat_added_percent }}%</td>
+                    <td>{{ data.is_joined_count }}</td>
+                    <td>{{ data.is_joined_percent }}%</td>
+                </tr>
+            {% endfor %}
+            {% if not report_data %}
+                <tr>
+                    <td colspan="10">没有数据</td>
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- 汇总行 -->
+        <tfoot>
+            <tr class="summary">
+                <td>汇总</td>
+                <td>{{ total_summary.total_phone_count }}</td>
+                <td>{{ total_summary.is_contacted_count }}</td>
+                <td>{{ total_summary.is_contacted_percent }}%</td>
+                <td>{{ total_summary.is_invited_count }}</td>
+                <td>{{ total_summary.is_invited_percent }}%</td>
+                <td>{{ total_summary.is_wechat_added_count }}</td>
+                <td>{{ total_summary.is_wechat_added_percent }}%</td>
+                <td>{{ total_summary.is_joined_count }}</td>
+                <td>{{ total_summary.is_joined_percent }}%</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <!-- 按钮组 -->
+    <div class="button-group">
+        <a href="{% url 'customerlist' %}">客户列表</a>
+        <a href="{% url 'data_analysis' %}">数据分析</a>
+    </div>
+</div>
+</body>
+</html>

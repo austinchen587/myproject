@@ -12,6 +12,7 @@ from .views import (
     data_analysis,
     analysis_data_json,
     get_completion_data,
+    daily_report,
     
     
 )
@@ -27,6 +28,7 @@ urlpatterns = [
     path('data_analysis/', data_analysis, name='data_analysis'),
     path('data_analysis_json/', analysis_data_json, name='data_analysis_json'),  # 添加此行
     path('get_completion_data/', get_completion_data, name='get_completion_data'),
+    path('daily_report/', daily_report, name='daily_report'),
     
  
     

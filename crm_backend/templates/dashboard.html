@@ -37,8 +37,8 @@
         }
         p.welcome-message {
             font-size: 1em;
-            color: #e63946; /* 红色字体 */
-            font-weight: bold; /* 加粗 */
+            color: #e63946;
+            font-weight: bold;
             margin-bottom: 20px;
         }
         .button {
@@ -68,6 +68,12 @@
         .data-analysis:hover {
             background-color: #28a745;
         }
+        .daily-report {
+            background-color: #ff9f0a;
+        }
+        .daily-report:hover {
+            background-color: #ff6f0a;
+        }
 
         /* 响应式样式 */
         @media (max-width: 480px) {
@@ -89,6 +95,7 @@
         <p class="welcome-message">欢迎销冠 {{ user.username }}，努力一定会有收获！</p>
         <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
         <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
+        <a href="{% url 'daily_report' %}" class="button daily-report">日报</a>
     </div>
 </body>
 </html>

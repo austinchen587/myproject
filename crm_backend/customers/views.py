@@ -7,7 +7,7 @@ from .models import Customer
 from .forms import CustomerForm
 from django.http import JsonResponse
 from .models import Customer  # 假设Customer模型定义了相关字段
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 
 
 from .utils import calculate_completion_rate
@@ -344,3 +344,94 @@ def get_completion_data(request):
     }
 
     return JsonResponse({'completion_rates': completion_rates})
+
+
+
+
+
+from datetime import datetime
+
+@login_required
+def daily_report(request):
+    # 获取当前用户角色和日期筛选条件
+    user_role = request.user.role
+    selected_leader_id = request.GET.get('group_leader', None)
+    
+    # 设置日期筛选，默认为当天
+    today_date = datetime.today().strftime('%Y-%m-%d')
+    selected_date = request.GET.get('date', today_date)
+
+    # 获取所有组长供管理员选择
+    group_leaders = SalesUser.objects.filter(role='group_leader') if user_role == 'admin' else []
+
+    # 根据权限筛选用户
+    if user_role == 'user':
+        group_members = SalesUser.objects.filter(id=request.user.id)
+    elif user_role == 'group_leader':
+        group_members = SalesUser.objects.filter(Q(group_leader=request.user) | Q(id=request.user.id))
+    elif user_role == 'admin' and selected_leader_id:
+        selected_leader = SalesUser.objects.get(id=selected_leader_id)
+        group_members = SalesUser.objects.filter(Q(group_leader=selected_leader) | Q(id=selected_leader.id))
+    else:
+        group_members = SalesUser.objects.none()
+
+    # 构建透视表数据并计算汇总
+    report_data = []
+    total_summary = {
+        'total_phone_count': 0,
+        'is_contacted_count': 0,
+        'is_invited_count': 0,
+        'is_wechat_added_count': 0,
+        'is_joined_count': 0
+    }
+    
+    for member in group_members:
+        # 根据筛选日期筛选客户数据
+        total_phone_count = Customer.objects.filter(created_by=member, created_at__date=selected_date).count()
+        is_contacted_count = Customer.objects.filter(created_by=member, is_contacted=True, created_at__date=selected_date).count()
+        is_invited_count = Customer.objects.filter(created_by=member, is_invited=True, created_at__date=selected_date).count()
+        is_wechat_added_count = Customer.objects.filter(created_by=member, is_wechat_added=True, created_at__date=selected_date).count()
+        is_joined_count = Customer.objects.filter(created_by=member, is_joined=True, created_at__date=selected_date).count()
+
+        # 计算百分比，保留两位小数
+        report_data.append({
+            'username': member.username,
+            'total_phone_count': total_phone_count,
+            'is_contacted_count': is_contacted_count,
+            'is_contacted_percent': round((is_contacted_count / total_phone_count) * 100, 2) if total_phone_count else 0,
+            'is_invited_count': is_invited_count,
+            'is_invited_percent': round((is_invited_count / total_phone_count) * 100, 2) if total_phone_count else 0,
+            'is_wechat_added_count': is_wechat_added_count,
+            'is_wechat_added_percent': round((is_wechat_added_count / total_phone_count) * 100, 2) if total_phone_count else 0,
+            'is_joined_count': is_joined_count,
+            'is_joined_percent': round((is_joined_count / total_phone_count) * 100, 2) if total_phone_count else 0,
+        })
+
+        # 更新汇总数据
+        total_summary['total_phone_count'] += total_phone_count
+        total_summary['is_contacted_count'] += is_contacted_count
+        total_summary['is_invited_count'] += is_invited_count
+        total_summary['is_wechat_added_count'] += is_wechat_added_count
+        total_summary['is_joined_count'] += is_joined_count
+
+    # 汇总百分比
+    if total_summary['total_phone_count'] > 0:
+        total_summary['is_contacted_percent'] = round((total_summary['is_contacted_count'] / total_summary['total_phone_count']) * 100, 2)
+        total_summary['is_invited_percent'] = round((total_summary['is_invited_count'] / total_summary['total_phone_count']) * 100, 2)
+        total_summary['is_wechat_added_percent'] = round((total_summary['is_wechat_added_count'] / total_summary['total_phone_count']) * 100, 2)
+        total_summary['is_joined_percent'] = round((total_summary['is_joined_count'] / total_summary['total_phone_count']) * 100, 2)
+    else:
+        total_summary['is_contacted_percent'] = 0
+        total_summary['is_invited_percent'] = 0
+        total_summary['is_wechat_added_percent'] = 0
+        total_summary['is_joined_percent'] = 0
+
+    return render(request, 'daily_report.html', {
+        'group_leaders': group_leaders,
+        'selected_leader_id': selected_leader_id,
+        'selected_date': selected_date,
+        'today_date': today_date,
+        'report_data': report_data,
+        'total_summary': total_summary,
+        'user_role': user_role,
+    })
