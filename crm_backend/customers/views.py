@@ -314,28 +314,45 @@ def get_completion_data(request):
 
     total_customers = customers.count()
 
-    # 关键字段列表，用于计算完成度
+    # 关键字段列表，包含默认值，用于计算完成度
     fields = [
-        ('phone', '电话'), ('student_batch', '期数学员'), ('is_invited', '是否邀约'),
-        ('is_wechat_added', '是否加微信'), ('is_joined', '是否入群'), ('name', '姓名'),
-        ('education', '学历'), ('city', '所在城市'), ('intention', '意向程度'),
-        ('customer_needs_analysis', '需求分析'), ('customer_personality_analysis', '性格分析'),
-        ('cloud_computing_promotion_content', '推广内容'), ('is_closed', '是否成交'),
-        ('is_contacted', '是否接通'), ('data_source', '数据来源'), ('wechat_name', '客户微信名'),
-        ('attended_first_live', '参加第一天直播'), ('attended_second_live', '参加第二天直播'),
-        ('first_day_watch_duration', '第一天观看时长'), ('second_day_watch_duration', '第二天观看时长'),
-        ('first_day_feedback', '第一天反馈'), ('second_day_feedback', '第二天反馈'),
-        ('persona_chat', '人设聊天'), ('additional_students', '马甲加学员'),
-        ('comments_count', '评论数'), ('deal_7_days_checked', '7天成交'),
-        ('deal_14_days_checked', '14天成交'), ('deal_21_days_checked', '21天成交')
+        ('phone', '电话', ''),  # 假设空字符串是未填写状态
+        ('student_batch', '期数学员', 0),  # 默认值0为未填写
+        ('is_invited', '是否邀约', False), 
+        ('is_wechat_added', '是否加微信', False), 
+        ('is_joined', '是否入群', False),
+        ('name', '姓名', '未知'),  # '未知'为默认值
+        ('education', '学历', '大专'),  # '大专'为默认值
+        ('city', '所在城市', 'Default City'),  # 'Default City'为默认值
+        ('intention', '意向程度', '低'),  # '低'为默认值
+        ('customer_needs_analysis', '需求分析', []),  # 空列表为未填写
+        ('customer_personality_analysis', '性格分析', []), 
+        ('cloud_computing_promotion_content', '推广内容', []),
+        ('is_closed', '是否成交', False),
+        ('is_contacted', '是否接通', False),
+        ('data_source', '数据来源', 'AI数据'),  # 假设 'AI数据' 为默认
+        ('wechat_name', '客户微信名', None),  # None 为未填写
+        ('attended_first_live', '参加第一天直播', False),
+        ('attended_second_live', '参加第二天直播', False),
+        ('first_day_watch_duration', '第一天观看时长', 0),
+        ('second_day_watch_duration', '第二天观看时长', 0),
+        ('first_day_feedback', '第一天反馈', '一般'),
+        ('second_day_feedback', '第二天反馈', '一般'),
+        ('persona_chat', '人设聊天', False),
+        ('additional_students', '马甲加学员', False),
+        ('comments_count', '评论数', False),
+        ('deal_7_days_checked', '7天成交', False),
+        ('deal_14_days_checked', '14天成交', False),
+        ('deal_21_days_checked', '21天成交', False)
     ]
 
     # 计算完成度
-    field_completion = {label: 0 for _, label in fields}
+    field_completion = {label: 0 for _, label, _ in fields}
 
     for customer in customers:
-        for field, label in fields:
-            if getattr(customer, field):
+        for field, label, default_value in fields:
+            # 判断字段值是否不同于默认值
+            if getattr(customer, field) != default_value:
                 field_completion[label] += 1
 
     completion_rates = {
