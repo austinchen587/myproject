@@ -34,6 +34,7 @@ def customerlist(request):
     is_joined_filter = request.GET.get('is_joined', '')
     is_closed_filter = request.GET.get('is_closed', '')
     created_by_filter = request.GET.get('created_by', '')
+    wechat_name_filter = request.GET.get('wechat_name', '')  # 新增的微信名筛选参数
 
     # 初步时间筛选和排序
     customers = Customer.objects.filter(created_at__date__range=[start_date, end_date]).order_by('-created_at')
@@ -59,6 +60,8 @@ def customerlist(request):
         customers = customers.filter(is_closed=(is_closed_filter == 'yes'))
     if created_by_filter:
         customers = customers.filter(created_by__id=created_by_filter)
+    if wechat_name_filter:  # 应用微信名筛选条件
+        customers = customers.filter(wechat_name__icontains=wechat_name_filter)
 
     # 获取所有归属人用于筛选选择框
     all_users = SalesUser.objects.all()
@@ -69,16 +72,14 @@ def customerlist(request):
 
     # 检查是否需要高亮显示
     for customer in customers:
-        if customer.created_by != customer.updated_by:
-            customer.needs_highlight = True
-        else:
-            customer.needs_highlight = False
+        customer.needs_highlight = customer.created_by != customer.updated_by
 
     return render(request, 'customerlist.html', {
         'customers': customers,
         'start_date': start_date,
         'end_date': end_date,
         'phone_filter': phone_filter,
+        'wechat_name_filter': wechat_name_filter,  # 传递微信名筛选参数
         'data_source_filter': data_source_filter,
         'student_batch_filter': student_batch_filter,
         'is_contacted_filter': is_contacted_filter,

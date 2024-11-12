@@ -101,12 +101,17 @@
             z-index: 10;
         }
 
-        table th,
-        table td {
-            padding: 10px;
-            text-align: left;
+        table td, table th {
+            padding: 5px; /* 增加间距 */
+            text-align: center; /* 水平居中对齐 */
             border-bottom: 1px solid #ddd;
-            white-space: nowrap;
+            word-wrap: break-word; /* 允许内容换行 */
+            white-space: normal; /* 自动换行 */
+        }  
+
+        .wechat-column {
+            max-width: 50px; /* 限制列宽度 */
+            overflow-wrap: break-word; /* 长单词或URL自动换行 */
         }
 
         table th {
@@ -197,60 +202,64 @@
     <div class="container">
         <h2>客户列表</h2>
 
-        <!-- 筛选器表单 -->
-        <form method="get" action="{% url 'customerlist' %}">
-            <!-- 筛选条件 -->
-            <label for="start_date">开始日期:</label>
-            <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+<!-- 筛选器表单 -->
+<form method="get" action="{% url 'customerlist' %}">
+    <!-- 筛选条件 -->
+    <label for="start_date">开始日期:</label>
+    <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
 
-            <label for="end_date">结束日期:</label>
-            <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+    <label for="end_date">结束日期:</label>
+    <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
 
-            <label for="phone">手机号:</label>
-            <input type="text" id="phone" name="phone" value="{{ phone_filter }}">
+    <label for="phone">手机号:</label>
+    <input type="text" id="phone" name="phone" value="{{ phone_filter }}">
 
-            <label for="data_source">数据来源:</label>
-            <select id="data_source" name="data_source">
-                <option value="">全部</option>
-                <option value="AI数据" {% if data_source_filter == 'AI数据' %}selected{% endif %}>AI数据</option>
-                <option value="视频号" {% if data_source_filter == '视频号' %}selected{% endif %}>视频号</option>
-                <option value="其他" {% if data_source_filter == '其他' %}selected{% endif %}>其他</option>
-            </select>
+    <!-- 微信名筛选 -->
+    <label for="wechat_name">客户微信名:</label>
+    <input type="text" id="wechat_name" name="wechat_name" value="{{ wechat_name_filter }}">
 
-            <label for="student_batch">期数学员:</label>
-            <input type="text" id="student_batch" name="student_batch" value="{{ student_batch_filter }}">
+    <label for="data_source">数据来源:</label>
+    <select id="data_source" name="data_source">
+        <option value="">全部</option>
+        <option value="AI数据" {% if data_source_filter == 'AI数据' %}selected{% endif %}>AI数据</option>
+        <option value="视频号" {% if data_source_filter == '视频号' %}selected{% endif %}>视频号</option>
+        <option value="其他" {% if data_source_filter == '其他' %}selected{% endif %}>其他</option>
+    </select>
 
-            <label for="is_contacted">是否接通:</label>
-            <select id="is_contacted" name="is_contacted">
-                <option value="">全部</option>
-                <option value="yes" {% if is_contacted_filter == 'yes' %}selected{% endif %}>是</option>
-                <option value="no" {% if is_contacted_filter == 'no' %}selected{% endif %}>否</option>
-            </select>
+    <label for="student_batch">期数学员:</label>
+    <input type="text" id="student_batch" name="student_batch" value="{{ student_batch_filter }}">
 
-            <label for="is_joined">是否入群:</label>
-            <select id="is_joined" name="is_joined">
-                <option value="">全部</option>
-                <option value="yes" {% if is_joined_filter == 'yes' %}selected{% endif %}>是</option>
-                <option value="no" {% if is_joined_filter == 'no' %}selected{% endif %}>否</option>
-            </select>
+    <label for="is_contacted">是否接通:</label>
+    <select id="is_contacted" name="is_contacted">
+        <option value="">全部</option>
+        <option value="yes" {% if is_contacted_filter == 'yes' %}selected{% endif %}>是</option>
+        <option value="no" {% if is_contacted_filter == 'no' %}selected{% endif %}>否</option>
+    </select>
 
-            <label for="is_closed">是否成交:</label>
-            <select id="is_closed" name="is_closed">
-                <option value="">全部</option>
-                <option value="yes" {% if is_closed_filter == 'yes' %}selected{% endif %}>是</option>
-                <option value="no" {% if is_closed_filter == 'no' %}selected{% endif %}>否</option>
-            </select>
+    <label for="is_joined">是否入群:</label>
+    <select id="is_joined" name="is_joined">
+        <option value="">全部</option>
+        <option value="yes" {% if is_joined_filter == 'yes' %}selected{% endif %}>是</option>
+        <option value="no" {% if is_joined_filter == 'no' %}selected{% endif %}>否</option>
+    </select>
 
-            <label for="created_by">归属人:</label>
-            <select id="created_by" name="created_by">
-                <option value="">全部</option>
-                {% for user in all_users %}
-                    <option value="{{ user.id }}" {% if created_by_filter == user.id|stringformat:"s" %}selected{% endif %}>{{ user.username }}</option>
-                {% endfor %}
-            </select>
+    <label for="is_closed">是否成交:</label>
+    <select id="is_closed" name="is_closed">
+        <option value="">全部</option>
+        <option value="yes" {% if is_closed_filter == 'yes' %}selected{% endif %}>是</option>
+        <option value="no" {% if is_closed_filter == 'no' %}selected{% endif %}>否</option>
+    </select>
 
-            <button type="submit">筛选</button>
-        </form>
+    <label for="created_by">归属人:</label>
+    <select id="created_by" name="created_by">
+        <option value="">全部</option>
+        {% for user in all_users %}
+            <option value="{{ user.id }}" {% if created_by_filter == user.id|stringformat:"s" %}selected{% endif %}>{{ user.username }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">筛选</button>
+</form>
 
         <!-- 添加客户和数据分析按钮 -->
         <div class="action-buttons">
@@ -276,6 +285,7 @@
                         <th>创建时间</th>
                         <th>数据来源</th>
                         <th>期数学员</th>
+                        <th class="wechat-column">客户微信名</th>
                         <th>是否接通</th>
                         <th>是否邀约</th>
                         <th>是否加微信</th>
@@ -297,6 +307,7 @@
                                 <td>{{ customer.created_at|date:"Y-m-d" }}</td>
                                 <td>{{ customer.data_source }}</td>
                                 <td>{{ customer.student_batch|default:"N/A" }}</td>
+                                <td>{{ customer.wechat_name }}</td>
                                 <td>{% if customer.is_contacted %}✔️{% else %}✘{% endif %}</td>
                                 <td>{% if customer.is_invited %}✔️{% else %}✘{% endif %}</td>
                                 <td>{% if customer.is_wechat_added %}✔️{% else %}✘{% endif %}</td>
