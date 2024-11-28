@@ -1,6 +1,16 @@
 from django.db import models
 from sales.models import SalesUser
 from django.core.validators import MinValueValidator
+import os
+from django.utils.timezone import now
+
+
+def customer_audio_upload_path(instance, filename):
+    """
+    定义音频文件的上传路径
+    示例：customer_audio/<customer_id>/<filename>
+    """
+    return os.path.join("customer_audio", str(instance.id), filename)
 
 # 定义客户模型
 class Customer(models.Model):
@@ -12,17 +22,17 @@ class Customer(models.Model):
         ('本科', '本科'),
         ('研究生及以上', '研究生及以上'),
         ('未知', '未知'),
-    ], default='大专', verbose_name='学历')
+    ], default='未知', verbose_name='学历')
     major_category = models.CharField(max_length=10, choices=[
         ('IT', 'IT'),
         ('非IT', '非IT'),
         ('未知', '未知'),
-    ], default='IT', verbose_name='专业类别')
+    ], default='未知', verbose_name='专业类别')
     status = models.CharField(max_length=15, choices=[
         ('在职', '在职'),
         ('待业', '待业'),
         ('未知', '未知'),
-    ], default='待业', verbose_name='状态')
+    ], default='未知', verbose_name='状态')
     #student_batch = models.CharField(max_length=20, default='0', verbose_name='期期学员')
 
     student_batch = models.IntegerField(
@@ -33,13 +43,13 @@ class Customer(models.Model):
     
 
     address = models.CharField(max_length=255, blank=True, null=True, verbose_name='就业意向城市')
-    city = models.CharField(max_length=255, default='Default City', verbose_name='当前所在城市')
+    city = models.CharField(max_length=255, default='未知', verbose_name='当前所在城市')
     intention = models.CharField(max_length=20, choices=[
         ('低', '低'),
         ('中', '中'),
         ('高', '高'),
         ('未知', '未知'),
-    ], default='低', verbose_name='意向程度')
+    ], default='未知', verbose_name='意向程度')
 
     # 允许为空的 JSON 字段
     customer_needs_analysis = models.JSONField(default=list, blank=True, null=True, verbose_name='客户挖需分析')
@@ -52,11 +62,21 @@ class Customer(models.Model):
     is_contacted = models.BooleanField(default=False, verbose_name='是否接通')
     is_wechat_added = models.BooleanField(default=False, verbose_name='是否加微信')
 
+    # 新增音频文件字段
+    audio_file = models.FileField(
+        upload_to=customer_audio_upload_path,  # 指定上传路径
+        blank=True,
+        null=True,
+        verbose_name="客户音频文件"
+    )
+
     data_source = models.CharField(max_length=100, choices=[
         ('AI数据', 'AI数据'),
         ('视频号', '视频号'),
         ('其他', '其他'),
-    ], default='AI数据', verbose_name='数据来源')
+        ('国开数据', '国开数据'),
+        ('未知', '未知'),  # 新增选项
+    ], default='未知', verbose_name='数据来源')
 
     wechat_name = models.CharField(max_length=50, blank=True, null=True, verbose_name='客户微信名')
 
@@ -69,13 +89,15 @@ class Customer(models.Model):
         ('满意', '满意'),
         ('一般', '一般'),
         ('不考虑', '不考虑'),
-    ], default='一般', verbose_name='第一天观后反馈')
+        ('未知', '未知'),
+    ], default='未知', verbose_name='第一天观后反馈')
 
     second_day_feedback = models.CharField(max_length=20, choices=[
         ('满意', '满意'),
         ('一般', '一般'),
         ('不考虑', '不考虑'),
-    ], default='一般', verbose_name='第二天观后反馈')
+        ('未知', '未知'),
+    ], default='未知', verbose_name='第二天观后反馈')
 
     persona_chat = models.BooleanField(default=False, verbose_name='是否进行人设聊天')
     additional_students = models.BooleanField(default=False, verbose_name='是否有马甲加学员')
@@ -103,9 +125,33 @@ class Customer(models.Model):
     # 增加一个主管点评字段
     supervisor_comments = models.TextField(blank=True, null=True, verbose_name='主管点评')
 
+    
+
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name = '客户'
         verbose_name_plural = '客户列表'
+
+
+class Recording(models.Model):
+    customer = models.ForeignKey(
+        "customers.Customer",
+        on_delete=models.CASCADE,
+        related_name="recordings",
+        verbose_name="客户"
+    )
+    audio_file = models.FileField(
+        upload_to="recordings/%Y/%m/%d/",
+        verbose_name="录音文件"
+    )
+    created_at = models.DateTimeField(default=now, verbose_name="录音时间")
+
+    class Meta:
+        verbose_name = "录音"
+        verbose_name_plural = "录音记录"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"录音 - {self.customer.name} ({self.created_at.strftime('%Y-%m-%d %H:%M:%S')})"

@@ -74,6 +74,12 @@
         .daily-report:hover {
             background-color: #ff6f0a;
         }
+        .mobile-version {
+            background-color: #ff3b30;
+        }
+        .mobile-version:hover {
+            background-color: #c92a20;
+        }
 
         /* 响应式样式 */
         @media (max-width: 480px) {
@@ -96,6 +102,7 @@
         <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
         <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
         <a href="{% url 'daily_report' %}" class="button daily-report">日报</a>
+        <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
     </div>
 </body>
 </html>

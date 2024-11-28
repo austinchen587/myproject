@@ -3,12 +3,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .models import Customer
+from .models import Customer, Recording
 from .forms import CustomerForm
 from django.http import JsonResponse
 from .models import Customer  # 假设Customer模型定义了相关字段
 from django.db.models import Count, Q, F
-
+import mimetypes
+import os
+from django.utils.timezone import now
 
 from .utils import calculate_completion_rate
 from django.db.models import Avg
@@ -367,7 +369,7 @@ def get_completion_data(request):
 
 
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 @login_required
 def daily_report(request):
@@ -453,3 +455,90 @@ def daily_report(request):
         'total_summary': total_summary,
         'user_role': user_role,
     })
+
+
+
+@login_required
+def mobile_view(request):
+    # 获取所有客户数据
+    customers = Customer.objects.all()
+    return render(request, 'mobile_customer.html', {"customers": customers})
+
+
+
+from django.utils.timezone import make_aware
+
+def mobile_view(request):
+    today = datetime.today().date()
+    default_start_date = today - timedelta(days=5)
+
+    start_date = request.GET.get('start_date', default_start_date)
+    end_date = request.GET.get('end_date', today)
+
+    if isinstance(start_date, str):
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+    if isinstance(end_date, str):
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+    # 使用 make_aware 将 naive datetime 转换为 aware datetime
+    start_datetime = make_aware(datetime.combine(start_date, datetime.min.time()))
+    end_datetime = make_aware(datetime.combine(end_date, datetime.max.time()))
+
+    customers = Customer.objects.filter(created_at__range=(start_datetime, end_datetime))
+
+    return render(request, 'mobile_customer.html', {
+        "customers": customers,
+        "user": request.user,
+        "start_date": start_date,
+        "end_date": end_date,
+    })
+
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+# 手动注册缺失的 MIME 类型
+mimetypes.add_type("audio/x-m4a", ".m4a")
+mimetypes.add_type("audio/ogg", ".ogg")
+
+def upload_audio(request, customer_id):
+    """
+    处理客户音频文件上传
+    """
+    if request.method == "POST":
+        # 日志调试：输出请求中的文件信息
+        print(f"Request FILES: {request.FILES}")
+
+        # 检查是否接收到文件
+        if "audio" not in request.FILES:
+            print("音频文件字段缺失")
+            return JsonResponse({"error": "未接收到音频文件"}, status=400)
+
+        audio_file = request.FILES["audio"]
+        print(f"文件名: {audio_file.name}, 文件大小: {audio_file.size}")
+
+        # 检查文件扩展名
+        file_extension = os.path.splitext(audio_file.name)[1].lower()
+        allowed_extensions = [".wav", ".mp3", ".m4a", ".ogg", ".flac"]
+        if file_extension not in allowed_extensions:
+            print(f"不支持的文件扩展名: {file_extension}")
+            return JsonResponse({"error": f"不支持的文件扩展名: {file_extension}"}, status=400)
+
+        # 检查 MIME 类型
+        mime_type, _ = mimetypes.guess_type(audio_file.name)
+        allowed_types = ["audio/wav", "audio/mpeg", "audio/x-m4a", "audio/ogg", "audio/flac"]
+        if not mime_type or mime_type not in allowed_types:
+            print(f"MIME 类型未检测到或不支持: {mime_type}")
+            if file_extension not in allowed_extensions:
+                return JsonResponse({"error": f"不支持的文件类型: {mime_type}"}, status=400)
+            print(f"MIME 类型为空，扩展名检查通过: {file_extension}")
+
+        # 保存文件
+        customer = get_object_or_404(Customer, id=customer_id)
+        customer.audio_file.save(audio_file.name, audio_file, save=True)
+
+        return JsonResponse({"message": "音频文件上传成功！", "file_url": customer.audio_file.url})
+
+    print("收到无效的请求")
+    return JsonResponse({"error": "无效的请求"}, status=400)
