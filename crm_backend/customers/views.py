@@ -22,10 +22,10 @@ from django.urls import reverse
 def customerlist(request):
     # 获取当前时间和默认的过去5天时间范围
     now = timezone.now()
-    five_days_ago = now - timezone.timedelta(days=5)
+    two_days_ago = now - timezone.timedelta(days=2)
     
     # 如果没有筛选条件，则默认设置时间范围为过去5天
-    start_date = request.GET.get('start_date') or five_days_ago.strftime('%Y-%m-%d')
+    start_date = request.GET.get('start_date') or two_days_ago.strftime('%Y-%m-%d')
     end_date = request.GET.get('end_date') or now.strftime('%Y-%m-%d')
 
     # 获取筛选条件的参数
