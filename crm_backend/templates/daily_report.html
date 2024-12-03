@@ -149,76 +149,82 @@
 <div class="container">
     <h2>日报 - 客户数据分析</h2>
 
-    <!-- 日期筛选和组长筛选器 -->
-    <form method="get" action="{% url 'daily_report' %}" class="filter-form">
-        <label for="date">选择日期:</label>
-        <input type="date" id="date" name="date" value="{{ selected_date|default:today_date }}" max="{{ today_date }}">
+<!-- 日期筛选和组长筛选器 -->
+<form method="get" action="{% url 'daily_report' %}" class="filter-form">
+    <label for="date">选择日期:</label>
+    <input type="date" id="date" name="date" value="{{ selected_date|default:today_date }}" max="{{ today_date }}">
 
-        {% if user_role == 'admin' %}
-        <label for="group_leader">选择组长:</label>
-        <select name="group_leader" id="group_leader">
-            <option value="">请选择组长</option>
-            {% for leader in group_leaders %}
-                <option value="{{ leader.id }}" {% if selected_leader_id == leader.id|stringformat:"s" %}selected{% endif %}>{{ leader.username }}</option>
-            {% endfor %}
-        </select>
-        {% endif %}
-        <button type="submit">筛选</button>
-    </form>
+    {% if user_role == 'admin' %}
+    <label for="group_leader">选择组长:</label>
+    <select name="group_leader" id="group_leader">
+        <option value="">请选择组长</option>
+        {% for leader in group_leaders %}
+            <option value="{{ leader.id }}" {% if selected_leader_id == leader.id|stringformat:"s" %}selected{% endif %}>{{ leader.username }}</option>
+        {% endfor %}
+    </select>
+    {% endif %}
+    <button type="submit">筛选</button>
+</form>
 
-    <!-- 数据透视表 -->
-    <table>
-        <thead>
+<!-- 数据透视表 -->
+<table>
+    <thead>
+        <tr>
+            <th>用户名</th>
+            <th>今日数据量</th>
+            <th>是否接通数</th>
+            <th>接通百分比</th>
+            <th>是否邀约数</th>
+            <th>邀约百分比</th>
+            <th>是否加微信数</th>
+            <th>加微信百分比</th>
+            <th>是否入群数</th>
+            <th>入群百分比</th>
+            <th>产品经理对接人数</th>
+            <th>占总电话百分比</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in report_data|dictsortreversed:"is_joined_percent" %}
+            <tr class="{% if data.is_joined_percent < total_summary.is_joined_percent %}highlight{% endif %}">
+                <td>{{ data.username }}</td>
+                <td>{{ data.total_phone_count }}</td>
+                <td>{{ data.is_contacted_count }}</td>
+                <td>{{ data.is_contacted_percent }}%</td>
+                <td>{{ data.is_invited_count }}</td>
+                <td>{{ data.is_invited_percent }}%</td>
+                <td>{{ data.is_wechat_added_count }}</td>
+                <td>{{ data.is_wechat_added_percent }}%</td>
+                <td>{{ data.is_joined_count }}</td>
+                <td>{{ data.is_joined_percent }}%</td>
+                <td>{{ data.product_manager_count }}</td>
+                <td>{{ data.product_manager_percent }}%</td>
+            </tr>
+        {% endfor %}
+        {% if not report_data %}
             <tr>
-                <th>用户名</th>
-                <th>今日数据量</th>
-                <th>是否接通数</th>
-                <th>接通百分比</th>
-                <th>是否邀约数</th>
-                <th>邀约百分比</th>
-                <th>是否加微信数</th>
-                <th>加微信百分比</th>
-                <th>是否入群数</th>
-                <th>入群百分比</th>
+                <td colspan="12">没有数据</td>
             </tr>
-        </thead>
-        <tbody>
-            {% for data in report_data|dictsortreversed:"is_joined_percent" %}
-                <tr class="{% if data.is_joined_percent < total_summary.is_joined_percent %}highlight{% endif %}">
-                    <td>{{ data.username }}</td>
-                    <td>{{ data.total_phone_count }}</td>
-                    <td>{{ data.is_contacted_count }}</td>
-                    <td>{{ data.is_contacted_percent }}%</td>
-                    <td>{{ data.is_invited_count }}</td>
-                    <td>{{ data.is_invited_percent }}%</td>
-                    <td>{{ data.is_wechat_added_count }}</td>
-                    <td>{{ data.is_wechat_added_percent }}%</td>
-                    <td>{{ data.is_joined_count }}</td>
-                    <td>{{ data.is_joined_percent }}%</td>
-                </tr>
-            {% endfor %}
-            {% if not report_data %}
-                <tr>
-                    <td colspan="10">没有数据</td>
-                </tr>
-            {% endif %}
-        </tbody>
-        <!-- 汇总行 -->
-        <tfoot>
-            <tr class="summary">
-                <td>汇总</td>
-                <td>{{ total_summary.total_phone_count }}</td>
-                <td>{{ total_summary.is_contacted_count }}</td>
-                <td>{{ total_summary.is_contacted_percent }}%</td>
-                <td>{{ total_summary.is_invited_count }}</td>
-                <td>{{ total_summary.is_invited_percent }}%</td>
-                <td>{{ total_summary.is_wechat_added_count }}</td>
-                <td>{{ total_summary.is_wechat_added_percent }}%</td>
-                <td>{{ total_summary.is_joined_count }}</td>
-                <td>{{ total_summary.is_joined_percent }}%</td>
-            </tr>
-        </tfoot>
-    </table>
+        {% endif %}
+    </tbody>
+    <!-- 汇总行 -->
+    <tfoot>
+        <tr class="summary">
+            <td>汇总</td>
+            <td>{{ total_summary.total_phone_count }}</td>
+            <td>{{ total_summary.is_contacted_count }}</td>
+            <td>{{ total_summary.is_contacted_percent }}%</td>
+            <td>{{ total_summary.is_invited_count }}</td>
+            <td>{{ total_summary.is_invited_percent }}%</td>
+            <td>{{ total_summary.is_wechat_added_count }}</td>
+            <td>{{ total_summary.is_wechat_added_percent }}%</td>
+            <td>{{ total_summary.is_joined_count }}</td>
+            <td>{{ total_summary.is_joined_percent }}%</td>
+            <td>{{ total_summary.product_manager_count }}</td>
+            <td>{{ total_summary.product_manager_percent }}%</td>
+        </tr>
+    </tfoot>
+</table>
 
     <!-- 按钮组 -->
     <div class="button-group">

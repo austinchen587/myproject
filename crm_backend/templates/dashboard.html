@@ -80,6 +80,12 @@
         .mobile-version:hover {
             background-color: #c92a20;
         }
+        .product-manager-daily-report {
+            background-color: #6a1b9a;
+        }
+        .product-manager-daily-report:hover {
+            background-color: #4a148c;
+        }
 
         /* 响应式样式 */
         @media (max-width: 480px) {
@@ -102,6 +108,7 @@
         <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
         <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
         <a href="{% url 'daily_report' %}" class="button daily-report">日报</a>
+        <a href="{% url 'product_manager_daily_report' %}" class="button product-manager-daily-report">产品经理日报</a>
         <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
     </div>
 </body>

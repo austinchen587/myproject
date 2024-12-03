@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品经理日报</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #007aff;
+            margin: 20px 0;
+            font-size: 1.8rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .filter-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .filter-form label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        .filter-form input[type="date"] {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .filter-form button {
+            padding: 10px 20px;
+            background-color: #007aff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .filter-form button:hover {
+            background-color: #005bb5;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e1e1e1;
+        }
+        th {
+            background-color: #007aff;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .summary {
+            font-weight: bold;
+            background-color: #d9f7be;
+        }
+        .summary td {
+            color: #333;
+        }
+        .back-button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #ff6f61;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #e8584e;
+        }
+
+        /* 响应式设计 */
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            .container {
+                padding: 15px;
+                box-shadow: none;
+            }
+            table {
+                font-size: 0.8rem;
+            }
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            h1 {
+                font-size: 1.2rem;
+                margin: 10px 0;
+            }
+            .filter-form {
+                flex-direction: column;
+            }
+            .filter-form label, 
+            .filter-form input, 
+            .filter-form button {
+                display: block;
+                width: 100%;
+                margin: 5px 0;
+            }
+            table {
+                font-size: 0.7rem;
+            }
+            .back-button {
+                font-size: 0.8rem;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>产品经理日报</h1>
+        <form method="get" class="filter-form">
+            <label for="start_date">开始日期:</label>
+            <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+            <label for="end_date">结束日期:</label>
+            <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+            <button type="submit">筛选</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>产品经理</th>
+                    <th>高意向客户数</th>
+                    <th>中意向客户数</th>
+                    <th>低意向客户数</th>
+                    <th>总计</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in report_data %}
+                    <tr>
+                        <td>{{ data.product_manager }}</td>
+                        <td>{{ data.high_count }}</td>
+                        <td>{{ data.medium_count }}</td>
+                        <td>{{ data.low_count }}</td>
+                        <td>{{ data.total_count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="summary">
+                    <td>汇总</td>
+                    <td>{{ total_summary.high_count }}</td>
+                    <td>{{ total_summary.medium_count }}</td>
+                    <td>{{ total_summary.low_count }}</td>
+                    <td>{{ total_summary.total_count }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <a href="{% url 'dashboard' %}" class="back-button">返回首页</a>
+    </div>
+</body>
+</html>

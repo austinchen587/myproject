@@ -25,7 +25,7 @@
 
         .container {
             width: 100%;
-            max-width: 1900px;
+            max-width: 2200px;
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
@@ -223,6 +223,7 @@
         <option value="">全部</option>
         <option value="AI数据" {% if data_source_filter == 'AI数据' %}selected{% endif %}>AI数据</option>
         <option value="视频号" {% if data_source_filter == '视频号' %}selected{% endif %}>视频号</option>
+        <option value="国开数据" {% if data_source_filter == '国开数据' %}selected{% endif %}>国开数据</option>
         <option value="其他" {% if data_source_filter == '其他' %}selected{% endif %}>其他</option>
     </select>
 
@@ -258,6 +259,25 @@
         {% endfor %}
     </select>
 
+        <!-- 客户意向程度筛选 -->
+        <label for="intention">客户意向程度:</label>
+        <select id="intention" name="intention">
+            <option value="">全部</option>
+            <option value="低" {% if intention_filter == '低' %}selected{% endif %}>低</option>
+            <option value="中" {% if intention_filter == '中' %}selected{% endif %}>中</option>
+            <option value="高" {% if intention_filter == '高' %}selected{% endif %}>高</option>
+            <option value="未知" {% if intention_filter == '未知' %}selected{% endif %}>未知</option>
+        </select>
+    
+        <!-- 产品经理对接人筛选 -->
+        <label for="product_manager_contact">产品经理对接人:</label>
+        <select id="product_manager_contact" name="product_manager_contact">
+            <option value="">全部</option>
+            {% for contact in product_manager_contacts %}
+                <option value="{{ contact }}" {% if product_manager_contact_filter == contact %}selected{% endif %}>{{ contact }}</option>
+            {% endfor %}
+        </select>
+
     <button type="submit">筛选</button>
 </form>
 
@@ -270,8 +290,10 @@
                 <button type="button">数据分析</button>
             </a>
             <a href="{% url 'daily_report' %}" class="button-group">
-                <button type="button">日报数据</button>
+                <button type="button">前端日报数据</button>
             </a>
+            <a href="{% url 'product_manager_daily_report' %}" class="button-group">
+                <button type="button">产品经理日报数据</button>
         </div>
 
         <!-- 客户表格 -->
@@ -292,7 +314,9 @@
                         <th>是否入群</th>
                         <th>是否成交</th>
                         <th class="description-column">客户描述</th>
-                        <th class="supervisor-comments-column">主管点评</th>
+                        <th>客户意向度</th>
+                        <th>产品经理对接人</th>
+                        <th class="supervisor-comments-column">产品经理反馈</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -314,6 +338,8 @@
                                 <td>{% if customer.is_joined %}✔️{% else %}✘{% endif %}</td>
                                 <td>{% if customer.is_closed %}✔️{% else %}✘{% endif %}</td>
                                 <td class="description-column">{{ customer.description|default:"暂无描述" }}</td>
+                                <td>{{ customer.intention }}</td>
+                                <td>{{ customer.product_manager_contact }}</td>                               
                                 <td class="supervisor-comments-column">{{ customer.supervisor_comments|default:"暂无点评" }}</td>
                                 <td class="button-group">
                                     <a href="{% url 'customer_detail' customer.id %}">详情</a>

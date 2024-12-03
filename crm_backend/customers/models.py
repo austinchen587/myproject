@@ -123,7 +123,14 @@ class Customer(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name='客户描述')
 
     # 增加一个主管点评字段
-    supervisor_comments = models.TextField(blank=True, null=True, verbose_name='主管点评')
+    supervisor_comments = models.TextField(blank=True, null=True, verbose_name='产品经理反馈')
+
+    # 新增字段
+    product_manager_contact = models.CharField(
+        max_length=20,
+        default='未分配',
+        verbose_name='产品经理对接人'
+    )
 
     
 

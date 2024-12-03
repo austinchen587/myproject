@@ -20,11 +20,11 @@ from django.urls import reverse
 
 @login_required
 def customerlist(request):
-    # 获取当前时间和默认的过去5天时间范围
+    # 获取当前时间和默认的过去2天时间范围
     now = timezone.now()
     two_days_ago = now - timezone.timedelta(days=2)
-    
-    # 如果没有筛选条件，则默认设置时间范围为过去5天
+
+    # 如果没有筛选条件，则默认设置时间范围为过去2天
     start_date = request.GET.get('start_date') or two_days_ago.strftime('%Y-%m-%d')
     end_date = request.GET.get('end_date') or now.strftime('%Y-%m-%d')
 
@@ -37,6 +37,8 @@ def customerlist(request):
     is_closed_filter = request.GET.get('is_closed', '')
     created_by_filter = request.GET.get('created_by', '')
     wechat_name_filter = request.GET.get('wechat_name', '')  # 新增的微信名筛选参数
+    intention_filter = request.GET.get('intention', '')  # 客户意向程度筛选参数
+    product_manager_contact_filter = request.GET.get('product_manager_contact', '')  # 产品经理对接人筛选参数
 
     # 初步时间筛选和排序
     customers = Customer.objects.filter(created_at__date__range=[start_date, end_date]).order_by('-created_at')
@@ -64,9 +66,16 @@ def customerlist(request):
         customers = customers.filter(created_by__id=created_by_filter)
     if wechat_name_filter:  # 应用微信名筛选条件
         customers = customers.filter(wechat_name__icontains=wechat_name_filter)
+    if intention_filter:  # 应用客户意向程度筛选条件
+        customers = customers.filter(intention=intention_filter)
+    if product_manager_contact_filter:  # 应用产品经理对接人筛选条件
+        customers = customers.filter(product_manager_contact=product_manager_contact_filter)
 
     # 获取所有归属人用于筛选选择框
     all_users = SalesUser.objects.all()
+
+    # 获取所有产品经理对接人选项
+    product_manager_contacts = Customer.objects.values_list('product_manager_contact', flat=True).distinct()
 
     # 当前用户角色和组
     current_user_role = getattr(request.user, 'role', None)
@@ -88,7 +97,10 @@ def customerlist(request):
         'is_joined_filter': is_joined_filter,
         'is_closed_filter': is_closed_filter,
         'created_by_filter': created_by_filter,
+        'intention_filter': intention_filter,  # 传递客户意向筛选参数
+        'product_manager_contact_filter': product_manager_contact_filter,  # 传递产品经理对接人筛选参数
         'all_users': all_users,
+        'product_manager_contacts': product_manager_contacts,  # 传递产品经理对接人列表
         'current_user_role': current_user_role,
         'current_user_group_id': current_user_group_id,
     })
@@ -402,7 +414,8 @@ def daily_report(request):
         'is_contacted_count': 0,
         'is_invited_count': 0,
         'is_wechat_added_count': 0,
-        'is_joined_count': 0
+        'is_joined_count': 0,
+        'product_manager_count': 0,  # 增加产品经理对接人统计
     }
     
     for member in group_members:
@@ -412,6 +425,12 @@ def daily_report(request):
         is_invited_count = Customer.objects.filter(created_by=member, is_invited=True, created_at__date=selected_date).count()
         is_wechat_added_count = Customer.objects.filter(created_by=member, is_wechat_added=True, created_at__date=selected_date).count()
         is_joined_count = Customer.objects.filter(created_by=member, is_joined=True, created_at__date=selected_date).count()
+        
+        # 统计产品经理对接人非默认值的数量
+        product_manager_count = Customer.objects.filter(
+            created_by=member,
+            created_at__date=selected_date
+        ).exclude(product_manager_contact='未分配').count()
 
         # 计算百分比，保留两位小数
         report_data.append({
@@ -425,6 +444,8 @@ def daily_report(request):
             'is_wechat_added_percent': round((is_wechat_added_count / total_phone_count) * 100, 2) if total_phone_count else 0,
             'is_joined_count': is_joined_count,
             'is_joined_percent': round((is_joined_count / total_phone_count) * 100, 2) if total_phone_count else 0,
+            'product_manager_count': product_manager_count,
+            'product_manager_percent': round((product_manager_count / total_phone_count) * 100, 2) if total_phone_count else 0,
         })
 
         # 更新汇总数据
@@ -433,6 +454,7 @@ def daily_report(request):
         total_summary['is_invited_count'] += is_invited_count
         total_summary['is_wechat_added_count'] += is_wechat_added_count
         total_summary['is_joined_count'] += is_joined_count
+        total_summary['product_manager_count'] += product_manager_count
 
     # 汇总百分比
     if total_summary['total_phone_count'] > 0:
@@ -440,11 +462,13 @@ def daily_report(request):
         total_summary['is_invited_percent'] = round((total_summary['is_invited_count'] / total_summary['total_phone_count']) * 100, 2)
         total_summary['is_wechat_added_percent'] = round((total_summary['is_wechat_added_count'] / total_summary['total_phone_count']) * 100, 2)
         total_summary['is_joined_percent'] = round((total_summary['is_joined_count'] / total_summary['total_phone_count']) * 100, 2)
+        total_summary['product_manager_percent'] = round((total_summary['product_manager_count'] / total_summary['total_phone_count']) * 100, 2)
     else:
         total_summary['is_contacted_percent'] = 0
         total_summary['is_invited_percent'] = 0
         total_summary['is_wechat_added_percent'] = 0
         total_summary['is_joined_percent'] = 0
+        total_summary['product_manager_percent'] = 0
 
     return render(request, 'daily_report.html', {
         'group_leaders': group_leaders,
@@ -542,3 +566,80 @@ def upload_audio(request, customer_id):
 
     print("收到无效的请求")
     return JsonResponse({"error": "无效的请求"}, status=400)
+
+
+
+@login_required
+def product_manager_daily_report(request):
+    # 获取当前日期
+    today_date = datetime.today().strftime('%Y-%m-%d')
+    start_date = request.GET.get('start_date', today_date)  # 获取自定义开始日期
+    end_date = request.GET.get('end_date', today_date)      # 获取自定义结束日期
+
+    # 指定的组长
+    leader_name = '汪城波'
+    group_leader = SalesUser.objects.filter(username=leader_name).first()
+
+    if not group_leader:
+        return render(request, 'product_manager_daily_report.html', {
+            'error': '指定的组长不存在',
+        })
+
+    # 获取组长下的所有组员
+    group_members = SalesUser.objects.filter(group_leader=group_leader)
+
+    # 构建成员映射：user_id -> username
+    user_id_to_username = {member.id: member.username for member in group_members}
+
+    # 筛选客户数据：产品经理对接人是汪城波组下成员用户名
+    customers = Customer.objects.filter(
+        product_manager_contact__in=user_id_to_username.values(),
+        created_at__date__range=[start_date, end_date]
+    )
+
+    # 统计每个产品经理对接人的客户意向
+    report_data = []
+    product_manager_contacts = customers.values_list('product_manager_contact', flat=True).distinct()
+
+    for product_manager in product_manager_contacts:
+        # 统计该产品经理对接人的客户意向
+        customer_data = customers.filter(product_manager_contact=product_manager).values('intention').annotate(count=Count('intention'))
+
+        # 初始化意向统计
+        intention_counts = {
+            '高': 0,
+            '中': 0,
+            '低': 0
+        }
+
+        # 填充统计数据
+        for data in customer_data:
+            intention_counts[data['intention']] = data['count']
+
+        # 汇总总计
+        total_count = sum(intention_counts.values())
+
+        # 添加统计结果
+        report_data.append({
+            'product_manager': product_manager,  # 产品经理对接人
+            'high_count': intention_counts['高'],
+            'medium_count': intention_counts['中'],
+            'low_count': intention_counts['低'],
+            'total_count': total_count,
+        })
+
+    # 汇总统计
+    total_summary = {
+        'high_count': sum(data['high_count'] for data in report_data),
+        'medium_count': sum(data['medium_count'] for data in report_data),
+        'low_count': sum(data['low_count'] for data in report_data),
+        'total_count': sum(data['total_count'] for data in report_data),
+    }
+
+    return render(request, 'product_manager_daily_report.html', {
+        'start_date': start_date,
+        'end_date': end_date,
+        'group_leader': leader_name,
+        'report_data': report_data,
+        'total_summary': total_summary,
+    })

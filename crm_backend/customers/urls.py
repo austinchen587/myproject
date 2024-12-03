@@ -15,6 +15,7 @@ from .views import (
     daily_report,
     mobile_view,
     upload_audio,
+    product_manager_daily_report,
     
 )
 
@@ -32,6 +33,7 @@ urlpatterns = [
     path('daily_report/', daily_report, name='daily_report'),
     path('mobile/', mobile_view, name='mobile_view'),  # 定义手机端模板的路由
     path('<int:customer_id>/upload-audio/', upload_audio, name='upload_audio'),
+    path('product_manager_daily_report/', product_manager_daily_report, name='product_manager_daily_report'),
     
  
 
