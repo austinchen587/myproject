@@ -12,6 +12,7 @@ def customer_audio_upload_path(instance, filename):
     """
     return os.path.join("customer_audio", str(instance.id), filename)
 
+
 # 定义客户模型
 class Customer(models.Model):
     name = models.CharField(max_length=100, default='未知', verbose_name='姓名')
@@ -122,6 +123,11 @@ class Customer(models.Model):
 
     description = models.TextField(blank=True, null=True, verbose_name='客户描述')
 
+
+        # 添加一个方法获取所有评论
+    def get_comments(self):
+        return self.comments.all()
+
     # 增加一个主管点评字段
     supervisor_comments = models.TextField(blank=True, null=True, verbose_name='产品经理反馈')
 
@@ -162,3 +168,32 @@ class Recording(models.Model):
 
     def __str__(self):
         return f"录音 - {self.customer.name} ({self.created_at.strftime('%Y-%m-%d %H:%M:%S')})"
+    
+
+
+
+
+class Comment(models.Model):
+    customer = models.ForeignKey(
+        "Customer",
+        on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name="客户"
+    )
+    content = models.TextField(verbose_name="评论内容")
+    created_by = models.ForeignKey(
+        SalesUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="comments_created",
+        verbose_name="评论人"
+    )
+    created_at = models.DateTimeField(default=now, verbose_name="评论时间")
+
+    class Meta:
+        verbose_name = "评论"
+        verbose_name_plural = "评论记录"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.customer.name} 的评论 ({self.created_at.strftime('%Y-%m-%d %H:%M:%S')})"

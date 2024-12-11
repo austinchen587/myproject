@@ -1,0 +1,17 @@
+{% extends 'mobile/base/base_mobile.html' %}
+
+{% block title %}客户列表{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- 引入筛选表单 -->
+    {% include 'mobile/base/filter_section.html' %}
+    
+    <!-- 客户列表展示 -->
+    <div class="customer-list">
+        {% for customer in customers %}
+            {% include 'mobile/base/customer_card.html' with customer=customer %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}移动端页面{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+</head>
+<body>
+    <!-- 包含 header -->
+    <header class="header">
+        {% include 'mobile/base/header.html' %}
+    </header>
+
+    <!-- 主内容容器 -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 包含 footer -->
+    {% include 'mobile/base/footer.html' %}
+
+    <!-- JavaScript 文件 -->
+    <script src="{% static 'js/mobile.js' %}"></script>
+</body>
+</html>
