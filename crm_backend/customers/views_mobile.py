@@ -18,11 +18,11 @@ from datetime import datetime, timedelta
 @login_required
 def mobile_view(request):
     today = datetime.today().date()
-    default_start_date = today - timedelta(days=2)
+    default_start_date = today - timedelta(days=2)  # 默认显示最近2天
 
     # 获取筛选条件并提供默认值
-    start_date = request.GET.get('start_date', default_start_date)
-    end_date = request.GET.get('end_date', today)
+    start_date = request.GET.get('start_date', '').strip()
+    end_date = request.GET.get('end_date', '').strip()
     phone_filter = request.GET.get('phone', '').strip()
     data_source_filter = request.GET.get('data_source', '').strip()
     student_batch_filter = request.GET.get('student_batch', '').strip()
@@ -32,10 +32,15 @@ def mobile_view(request):
 
     # 日期处理
     try:
-        if isinstance(start_date, str):
+        if start_date:
             start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-        if isinstance(end_date, str):
+        else:
+            start_date = default_start_date  # 使用默认值
+
+        if end_date:
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+        else:
+            end_date = today  # 使用默认值
     except ValueError:
         return JsonResponse({"error": "日期格式错误，请检查输入"}, status=400)
 
