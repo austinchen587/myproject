@@ -45,6 +45,8 @@
         <p><strong>学员期数:</strong> {{ customer.student_batch }}</p>
         <p><strong>数据来源:</strong> {{ customer.data_source }}</p>
         <p><strong>创建时间:</strong> {{ customer.created_at|date:"Y-m-d H:i" }}</p>
+        <!-- 链接到编辑客户页面 -->
+        <a href="{% url 'edit_customer' customer.id %}" class="edit-customer-btn">编辑客户</a>
     </div>
 
     <!-- 切换详情按钮 -->

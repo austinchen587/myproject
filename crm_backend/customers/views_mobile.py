@@ -10,31 +10,34 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.shortcuts import redirect
 import json
+from sales.models import SalesUser
+from django.utils.timezone import make_aware
+from datetime import datetime, timedelta
+
 
 @login_required
 def mobile_view(request):
     today = datetime.today().date()
-    default_start_date = today - timedelta(days=5)
+    default_start_date = today - timedelta(days=2)
 
-    # 获取筛选条件
+    # 获取筛选条件并提供默认值
     start_date = request.GET.get('start_date', default_start_date)
     end_date = request.GET.get('end_date', today)
-    phone_filter = request.GET.get('phone', '')
-    wechat_name_filter = request.GET.get('wechat_name', '')
-    data_source_filter = request.GET.get('data_source', '')
-    student_batch_filter = request.GET.get('student_batch', '')
-    is_contacted_filter = request.GET.get('is_contacted', '')
-    is_joined_filter = request.GET.get('is_joined', '')
-    is_closed_filter = request.GET.get('is_closed', '')
-    created_by_filter = request.GET.get('created_by', '')
-    intention_filter = request.GET.get('intention', '')
-    product_manager_contact_filter = request.GET.get('product_manager_contact', '')
+    phone_filter = request.GET.get('phone', '').strip()
+    data_source_filter = request.GET.get('data_source', '').strip()
+    student_batch_filter = request.GET.get('student_batch', '').strip()
+    is_joined_filter = request.GET.get('is_joined', '').strip()
+    created_by_filter = request.GET.get('created_by', '').strip()
+    intention_filter = request.GET.get('intention', '').strip()
 
     # 日期处理
-    if isinstance(start_date, str):
-        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-    if isinstance(end_date, str):
-        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+    try:
+        if isinstance(start_date, str):
+            start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        if isinstance(end_date, str):
+            end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+    except ValueError:
+        return JsonResponse({"error": "日期格式错误，请检查输入"}, status=400)
 
     # 转换为时区感知的 datetime
     start_datetime = make_aware(datetime.combine(start_date, datetime.min.time()))
@@ -46,41 +49,38 @@ def mobile_view(request):
     # 应用其他筛选条件
     if phone_filter:
         customers = customers.filter(phone__icontains=phone_filter)
-    if wechat_name_filter:
-        customers = customers.filter(wechat_name__icontains=wechat_name_filter)
     if data_source_filter:
         customers = customers.filter(data_source=data_source_filter)
     if student_batch_filter:
-        customers = customers.filter(student_batch=student_batch_filter)
-    if is_contacted_filter:
-        customers = customers.filter(is_contacted=(is_contacted_filter == 'yes'))
-    if is_joined_filter:
+        if student_batch_filter.isdigit():
+            customers = customers.filter(student_batch=int(student_batch_filter))
+    if is_joined_filter in ['yes', 'no']:
         customers = customers.filter(is_joined=(is_joined_filter == 'yes'))
-    if is_closed_filter:
-        customers = customers.filter(is_closed=(is_closed_filter == 'yes'))
     if created_by_filter:
-        customers = customers.filter(created_by__id=created_by_filter)
+        if created_by_filter.isdigit():
+            customers = customers.filter(created_by__id=int(created_by_filter))
     if intention_filter:
         customers = customers.filter(intention=intention_filter)
-    if product_manager_contact_filter:
-        customers = customers.filter(product_manager_contact=product_manager_contact_filter)
+
+    # 按创建时间降序排列
+    customers = customers.order_by('-created_at')
+
+    # 获取所有 SalesUser 信息供筛选使用
+    all_users = SalesUser.objects.all()
 
     # 渲染模板，传递筛选上下文
     return render(request, 'mobile/mobile_sub/customer_list.html', {
         "customers": customers,
         "user": request.user,
-        "start_date": start_date or '',
-        "end_date": end_date or '',
+        "all_users": all_users,
+        "start_date": start_date,
+        "end_date": end_date,
         "phone_filter": phone_filter,
-        "wechat_name_filter": wechat_name_filter,
         "data_source_filter": data_source_filter,
         "student_batch_filter": student_batch_filter,
-        "is_contacted_filter": is_contacted_filter,
         "is_joined_filter": is_joined_filter,
-        "is_closed_filter": is_closed_filter,
         "created_by_filter": created_by_filter,
         "intention_filter": intention_filter,
-        "product_manager_contact_filter": product_manager_contact_filter,
     })
 
 @login_required
