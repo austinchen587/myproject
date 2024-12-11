@@ -51,6 +51,12 @@ def mobile_view(request):
     # 初步筛选客户
     customers = Customer.objects.filter(created_at__range=(start_datetime, end_datetime))
 
+    # 权限控制：普通用户只能查看自己的客户，组长可以查看本组客户，管理员查看所有客户
+    if request.user.role == 'user':
+        customers = customers.filter(created_by=request.user)
+    elif request.user.role == 'group_leader':
+        customers = customers.filter(created_by__group_leader=request.user)
+
     # 应用其他筛选条件
     if phone_filter:
         customers = customers.filter(phone__icontains=phone_filter)
