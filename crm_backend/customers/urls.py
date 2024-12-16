@@ -17,7 +17,8 @@ from .views import (
     
 )
 
-from .views_mobile import mobile_view, upload_audio ,customer_detail_mobile,add_comment_ajax # 导入新的视图函数
+from .views_mobile import mobile_view,customer_detail_mobile,add_comment_ajax # 导入新的视图函数
+from .views_mobile_audio import upload_audio,delete_audio
 
 urlpatterns = [
 
@@ -33,7 +34,8 @@ urlpatterns = [
     path('data_analysis_json/', analysis_data_json, name='data_analysis_json'),  # 添加此行
     path('get_completion_data/', get_completion_data, name='get_completion_data'),
     path('daily_report/', daily_report, name='daily_report'),
-    path('<int:customer_id>/upload-audio/', upload_audio, name='upload_audio'),
+    path('customers/recording/upload/<int:customer_id>/', upload_audio, name='upload_audio'),
+    path('customers/recording/delete/<int:recording_id>/', delete_audio, name='delete_audio'),
     path('product_manager_daily_report/', product_manager_daily_report, name='product_manager_daily_report'),
     path('add_comment_ajax/', add_comment_ajax, name='add_comment_ajax'),
     

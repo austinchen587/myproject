@@ -7,10 +7,14 @@ from django.utils.timezone import now
 
 def customer_audio_upload_path(instance, filename):
     """
-    定义音频文件的上传路径
-    示例：customer_audio/<customer_id>/<filename>
+    保存文件到 media/customer_audio/<customer_id>/<filename>
     """
-    return os.path.join("customer_audio", str(instance.id), filename)
+    # 获取文件扩展名
+    file_extension = os.path.splitext(filename)[1]
+    # 使用时间戳 + 文件名，避免文件名重复
+    new_filename = f"{now().strftime('%Y%m%d%H%M%S')}{file_extension}"
+    # 组织存储路径
+    return os.path.join("customer_audio", str(instance.customer.id), new_filename)
 
 
 # 定义客户模型
@@ -156,10 +160,10 @@ class Recording(models.Model):
         verbose_name="客户"
     )
     audio_file = models.FileField(
-        upload_to="recordings/%Y/%m/%d/",
+        upload_to=customer_audio_upload_path,
         verbose_name="录音文件"
     )
-    created_at = models.DateTimeField(default=now, verbose_name="录音时间")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="录音时间")
 
     class Meta:
         verbose_name = "录音"

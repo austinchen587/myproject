@@ -94,34 +94,6 @@ def mobile_view(request):
         "intention_filter": intention_filter,
     })
 
-@login_required
-def upload_audio(request, customer_id):
-    """
-    处理客户音频文件上传
-    """
-    if request.method == "POST":
-        if "audio" not in request.FILES:
-            return JsonResponse({"error": "未接收到音频文件"}, status=400)
-
-        audio_file = request.FILES["audio"]
-        file_extension = os.path.splitext(audio_file.name)[1].lower()
-        allowed_extensions = [".wav", ".mp3", ".m4a", ".ogg", ".flac"]
-
-        if file_extension not in allowed_extensions:
-            return JsonResponse({"error": f"不支持的文件扩展名: {file_extension}"}, status=400)
-
-        mime_type, _ = mimetypes.guess_type(audio_file.name)
-        allowed_types = ["audio/wav", "audio/mpeg", "audio/x-m4a", "audio/ogg", "audio/flac"]
-        if not mime_type or mime_type not in allowed_types:
-            return JsonResponse({"error": f"不支持的文件类型: {mime_type}"}, status=400)
-
-        customer = get_object_or_404(Customer, id=customer_id)
-        customer.audio_file.save(audio_file.name, audio_file, save=True)
-
-        return JsonResponse({"message": "音频文件上传成功！", "file_url": customer.audio_file.url})
-
-    return JsonResponse({"error": "无效的请求"}, status=400)
-
 
 @login_required
 def customer_detail_mobile(request, id):

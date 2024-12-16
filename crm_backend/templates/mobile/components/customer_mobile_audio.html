@@ -1,0 +1,35 @@
+{% load static %}
+
+<div class="customer-audio-section">
+    <h2>录音记录</h2>
+    <ul id="audioRecordList">
+        {% for recording in customer.recordings.all %}
+            <li id="recording-{{ recording.id }}">
+                <p>上传时间: {{ recording.created_at|date:"Y-m-d H:i:s" }}</p>
+                <audio controls>
+                    <source src="{{ recording.audio_file.url }}" type="audio/mpeg">
+                    您的浏览器不支持音频播放。
+                </audio>
+                <!-- 删除按钮 -->
+                <button class="delete-audio-btn" data-recording-id="{{ recording.id }}">删除</button>
+            </li>
+        {% empty %}
+            <p>暂无录音记录。</p>
+        {% endfor %}
+    </ul>
+
+    <!-- 录音上传表单 -->
+    <h3>上传新的录音</h3>
+    <form id="uploadAudioForm" method="post" enctype="multipart/form-data" data-customer-id="{{ customer.id }}">
+        {% csrf_token %}
+        <label for="audioFileInput">选择音频文件:</label>
+        <input type="file" name="audio_file" id="audioFileInput" accept="audio/*" required>
+        <button type="submit" id="uploadButton">上传</button>
+    </form>
+
+    <!-- 显示上传进度 -->
+    <div id="uploadProgress" style="display: none;">
+        <p>上传中，请稍候...</p>
+    </div>
+</div>
+
