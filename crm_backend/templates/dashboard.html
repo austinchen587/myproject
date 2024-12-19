@@ -4,102 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>选择页面</title>
-    {% load static %} <!-- 加载 static 标签库 -->
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: url("{% static 'images/pexels.jpg' %}") no-repeat center center fixed;
-            background-size: cover;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            text-align: center;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 360px;
-            transition: box-shadow 0.3s ease;
-        }
-        .container:hover {
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-        }
-        h2 {
-            font-size: 1.6em;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        p.welcome-message {
-            font-size: 1em;
-            color: #e63946;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .button {
-            display: block;
-            padding: 12px 0;
-            margin: 8px auto;
-            font-size: 1em;
-            border: none;
-            border-radius: 8px;
-            width: 85%;
-            max-width: 300px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            color: #fff;
-            transition: background-color 0.3s ease;
-        }
-        .customer-list {
-            background-color: #007aff;
-        }
-        .customer-list:hover {
-            background-color: #005bb5;
-        }
-        .data-analysis {
-            background-color: #34c759;
-        }
-        .data-analysis:hover {
-            background-color: #28a745;
-        }
-        .daily-report {
-            background-color: #ff9f0a;
-        }
-        .daily-report:hover {
-            background-color: #ff6f0a;
-        }
-        .mobile-version {
-            background-color: #ff3b30;
-        }
-        .mobile-version:hover {
-            background-color: #c92a20;
-        }
-        .product-manager-daily-report {
-            background-color: #6a1b9a;
-        }
-        .product-manager-daily-report:hover {
-            background-color: #4a148c;
-        }
-
-        /* 响应式样式 */
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-            }
-            h2 {
-                font-size: 1.4em;
-            }
-            .button {
-                font-size: 0.9em;
-            }
-        }
-    </style>
+    {% load static %}
+    <!-- 引入 dashboard.css -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
     <div class="container">
@@ -110,6 +17,7 @@
         <a href="{% url 'daily_report' %}" class="button daily-report">前端日报</a>
         <a href="{% url 'product_manager_daily_report' %}" class="button product-manager-daily-report">产品经理日报</a>
         <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
+        <a href="{% url 'closed_customer_detail' %}" class="button closed_customer_detail">成交客户详情</a>
     </div>
 </body>
 </html>

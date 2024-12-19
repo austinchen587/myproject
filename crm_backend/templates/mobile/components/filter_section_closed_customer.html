@@ -1,0 +1,38 @@
+<div class="filter-section">
+    <!-- 筛选按钮 -->
+    <button id="toggle-filter" class="filter-toggle">显示筛选条件</button>
+
+    <!-- 筛选器表单，默认隐藏 -->
+    <form method="get" action="{% url 'closed_customer_detail' %}" id="filter-form" style="display: none;">
+        <label for="start_date">开始日期:</label>
+        <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+
+        <label for="end_date">结束日期:</label>
+        <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+
+        <label for="phone">手机号:</label>
+        <input type="text" id="phone" name="phone" value="{{ phone_filter }}">
+
+        <label for="data_source">数据来源:</label>
+        <select id="data_source" name="data_source">
+            <option value="">全部</option>
+            <option value="AI数据" {% if data_source_filter == 'AI数据' %}selected{% endif %}>AI数据</option>
+            <option value="视频号" {% if data_source_filter == '视频号' %}selected{% endif %}>视频号</option>
+            <option value="国开数据" {% if data_source_filter == '国开数据' %}selected{% endif %}>国开数据</option>
+            <option value="其他" {% if data_source_filter == '其他' %}selected{% endif %}>其他</option>
+        </select>
+
+        <label for="student_batch">学员期数:</label>
+        <input type="text" id="student_batch" name="student_batch" value="{{ student_batch_filter }}">
+
+        <label for="created_by">归属人:</label>
+        <select id="created_by" name="created_by">
+            <option value="">全部</option>
+            {% for user in all_users %}
+                <option value="{{ user.id }}" {% if created_by_filter == user.id|stringformat:"s" %}selected{% endif %}>{{ user.username }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">筛选</button>
+    </form>
+</div>

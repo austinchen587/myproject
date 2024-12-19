@@ -1,0 +1,37 @@
+<form method="get" action="{% url 'customer_list' %}">
+    <label for="start_date">开始日期:</label>
+    <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+
+    <label for="end_date">结束日期:</label>
+    <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+
+    <label for="phone">手机号:</label>
+    <input type="text" id="phone" name="phone" value="{{ phone_filter }}">
+
+    <label for="wechat_name">客户微信名:</label>
+    <input type="text" id="wechat_name" name="wechat_name" value="{{ wechat_name_filter }}">
+
+    <label for="data_source">数据来源:</label>
+    <select id="data_source" name="data_source">
+        <option value="">全部</option>
+        {% for source in all_data_sources %}
+            <option value="{{ source }}" {% if source == data_source_filter %}selected{% endif %}>{{ source }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="is_contacted">是否接通:</label>
+    <select id="is_contacted" name="is_contacted">
+        <option value="">全部</option>
+        <option value="yes" {% if is_contacted_filter == 'yes' %}selected{% endif %}>是</option>
+        <option value="no" {% if is_contacted_filter == 'no' %}selected{% endif %}>否</option>
+    </select>
+
+    <label for="is_closed">是否成交:</label>
+    <select id="is_closed" name="is_closed">
+        <option value="">全部</option>
+        <option value="yes" {% if is_closed_filter == 'yes' %}selected{% endif %}>是</option>
+        <option value="no" {% if is_closed_filter == 'no' %}selected{% endif %}>否</option>
+    </select>
+
+    <button type="submit">筛选</button>
+</form>

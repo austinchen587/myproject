@@ -1,0 +1,136 @@
+/* 允许页面整体滚动 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: url("../images/pexels.jpg") no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto; /* 允许垂直滚动 */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* 从顶部开始排列内容 */
+    min-height: 100vh;
+}
+
+/* 容器样式，内容居中 */
+.container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9); /* 半透明白色背景，提升对比度 */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 360px;
+    transition: box-shadow 0.3s ease;
+    margin: 20px auto; /* 增加顶部和底部外边距，避免内容挤压 */
+}
+
+/* 鼠标悬停的阴影效果 */
+.container:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* 标题样式 */
+h2 {
+    font-size: 1.6em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* 欢迎消息样式 */
+p.welcome-message {
+    font-size: 1em;
+    color: #e63946;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* 按钮样式 */
+.button {
+    display: block;
+    padding: 12px 0;
+    margin: 12px auto; /* 增加按钮之间的间距 */
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    width: 85%;
+    max-width: 300px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 提高按钮可见性 */
+}
+
+/* 按钮悬停效果 */
+.button:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 每个按钮的颜色样式 */
+.customer-list {
+    background-color: #007aff;
+}
+
+.customer-list:hover {
+    background-color: #005bb5;
+}
+
+.data-analysis {
+    background-color: #34c759;
+}
+
+.data-analysis:hover {
+    background-color: #28a745;
+}
+
+.daily-report {
+    background-color: #ff9f0a;
+}
+
+.daily-report:hover {
+    background-color: #ff6f0a;
+}
+
+.mobile-version {
+    background-color: #ff3b30;
+}
+
+.mobile-version:hover {
+    background-color: #c92a20;
+}
+
+.product-manager-daily-report {
+    background-color: #6a1b9a;
+}
+
+.product-manager-daily-report:hover {
+    background-color: #4a148c;
+}
+
+.closed_customer_detail {
+    background-color: #1e88e5; /* 明显的蓝色背景 */
+    color: #ffffff; /* 白色文字，增强对比度 */
+    font-weight: bold; /* 字体加粗 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 添加阴影，提升立体感 */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.closed_customer_detail:hover {
+    background-color: #1565c0; /* 悬停时的深蓝色 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 鼠标悬停时增加阴影 */
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+    h2 {
+        font-size: 1.4em;
+    }
+    .button {
+        font-size: 0.9em;
+    }
+}

@@ -17,8 +17,9 @@ from .views import (
     
 )
 
-from .views_mobile import mobile_view,customer_detail_mobile,add_comment_ajax # 导入新的视图函数
+from .views_mobile import mobile_view,customer_detail_mobile,add_comment_ajax,closed_customer_detail
 from .views_mobile_audio import upload_audio,delete_audio
+from .views_new_customer import customer_list
 
 urlpatterns = [
 
@@ -38,6 +39,9 @@ urlpatterns = [
     path('customers/recording/delete/<int:recording_id>/', delete_audio, name='delete_audio'),
     path('product_manager_daily_report/', product_manager_daily_report, name='product_manager_daily_report'),
     path('add_comment_ajax/', add_comment_ajax, name='add_comment_ajax'),
+    path('customer-list/', customer_list, name='customer_list'),
+    path('closed_customer/', closed_customer_detail, name='closed_customer_detail'),
+    
     
  
 

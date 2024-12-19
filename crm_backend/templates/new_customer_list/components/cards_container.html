@@ -1,0 +1,5 @@
+<div class="cards-container">
+    {% for customer in page_obj.object_list %}
+        {% include 'new_customer_list/components/customer_card.html' %}
+    {% endfor %}
+</div>

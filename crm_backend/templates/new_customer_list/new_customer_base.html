@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}客户管理{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/new_customer_filters.css' %}">
+    <link rel="stylesheet" href="{% static 'css/new_customer_card.css' %}">
+</head>
+<body>
+    <div class="page-container">
+        <!-- 页面顶部 -->
+        {% block header %}
+        <header>
+            <h1>客户管理系统</h1>
+        </header>
+        {% endblock %}
+
+        <!-- 页面主要内容 -->
+        {% block content %}
+        <!-- 子模板的主要内容 -->
+        {% endblock %}
+
+        <!-- 页面底部 -->
+        {% block footer %}
+        <footer>
+            <p>&copy; 2024 客户管理系统</p>
+        </footer>
+        {% endblock %}
+    </div>
+    {% block scripts %}
+    <script src="{% static 'js/scripts.js' %}"></script>
+    {% endblock %}
+</body>
+</html>

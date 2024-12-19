@@ -98,14 +98,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("mobile.js 已加载");
+
+    // 筛选器逻辑
     const filterToggleButton = document.getElementById("toggle-filter");
     const filterForm = document.getElementById("filter-form");
 
     if (filterToggleButton && filterForm) {
         filterToggleButton.addEventListener("click", () => {
             const isHidden = filterForm.style.display === "none" || filterForm.style.display === "";
-            filterForm.style.display = isHidden ? "block" : "none"; // 切换显示/隐藏
-            filterToggleButton.textContent = isHidden ? "隐藏筛选条件" : "显示筛选条件"; // 更新按钮文字
+            filterForm.style.display = isHidden ? "block" : "none";
+            filterToggleButton.textContent = isHidden ? "隐藏筛选条件" : "显示筛选条件";
         });
+    } else {
+        console.error("筛选器相关 DOM 元素未找到！");
     }
 });

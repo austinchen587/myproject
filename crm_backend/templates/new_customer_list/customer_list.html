@@ -1,0 +1,39 @@
+{% extends 'new_customer_list/new_customer_base.html' %}
+
+{% block title %}客户列表{% endblock %}
+
+{% block content %}
+    <h2>客户列表</h2>
+
+    <!-- 筛选器 -->
+    {% include 'new_customer_list/components/filter_form.html' %}
+
+    <!-- 操作按钮 -->
+    {% include 'new_customer_list/components/action_buttons.html' %}
+
+    <!-- 客户卡片列表 -->
+    {% if page_obj.object_list %}
+        {% include 'new_customer_list/components/cards_container.html' %}
+    {% else %}
+        <p class="no-data">没有符合条件的客户。</p>
+    {% endif %}
+
+    <!-- 分页导航 -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">首页</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">上一页</a>
+            {% endif %}
+    
+            <span class="current">
+                第 {{ page_obj.number }} 页，共 {{ page_obj.paginator.num_pages }} 页
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">下一页</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">末页</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}

@@ -490,3 +490,131 @@ body {
 .submit-comment-btn:hover {
     background-color: #218838;
 }
+
+/* 录音播放样式 */
+.customer-audio-section {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.customer-audio-section h4 {
+    margin-bottom: 8px;
+    font-size: 1.1em;
+    color: #333;
+}
+
+.customer-audio-section p {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* 筛选器样式 */
+.filter-section {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.filter-toggle {
+    display: block;
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.filter-toggle:hover {
+    background-color: #0056b3;
+}
+
+#filter-form {
+    margin-top: 10px;
+    display: none;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#filter-form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#filter-form input,
+#filter-form select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#filter-form button {
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#filter-form button:hover {
+    background-color: #218838;
+}
+
+/* 客户列表样式 */
+.customer-list {
+    margin-top: 20px;
+}
+
+.customer-item {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+.customer-header {
+    margin-bottom: 10px;
+}
+
+.customer-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.customer-meta {
+    font-size: 14px;
+    color: #555;
+}
+
+.customer-description {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+.comments-section {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}

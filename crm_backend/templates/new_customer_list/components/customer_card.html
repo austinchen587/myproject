@@ -1,0 +1,17 @@
+<div class="customer-card">
+    <div class="card-header">
+        <h3>{{ customer.name }}</h3>
+        <p>归属人: {{ customer.created_by }}</p>
+    </div>
+    <div class="card-body">
+        <p><strong>电话:</strong> {{ customer.phone }}</p>
+        <p><strong>数据来源:</strong> {{ customer.data_source }}</p>
+        <p><strong>意向度:</strong> {{ customer.intention }}</p>
+        <p><strong>描述:</strong> {{ customer.description|default:"暂无描述" }}</p>
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'customer_detail' customer.id %}" class="btn">详情</a>
+        <a href="{% url 'edit_customer' customer.id %}" class="btn">编辑</a>
+        <button class="btn delete" data-id="{{ customer.id }}" onclick="deleteCustomer(this)">删除</button>
+    </div>
+</div>
