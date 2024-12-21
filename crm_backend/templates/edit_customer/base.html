@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    {% load static %} <!-- 确保加载 static 标签库 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CRM 系统{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/x_edit_customer.css' %}">
+</head>
+<body>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

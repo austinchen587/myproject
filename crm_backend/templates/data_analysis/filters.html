@@ -1,0 +1,33 @@
+<div class="filter-section">
+    {% if user_role == 'admin' %}
+        <label for="user-select">选择用户:</label>
+        <select id="user-select" onchange="updateData()">
+            <option value="">全部用户</option>
+            {% for user in all_users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <label for="group-select">选择组:</label>
+        <select id="group-select" onchange="updateData()">
+            <option value="">所有组</option>
+            {% for leader in group_leaders %}
+                <option value="{{ leader.id }}">{{ leader.username }}</option>
+            {% endfor %}
+        </select>
+    {% elif user_role == 'group_leader' %}
+        <label for="user-select">选择组员:</label>
+        <select id="user-select" onchange="updateData()">
+            <option value="">全部组员</option>
+            {% for user in group_users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+    {% endif %}
+    <label for="batch-select">选择学员期数:</label>
+    <select id="batch-select" onchange="updateData()">
+        <option value="">全部期数</option>
+        {% for batch in student_batches %}
+            <option value="{{ batch }}">{{ batch }}</option>
+        {% endfor %}
+    </select>
+</div>

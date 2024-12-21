@@ -62,7 +62,7 @@ class Customer(models.Model):
     cloud_computing_promotion_content = models.JSONField(default=list, blank=True, null=True, verbose_name='云计算推广内容')
 
     is_closed = models.BooleanField(default=False, verbose_name='是否成交')
-    is_invited = models.BooleanField(default=False, verbose_name='是否邀约')
+    is_invited = models.BooleanField(default=False, verbose_name='是否感兴趣')
     is_joined = models.BooleanField(default=False, verbose_name='是否入群')
     is_contacted = models.BooleanField(default=False, verbose_name='是否接通')
     is_wechat_added = models.BooleanField(default=False, verbose_name='是否加微信')
@@ -141,6 +141,44 @@ class Customer(models.Model):
         default='未分配',
         verbose_name='产品经理对接人'
     )
+
+    # 再慎重考虑下
+    reconsider_checked = models.BooleanField(default=False, verbose_name='再慎重考虑下')
+    reconsider_text = models.TextField(
+        blank=True,
+        null=True,
+        default='未知',  # 默认值设置为 "未知"
+        verbose_name='再慎重考虑下说明'
+    )
+
+    # 回家商量下
+    discuss_checked = models.BooleanField(default=False, verbose_name='回家商量下')
+    discuss_text = models.TextField(
+        blank=True,
+        null=True,
+        default='未知',  # 默认值设置为 "未知"
+        verbose_name='回家商量下说明'
+    )
+
+    customer_level = models.CharField(
+        max_length=10,  # 调整长度以支持"未知"
+        choices=[
+            ('A', 'A 等级'),
+            ('B', 'B 等级'),
+            ('未知', '未知'),
+        ],
+        default='未知',
+        verbose_name='客户等级'
+    )
+
+    
+
+
+
+
+
+
+
 
     
 

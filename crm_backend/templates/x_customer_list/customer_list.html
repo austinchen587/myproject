@@ -1,0 +1,14 @@
+{% extends 'x_customer_list/base.html' %}
+
+{% block title %}客户列表{% endblock %}
+
+{% block content %}
+    <h2>客户列表</h2>
+    {% include 'x_customer_list/filters.html' %}
+    {% include 'x_customer_list/action_buttons.html' %}
+    {% include 'x_customer_list/customer_table.html' %}
+{% endblock %}
+
+{% block scripts %}
+    {% include 'x_customer_list/scripts.html' %}
+{% endblock %}

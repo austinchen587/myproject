@@ -1,0 +1,32 @@
+<script>
+    // 显示/隐藏条件字段
+    function toggleInvitationFields() {
+        const isInvited = document.getElementById("id_is_invited");
+        const conditionalFields = document.getElementById("conditional-fields");
+
+        conditionalFields.style.display = isInvited.checked ? "block" : "none";
+    }
+
+    function toggleWeChatFields() {
+        const isWeChatAdded = document.getElementById("id_is_wechat_added");
+        const weChatNameField = document.getElementById("wechat-name-field");
+
+        weChatNameField.style.display = isWeChatAdded.checked ? "block" : "none";
+    }
+
+    // 初始化事件监听器
+    document.addEventListener("DOMContentLoaded", function () {
+        const isInvitedCheckbox = document.getElementById("id_is_invited");
+        const isWeChatAddedCheckbox = document.getElementById("id_is_wechat_added");
+
+        if (isInvitedCheckbox) {
+            isInvitedCheckbox.addEventListener("change", toggleInvitationFields);
+            toggleInvitationFields(); // 页面加载时调用
+        }
+
+        if (isWeChatAddedCheckbox) {
+            isWeChatAddedCheckbox.addEventListener("change", toggleWeChatFields);
+            toggleWeChatFields(); // 页面加载时调用
+        }
+    });
+</script>

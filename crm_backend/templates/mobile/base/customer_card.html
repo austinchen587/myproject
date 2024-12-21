@@ -8,11 +8,16 @@
         <h3 class="customer-name">{{ customer.name }}</h3>
         <p class="customer-meta">
             <strong>归属人:</strong> {{ customer.created_by.username }} |
-            <strong>意向程度:</strong> 
-            <span class="customer-intention">{{ customer.intention }}</span>
+            <strong>感兴趣:</strong> {% if customer.is_invited %}是{% else %}否{% endif %} |
+            <strong>客户等级:</strong> {{ customer.customer_level }}
         </p>
         <p class="customer-meta">
-            <strong>是否入群:</strong> {% if customer.is_joined %}是{% else %}否{% endif %}
+            <strong>是否入群:</strong> {% if customer.is_joined %}是{% else %}否{% endif %}  | 
+            <strong>再慎重考虑下:</strong> {% if customer.reconsider_checked %}是{% else %}否{% endif %}  |
+            <strong>回家商量下:</strong> {% if customer.discuss_checked %}是{% else %}否{% endif %}
+        </p>
+        <p class="customer-meta">
+            <strong>是否成交:</strong> {% if customer.is_closed %}是{% else %}否{% endif %}
         </p>
     </div>
 
@@ -60,6 +65,7 @@
         <p><strong>电话:</strong> <a href="tel:{{ customer.phone }}">{{ customer.phone }}</a></p>
         <p><strong>学员期数:</strong> {{ customer.student_batch }}</p>
         <p><strong>数据来源:</strong> {{ customer.data_source }}</p>
+        <p><strong>城市:</strong> {{ customer.city }}</p>
         <p><strong>创建时间:</strong> {{ customer.created_at|date:"Y-m-d H:i" }}</p>
         <!-- 编辑按钮 -->
         <a href="{% url 'edit_customer' customer.id %}" class="edit-customer-btn">编辑客户</a>

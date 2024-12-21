@@ -1,0 +1,23 @@
+{% extends "edit_customer/base.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2>编辑客户信息</h2>
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- 包含表单字段 -->
+        {% include "edit_customer/form_fields.html" %}
+
+
+
+        <!-- 提交和取消按钮 -->
+        <div class="action-buttons">
+            <button type="submit" class="submit-button">保存</button>
+            <a href="{% url 'customer_detail' customer.id %}" class="cancel-button">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

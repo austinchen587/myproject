@@ -1,0 +1,58 @@
+<div id="conditional-fields" style="display: none;">
+    <label for="id_project_type">选择项目:</label>
+    {{ form.project_type }}
+
+    <label for="id_is_wechat_added">是否添加微信:</label>
+    {{ form.is_wechat_added }}
+
+    <div id="wechat-name-field" style="display: none;">
+        <label for="id_wechat_name">客户微信名:</label>
+        {{ form.wechat_name }}
+
+        <label for="id_is_joined">是否加入微信群:</label>
+        {{ form.is_joined }}   
+    </div>
+
+
+    <!-- 更多条件字段 -->
+        <!-- 姓名 -->
+        <label for="id_name">姓名:</label>
+        {{ form.name }}
+
+        <!-- 学历 -->
+        <label for="id_education">学历:</label>
+        {{ form.education }}
+
+        <!-- 专业 -->
+        <label for="id_major_category">专业:</label>
+        {{ form.major_category }}
+
+        <!-- 状态 -->
+        <label for="id_status">状态:</label>
+        {{ form.status }}
+
+        <!-- 所在城市 -->
+        <label for="id_city">所在城市:</label>
+        {{ form.city }}
+
+        <!-- 客户等级 -->
+        <label for="id_customer_level">客户等级:</label>
+        {{ form.customer_level }}
+
+        <!-- 再慎重考虑下 -->
+        <label for="id_reconsider_checked">是否需要再慎重考虑:</label>
+        {{ form.reconsider_checked }}
+
+        <!-- 家人商量 -->
+        <label for="id_discuss_checked">是否需要家人商量:</label>
+        {{ form.discuss_checked }}
+
+        <!-- 客户描述 -->
+        <label for="id_description">客户描述:</label>
+        {{ form.description }}
+
+        <!-- 是否成交 -->
+        <label for="id_is_closed">是否成交:</label>
+        {{ form.is_closed }}
+
+</div>

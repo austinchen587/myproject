@@ -1,0 +1,29 @@
+<script>
+    function deleteCustomer(button) {
+        const customerId = button.getAttribute("data-id"); // 获取客户 ID
+        if (confirm("确定要删除这个客户吗？")) {
+            // 发送删除请求
+            fetch(`/delete_customer/${customerId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}', // Django 的 CSRF 防护
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json()) // 解析 JSON 响应
+            .then(data => {
+                if (data.success) {
+                    alert(data.message); // 显示删除成功提示
+                    // 刷新整个表格
+                    window.location.reload(); // 刷新页面
+                } else {
+                    alert(data.message); // 显示删除失败原因
+                }
+            })
+            .catch(error => {
+                console.error("删除请求出错:", error); // 捕获并记录错误
+                alert("删除失败，请稍后重试。"); // 显示删除失败提示
+            });
+        }
+    }
+</script>

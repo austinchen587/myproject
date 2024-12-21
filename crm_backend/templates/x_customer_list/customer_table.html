@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户列表</title>
+    {% load static %} <!-- 加载 Django 的 static 标签库 -->
+    <link rel="stylesheet" href="{% static 'css/x_list_table.css' %}"> <!-- 引入 CSS 文件 -->
+</head>
+<body>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>电话</th>
+                    <th>归属人</th>
+                    <th>创建时间</th>
+                    <th>数据源</th>
+                    <th>期数</th>
+                    <th>微信名</th>
+                    <th>城市</th>
+                    <th>接通</th>
+                    <th>感兴趣</th>
+                    <th>加微信</th>
+                    <th>入群</th>
+                    <th class="description-column" style="width: 150px;">情况描述</th>
+                    <th>客户等级</th>
+                    <th>评论</th>
+                    <th>考虑</th>
+                    <th>家人商量</th>
+                    <th>成交</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.name }}</td>
+                        <td>{{ customer.phone }}</td>
+                        <td>{{ customer.created_by }}</td>
+                        <td>{{ customer.created_at|date:"Y-m-d" }}</td>
+                        <td>{{ customer.data_source }}</td>
+                        <td>{{ customer.student_batch }}</td>
+                        <td>{{ customer.wechat_name }}</td>
+                        <td>{{ customer.city }}</td>
+                        <td>{% if customer.is_contacted %}✔️{% else %}✘{% endif %}</td>
+                        <td>{% if customer.is_invited %}✔️{% else %}✘{% endif %}</td>
+                        <td>{% if customer.is_wechat_added %}✔️{% else %}✘{% endif %}</td>
+                        <td>{% if customer.is_joined %}✔️{% else %}✘{% endif %}</td>
+                        <td>{{ customer.description }}</td>
+                        <td>{{ customer.customer_level }}</td>
+                        <td class="comments-column">
+                            {% if customer.comments.exists %}
+                                {% for comment in customer.comments.all %}
+                                    <p>
+                                        <strong>{{ comment.created_by.username }}:</strong> <!-- 评论人 -->
+                                        {{ comment.content }} <!-- 评论内容 -->
+                                    </p>
+                                {% endfor %}
+                            {% else %}
+                                无评论
+                            {% endif %}
+                        </td>
+                        <td>{% if customer.reconsider_checked %}✔️{% else %}✘{% endif %}</td>
+                        <td>{% if customer.discuss_checked %}✔️{% else %}✘{% endif %}</td>
+                        <td>{% if customer.is_closed %}✔️{% else %}✘{% endif %}</td>
+                        <td>
+                            <a href="{% url 'edit_customer' customer.id %}">更新</a>
+                            <button class="delete-btn" data-id="{{ customer.id }}" onclick="deleteCustomer(this)">删除</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -28,7 +28,7 @@ def mobile_view(request):
     student_batch_filter = request.GET.get('student_batch', '').strip()
     is_joined_filter = request.GET.get('is_joined', '').strip()
     created_by_filter = request.GET.get('created_by', '').strip()
-    intention_filter = request.GET.get('intention', '').strip()
+    customer_level_filter = request.GET.get('customer_level', '').strip()  # 新增客户等级筛选条件
 
     # 日期处理
     try:
@@ -70,8 +70,8 @@ def mobile_view(request):
     if created_by_filter:
         if created_by_filter.isdigit():
             customers = customers.filter(created_by__id=int(created_by_filter))
-    if intention_filter:
-        customers = customers.filter(intention=intention_filter)
+    if customer_level_filter:
+        customers = customers.filter(customer_level=customer_level_filter)  # 客户等级筛选
 
     # 按创建时间降序排列
     customers = customers.order_by('-created_at')
@@ -91,7 +91,7 @@ def mobile_view(request):
         "student_batch_filter": student_batch_filter,
         "is_joined_filter": is_joined_filter,
         "created_by_filter": created_by_filter,
-        "intention_filter": intention_filter,
+        "customer_level_filter": customer_level_filter,  # 传递客户等级筛选值
     })
 
 
@@ -186,6 +186,7 @@ def closed_customer_detail(request):
     data_source_filter = request.GET.get('data_source', '').strip()
     student_batch_filter = request.GET.get('student_batch', '').strip()
     created_by_filter = request.GET.get('created_by', '').strip()
+    customer_level_filter = request.GET.get('customer_level', '').strip()  # 新增客户等级筛选
 
     # 如果没有传入筛选条件，默认使用本月的第一天和最后一天
     try:
@@ -223,6 +224,10 @@ def closed_customer_detail(request):
     if created_by_filter and created_by_filter.isdigit():  # 检查是否为数字
         customers = customers.filter(created_by_id=int(created_by_filter))
 
+    # 客户等级筛选
+    if customer_level_filter:
+        customers = customers.filter(customer_level=customer_level_filter)
+
     # 获取所有用户供筛选用
     all_users = SalesUser.objects.all()
 
@@ -234,5 +239,6 @@ def closed_customer_detail(request):
         'data_source_filter': data_source_filter,
         'student_batch_filter': student_batch_filter,
         'created_by_filter': created_by_filter,
+        'customer_level_filter': customer_level_filter,  # 传递客户等级筛选
         'all_users': all_users,
     })

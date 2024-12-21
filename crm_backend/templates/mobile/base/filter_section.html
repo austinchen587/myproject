@@ -40,13 +40,12 @@
             {% endfor %}
         </select>
     
-        <label for="intention">意向程度:</label>
-        <select id="intention" name="intention">
+        <label for="customer_level">客户等级:</label>
+        <select id="customer_level" name="customer_level">
             <option value="">全部</option>
-            <option value="低" {% if intention_filter == '低' %}selected{% endif %}>低</option>
-            <option value="中" {% if intention_filter == '中' %}selected{% endif %}>中</option>
-            <option value="高" {% if intention_filter == '高' %}selected{% endif %}>高</option>
-            <option value="未知" {% if intention_filter == '未知' %}selected{% endif %}>未知</option>
+            <option value="A" {% if customer_level_filter == "A" %}selected{% endif %}>A</option>
+            <option value="B" {% if customer_level_filter == "B" %}selected{% endif %}>B</option>
+            <option value="未知" {% if customer_level_filter == "未知" %}selected{% endif %}>未知</option>
         </select>
     
         <button type="submit">筛选</button>

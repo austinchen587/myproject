@@ -28,8 +28,9 @@
                             <h3 class="customer-name">{{ customer.name }}</h3>
                             <p class="customer-meta">
                                 <strong>归属人:</strong> {{ customer.created_by.username }} |
-                                <strong>意向程度:</strong>
-                                <span class="customer-intention">{{ customer.intention }}</span>
+                                <strong>客户等级:</strong>
+                                <span class="customer-customer_level">{{ customer.customer_level }}</span> |
+                                <strong>城市</strong> {{ customer.city }} 
                             </p>
                             <p class="customer-meta">
                                 <strong>成交时间:</strong> {{ customer.created_at|date:"Y-m-d" }}

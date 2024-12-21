@@ -1,0 +1,183 @@
+/* 通用基础样式 */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+    background: url("../images/pexels.jpg") no-repeat center center fixed;
+    background-size: cover;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.container {
+    width: 100%;
+    max-width: 650px;
+    background-color: rgba(255, 255, 255, 0.95); /* 半透明背景更适合手机浏览器 */
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* 增强阴影 */
+    padding: 20px 30px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+h2 {
+    color: #007aff;
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    color: #444;
+    font-size: 1rem;
+}
+
+/* 统一输入框、选择框和文本区域的宽度 */
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: calc(100% - 24px); /* 保持宽度统一，减去 padding 的宽度 */
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+    box-sizing: border-box; /* 确保边框和内边距不会影响宽度 */
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #007aff; /* 聚焦时高亮 */
+    background-color: #fff;
+    box-shadow: 0 0 6px rgba(0, 122, 255, 0.4);
+}
+
+/* 文本区域专用样式 */
+textarea {
+    resize: none; /* 禁用大小调整 */
+    min-height: 80px; /* 保证默认高度 */
+    max-height: 200px; /* 限制最大高度 */
+    overflow-y: auto; /* 超出内容时显示滚动条 */
+}
+
+/* 按钮样式 */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #007aff;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #005bb5;
+    transform: scale(1.02); /* 鼠标悬浮放大 */
+}
+
+button:active {
+    transform: scale(0.98); /* 点击时缩小 */
+}
+
+/* 按钮组 */
+.action-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between; /* 两端对齐 */
+    flex-wrap: wrap; /* 小屏幕时自动换行 */
+}
+
+.action-buttons .btn {
+    width: 48%;
+    padding: 10px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    text-transform: uppercase;
+    background-color: #007aff;
+    color: #fff;
+    transition: background-color 0.3s, transform 0.2s;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.action-buttons .btn:hover {
+    background-color: #005bb5;
+    transform: scale(1.02);
+}
+
+.action-buttons .btn:active {
+    transform: scale(0.98);
+}
+
+/* 表单间距 */
+form {
+    margin-top: 20px;
+}
+
+form .form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    label {
+        font-size: 1rem;
+    }
+
+    button {
+        font-size: 1rem;
+    }
+
+    .action-buttons .btn {
+        width: 100%; /* 小屏幕下按钮全宽 */
+        margin-bottom: 10px;
+    }
+}
+
+/* 提交按钮样式 */
+.submit-button {
+    background-color: #28a745; /* 提交按钮绿色 */
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background-color: #218838;
+}

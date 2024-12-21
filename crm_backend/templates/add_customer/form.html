@@ -1,0 +1,23 @@
+<form method="POST">
+    {% csrf_token %}
+    <label for="id_phone">电话号码:</label>
+    <input type="text" id="id_phone" name="phone" required pattern="\d{11}" title="请输入11位数字">
+
+    <label for="id_data_source">数据来源:</label>
+    {{ form.data_source }}
+
+    <label for="id_is_contacted">是否接通:</label>
+    {{ form.is_contacted }}
+
+    <label for="id_student_batch">期期学员:</label>
+    {{ form.student_batch }}
+
+    <label for="id_is_invited">是否对云计算感兴趣:</label>
+    {{ form.is_invited }}
+
+    <!-- 条件字段部分 -->
+    {% include "add_customer/conditional_fields.html" %}
+
+    <!-- 按钮 -->
+    {% include "add_customer/action_buttons.html" %}
+</form>

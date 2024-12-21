@@ -1,0 +1,145 @@
+/* 全局基础样式 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+/* 表格容器样式 */
+.table-container {
+    width: 100%;
+    max-width: 2500px;
+    margin: 0 auto;
+    overflow-x: auto; /* 启用水平滚动条 */
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* 表格样式 */
+table {
+    width: 100%;
+    table-layout: fixed; /* 设置固定布局 */
+    border-collapse: collapse;
+    background-color: #fff;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* 表头样式 */
+thead {
+    background: linear-gradient(90deg, #0052cc, #0066ff);
+    color: #fff;
+    position: sticky; /* 固定表头 */
+    top: 0;
+    z-index: 10;
+}
+
+thead th {
+    padding: 14px 12px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+    white-space: nowrap; /* 防止单词换行 */
+}
+
+/* 表格单元格样式 */
+tbody td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem; /* 单元格字体大小 */
+    color: #555;
+    word-wrap: break-word; /* 超出宽度换行 */
+    white-space: normal; /* 自动换行 */
+}
+
+/* 描述字段特殊样式 */
+.description-column {
+    max-width: 150px; /* 限制描述字段宽度 */
+    white-space: normal; /* 自动换行 */
+    word-wrap: break-word; /* 长单词换行 */
+    text-align: left; /* 左对齐以提升可读性 */
+    overflow-y: auto; /* 显示垂直滚动条（仅当内容溢出时） */
+    padding: 10px;
+
+}
+
+/* 表格行交替颜色 */
+tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fff;
+}
+
+/* 鼠标悬停行样式 */
+tbody tr:hover {
+    background-color: rgba(0, 122, 255, 0.1); /* 鼠标悬停高亮 */
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* 按钮样式 */
+.delete-btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+.update-btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #007aff;
+    color: white;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.update-btn:hover {
+    background-color: #005bb5;
+}
+
+.comments-column {
+    max-width: 150px; /* 固定宽度 */
+    white-space: normal; /* 允许换行 */
+    word-wrap: break-word; /* 强制长单词换行 */
+    overflow: hidden; /* 隐藏溢出内容 */
+    text-align: left; /* 左对齐提升可读性 */
+    padding: 10px; /* 添加内边距 */
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    thead th,
+    tbody td {
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    table {
+        font-size: 1rem;
+    }
+}

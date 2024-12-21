@@ -1,0 +1,21 @@
+<link rel="stylesheet" href="{% static 'css/data_analysis.css' %}">
+<script src="{% static 'js/data_analysis.js' %}"></script>
+
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分析</title>
+    {% load static %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'css/data_analysis.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>数据分析</h2>
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

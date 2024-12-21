@@ -1,8 +1,8 @@
-# customers/urls.py
-
 from django.urls import path
+from .views_mobile import mobile_view, customer_detail_mobile, add_comment_ajax, closed_customer_detail
+from .views_mobile_audio import upload_audio, delete_audio
+# from .views_new_customer import customer_list
 from .views import (
-
     customerlist,
     add_customer,
     customer_detail,
@@ -14,35 +14,32 @@ from .views import (
     get_completion_data,
     daily_report,
     product_manager_daily_report,
-    
 )
 
-from .views_mobile import mobile_view,customer_detail_mobile,add_comment_ajax,closed_customer_detail
-from .views_mobile_audio import upload_audio,delete_audio
-from .views_new_customer import customer_list
-
 urlpatterns = [
-
-    path('mobile/', mobile_view, name='mobile_view'),  # 定义手机端模板的路由
+    # 移动端相关路由
+    path('mobile/', mobile_view, name='mobile_view'),
     path('mobile/customer/<int:id>/', customer_detail_mobile, name='customer_detail_mobile'),
-    path('customerlist/', customerlist, name='customerlist'),  # 客户列表
+    path('add_comment_ajax/', add_comment_ajax, name='add_comment_ajax'),
+    path('closed_customer/', closed_customer_detail, name='closed_customer_detail'),
+
+    # 音频相关路由
+    path('customers/recording/upload/<int:customer_id>/', upload_audio, name='upload_audio'),
+    path('customers/recording/delete/<int:recording_id>/', delete_audio, name='delete_audio'),
+
+    # 新客户相关路由
+    # path('customer-list/', customer_list, name='customer_list'),
+
+    # 核心功能路由
+    path('customerlist/', customerlist, name='customerlist'),
     path('add_customer/', add_customer, name='add_customer'),
     path('customer/<int:id>/', customer_detail, name='customer_detail'),
     path('edit-customer/<int:id>/', edit_customer, name='edit_customer'),
-    path('delete_customer/<int:id>/', delete_customer, name='delete_customer'),
+    path('delete_customer/<int:customer_id>/', delete_customer, name='delete_customer'),
     path('dashboard/', dashboard, name='dashboard'),
     path('data_analysis/', data_analysis, name='data_analysis'),
-    path('data_analysis_json/', analysis_data_json, name='data_analysis_json'),  # 添加此行
+    path('data_analysis_json/', analysis_data_json, name='data_analysis_json'),
     path('get_completion_data/', get_completion_data, name='get_completion_data'),
     path('daily_report/', daily_report, name='daily_report'),
-    path('customers/recording/upload/<int:customer_id>/', upload_audio, name='upload_audio'),
-    path('customers/recording/delete/<int:recording_id>/', delete_audio, name='delete_audio'),
     path('product_manager_daily_report/', product_manager_daily_report, name='product_manager_daily_report'),
-    path('add_comment_ajax/', add_comment_ajax, name='add_comment_ajax'),
-    path('customer-list/', customer_list, name='customer_list'),
-    path('closed_customer/', closed_customer_detail, name='closed_customer_detail'),
-    
-    
- 
-
 ]
