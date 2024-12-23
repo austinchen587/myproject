@@ -1,0 +1,31 @@
+<div class="filter-section">
+    <label for="user-select">选择用户:</label>
+    <select id="user-select" onchange="updateData()">
+        <option value="">全部用户</option>
+        {% for user in all_users %}
+            <option value="{{ user.id }}" {% if selected_user == user.id|stringformat:"s" %}selected{% endif %}>
+                {{ user.username }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="group-select">选择组:</label>
+    <select id="group-select" onchange="updateData()">
+        <option value="">所有组</option>
+        {% for leader in group_leaders %}
+            <option value="{{ leader.id }}" {% if selected_group == leader.id|stringformat:"s" %}selected{% endif %}>
+                {{ leader.username }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="batch-select">选择学员期数:</label>
+    <select id="batch-select" onchange="updateData()">
+        <option value="">全部期数</option>
+        {% for batch in student_batches %}
+            <option value="{{ batch }}" {% if batch_number == batch|stringformat:"s" %}selected{% endif %}>
+                {{ batch }}
+            </option>
+        {% endfor %}
+    </select>
+</div>

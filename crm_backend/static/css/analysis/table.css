@@ -1,0 +1,28 @@
+.analysis-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.9em;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-table th {
+    background-color: #007BFF;
+    color: #ffffff;
+    text-transform: uppercase;
+    padding: 10px;
+    font-weight: bold;
+    border: 1px solid #dddddd;
+}
+
+.analysis-table td {
+    padding: 10px;
+    border: 1px solid #dddddd;
+    background-color: #f9f9f9;
+}
+
+.analysis-table tfoot td {
+    font-weight: bold;
+    background-color: #f1f1f1;
+}

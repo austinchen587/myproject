@@ -1,8 +1,50 @@
-{% extends "data_analysis/base.html" %}
+{% extends 'data_analysis/base.html' %}
+
+{% block title %}数据分析{% endblock %}
+
+{% load static %} <!-- 加载静态文件标签库 -->
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/analysis/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/analysis/filter.css' %}">
+    <link rel="stylesheet" href="{% static 'css/analysis/table.css' %}">
+    <link rel="stylesheet" href="{% static 'css/analysis/button.css' %}">
+{% endblock %}
 
 {% block content %}
-    {% include "data_analysis/filters.html" %}
-    {% include "data_analysis/radar_chart.html" %}
-    {% include "data_analysis/table.html" %}
-    {% include "data_analysis/buttons.html" %}
+    <div class="container">
+        <h2>数据分析</h2>
+
+        <!-- 筛选功能 -->
+        {% include 'data_analysis/filter_section.html' %}
+
+        <!-- 数据分析表格 -->
+        {% include 'data_analysis/data_table.html' %}
+
+        <!-- 跳转按钮 -->
+        {% include 'data_analysis/navigation_buttons.html' %}
+    </div>
+
+    <!-- JavaScript：更新筛选功能 -->
+    <script>
+        function updateData() {
+            const userSelect = document.getElementById('user-select');
+            const groupSelect = document.getElementById('group-select');
+            const batchSelect = document.getElementById('batch-select');
+
+            const selectedUser = userSelect ? userSelect.value : '';
+            const selectedGroup = groupSelect ? groupSelect.value : '';
+            const selectedBatch = batchSelect ? batchSelect.value : '';
+
+            // 构造查询参数
+            const queryParams = new URLSearchParams({
+                selected_user: selectedUser,
+                selected_group: selectedGroup,
+                batch_number: selectedBatch,
+            });
+
+            // 刷新页面并携带查询参数
+            window.location.href = `${window.location.pathname}?${queryParams.toString()}`;
+        }
+    </script>
 {% endblock %}

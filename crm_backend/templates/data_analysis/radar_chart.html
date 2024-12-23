@@ -1,1 +1,52 @@
 <canvas id="completionRadarChart" width="400" height="400"></canvas>
+<script>
+    let radarChart;
+
+    function updateData() {
+        const userSelect = document.getElementById("user-select");
+        const groupSelect = document.getElementById("group-select");
+        const batchSelect = document.getElementById("batch-select");
+
+        const userId = userSelect ? userSelect.value : "";
+        const groupId = groupSelect ? groupSelect.value : "";
+        const batchNumber = batchSelect ? batchSelect.value : "";
+
+        // 更新雷达图
+        fetch(`/get_completion_data/?user_id=${userId}&group_id=${groupId}&batch_number=${batchNumber}`)
+            .then(response => response.json())
+            .then(data => {
+                const labels = Object.keys(data.completion_rates);
+                const completionRates = Object.values(data.completion_rates);
+
+                if (radarChart) {
+                    radarChart.destroy();
+                }
+
+                const ctx = document.getElementById("completionRadarChart").getContext("2d");
+                radarChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '完成度 (%)',
+                            data: completionRates,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scale: {
+                            ticks: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            });
+    }
+
+    document.addEventListener("DOMContentLoaded", updateData);
+</script>

@@ -1,0 +1,46 @@
+<table class="analysis-table">
+    <thead>
+        <tr>
+            <th>学员期数</th>
+            <th>本期学员数</th>
+            <th>接通率 (%)</th>
+            <th>感兴趣率 (%)</th>
+            <th>加微信率 (%)</th>
+            <th>入群率 (%)</th>
+            <th>A等级率 (%)</th>
+            <th>考虑率 (%)</th>
+            <th>商量率 (%)</th>
+            <th>成交率 (%)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in analysis_data %}
+        <tr>
+            <td>{{ data.student_batch }}</td>
+            <td>{{ data.total_count }}</td>
+            <td>{{ data.contacted_rate|floatformat:2 }}</td>
+            <td>{{ data.invited_rate|floatformat:2 }}</td>
+            <td>{{ data.wechat_added_rate|floatformat:2 }}</td>
+            <td>{{ data.joined_rate|floatformat:2 }}</td>
+            <td>{{ data.grade_a_rate|floatformat:2 }}</td>
+            <td>{{ data.considered_rate|floatformat:2 }}</td>
+            <td>{{ data.discussed_rate|floatformat:2 }}</td>
+            <td>{{ data.closed_rate|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>汇总</td>
+            <td>{{ totals.total_count }}</td>
+            <td>{{ totals.contacted_rate|floatformat:2 }}</td>
+            <td>{{ totals.invited_rate|floatformat:2 }}</td>
+            <td>{{ totals.wechat_added_rate|floatformat:2 }}</td>
+            <td>{{ totals.joined_rate|floatformat:2 }}</td>
+            <td>{{ totals.grade_a_rate|floatformat:2 }}</td>
+            <td>{{ totals.considered_rate|floatformat:2 }}</td>
+            <td>{{ totals.discussed_rate|floatformat:2 }}</td>
+            <td>{{ totals.closed_rate|floatformat:2 }}</td>
+        </tr>
+    </tfoot>
+</table>
