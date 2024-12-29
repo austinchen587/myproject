@@ -1,0 +1,75 @@
+{% load static %}
+
+<div class="container">
+    <h2>客户图片管理</h2>
+    <hr>
+
+    <!-- 图片上传表单 -->
+    <form id="uploadImageForm" method="POST" enctype="multipart/form-data" data-customer-id="{{ customer.id }}">
+        {% csrf_token %}
+        <label for="image_file">选择图片:</label>
+        <input type="file" id="image_file" name="image_file" accept="image/*" onchange="previewImage(event)">
+        <div id="imagePreview" style="margin-top: 10px;">
+            <img id="previewImg" src="#" alt="预览图片" style="display: none; width: 150px; height: auto;">
+        </div>
+        <button type="submit" class="btn btn-primary">上传图片</button>
+    </form>
+
+    <hr>
+
+    <div id="imageList">
+        <h3>调试输出：</h3>
+        <pre>
+            调试输出：
+            Recordings Count: {{ recordings|length }}
+            {% for recording in recordings %}
+                ID: {{ recording.id }}
+                File: {{ recording.image_file }}
+                {% if recording.image_file %}
+                    URL: {{ recording.image_file.url }}
+                {% else %}
+                    URL: 未关联文件
+                {% endif %}
+            {% empty %}
+                当前没有图片。
+            {% endfor %}
+        </pre>
+        
+        {% if recordings %}
+            <ul class="list-group">
+                {% for recording in recordings %}
+                    {% if recording.image_file %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <!-- 小图片 -->
+                                <img src="{{ recording.image_file.url }}" 
+                                     alt="客户图片" 
+                                     class="small-image" 
+                                     style="width: 150px; height: auto; cursor: pointer;" 
+                                     data-full-src="{{ recording.image_file.url }}">
+                                <p class="mb-0">上传时间: {{ recording.created_at|date:"Y-m-d H:i:s" }}</p>
+                            </div>
+                            <!-- 删除按钮 -->
+                            <button class="btn btn-danger delete-image-btn" data-recording-id="{{ recording.id }}">
+                                删除
+                            </button>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">Recording ID: {{ recording.id }} 没有有效的图片文件。</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>当前没有图片。</p>
+        {% endif %}
+    </div>
+
+    <!-- 放大图片的模态框 -->
+    <div id="imageModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background-color: rgba(0, 0, 0, 0.7); align-items: center; justify-content: center;">
+        <span class="close" style="position: absolute; top: 20px; right: 30px; font-size: 30px; color: white; cursor: pointer;">&times;</span>
+        <img class="modal-content" id="fullImage" style="max-width: 90%; max-height: 90%;">
+    </div>
+</div>
+
+<!-- 引入外部脚本 -->
+<script src="{% static 'js/image_preview.js' %}"></script>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资料库</title>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <h1 class="title">资料库</h1>
+
+        <!-- 管理功能 -->
+        {% if user.is_staff or user.is_superuser %}
+        <div class="admin-actions">
+            <a href="{% url 'library:upload_file' %}" class="action-button">上传文件</a>
+            <a href="{% url 'library:manage_files' %}" class="action-button">管理文件</a>
+            <a href="{% url 'library:manage_tags' %}" class="action-button">管理标签</a>
+        </div>
+        {% endif %}
+
+        <!-- 搜索框 -->
+        <div class="search-container">
+            <form method="get" action="{% url 'library:search_files' %}">
+                <!-- 搜索关键词 -->
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="请输入关键词进行搜索..."
+                    value="{{ query }}"
+                    class="search-input"
+                />
+
+                <!-- 标签筛选 -->
+                <div class="tag-filter">
+                    <h3>按标签筛选</h3>
+                    <ul>
+                        {% include "library/partials/tag_tree_search.html" with tags=all_tags selected_tags=selected_tags %}
+                    </ul>
+                </div>
+
+                <!-- 搜索按钮 -->
+                <button type="submit" class="search-button">搜 索</button>
+            </form>
+        </div>
+
+        <!-- 搜索结果展示 -->
+        {% if results %}
+        <div class="search-results">
+            <h3>搜索结果：</h3>
+            <ul>
+                {% for file in results %}
+                <li>
+                    <strong>{{ file.name }}</strong>
+                    <p>上传时间：{{ file.uploaded_at|date:"Y-m-d H:i" }}</p>
+                    <p>标签：
+                        {% for tag in file.tags.all %}
+                        <span class="tag">{{ tag.name }}</span>
+                        {% empty %}
+                        无标签
+                        {% endfor %}
+                    </p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+
+        {% endif %}
+
+        <!-- 返回主页 -->
+        <div class="footer">
+            <a href="{% url 'dashboard' %}" class="back-button">返回主页</a>
+        </div>
+    </div>
+</body>
+</html>

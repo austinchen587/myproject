@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户图片管理</title>
+    <link rel="stylesheet" href="{% static 'css/test_customer_images.css' %}">
+</head>
+<body>
+    <div class="container">
+
+    {% if recordings %}
+        <div class="image-list-section">
+            <h3>微信聊天记录列表：</h3>
+            <ul class="image-list">
+                {% for recording in recordings %}
+                    <li class="image-item">
+                        {% if recording.image_file %}
+                            <div class="image-wrapper">
+                                <!-- 点击图片触发放大查看 -->
+                                <img src="{{ recording.image_file.url }}" alt="客户图片" class="image-thumbnail" onclick="showModal('{{ recording.image_file.url }}')">
+                            </div>
+                            <p class="image-details">ID: {{ recording.id }}, 上传时间: {{ recording.created_at|date:"Y-m-d H:i:s" }}</p>
+                            <!-- 删除按钮 -->
+                            <form method="POST" class="delete-form" data-recording-id="{{ recording.id }}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">删除</button>
+                            </form>
+                        {% else %}
+                            <p>Recording ID: {{ recording.id }} 没有有效的图片文件。</p>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <p class="no-images">当前没有图片。</p>
+    {% endif %}
+
+    <hr>
+
+    <div class="upload-section">
+        <h3>上传新图片</h3>
+        <form id="uploadImageForm" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="image_files" class="upload-label">选择图片（可多选）:</label>
+            <input type="file" id="image_files" name="image_files" accept="image/*" multiple class="upload-input">
+            <button type="submit" class="btn btn-primary upload-btn">上传图片</button>
+        </form>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="hideModal()">&times;</span>
+        <img id="modalImage" class="modal-content">
+    </div>
+
+    </div>
+</body>
+</html>
+
+<script>
+    document.getElementById('uploadImageForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const formData = new FormData();
+        const files = document.getElementById('image_files').files;
+
+        if (files.length === 0) {
+            alert('请选择至少一张图片');
+            return;
+        }
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append('image_files', files[i]);
+        }
+
+        const response = await fetch("{% url 'upload_image' customer.id %}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert('图片上传成功');
+            location.reload(); // 刷新页面
+        } else {
+            alert(result.error || '图片上传失败');
+        }
+    });
+
+    document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const recordingId = this.getAttribute('data-recording-id');
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            const response = await fetch(`/delete-image/${recordingId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken
+                }
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert('图片删除成功');
+                location.reload(); // 刷新页面
+            } else {
+                alert(result.error || '图片删除失败');
+            }
+        });
+    });
+
+    function showModal(imageUrl) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        modal.style.display = 'flex';
+        modalImage.src = imageUrl;
+    }
+
+    function hideModal() {
+        const modal = document.getElementById('imageModal');
+        modal.style.display = 'none';
+    }
+
+    document.getElementById('imageModal').addEventListener('click', function(event) {
+        if (event.target === this) {
+            hideModal();
+        }
+    });
+</script>

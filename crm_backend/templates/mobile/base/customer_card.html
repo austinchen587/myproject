@@ -1,7 +1,6 @@
 {% load static %}
 <!-- 加载 JavaScript 文件 -->
 
-
 <div class="customer-card">
     <!-- 客户基本信息 -->
     <div class="customer-header">
@@ -20,6 +19,11 @@
             <strong>是否成交:</strong> {% if customer.is_closed %}是{% else %}否{% endif %}
         </p>
     </div>
+
+    <button onclick="window.location.href='{% url 'test_customer_images_view' customer.id %}'" class="btn btn-primary">
+        查看客户微信图片聊天记录
+    </button>
+
 
     <!-- 客户描述 -->
     <div class="customer-description">
@@ -60,7 +64,7 @@
         {% include "mobile/components/customer_mobile_audio.html" %}
     </div>
 
-    <!-- 客户更多详情 (隐藏) -->
+     <!-- 客户更多详情 (隐藏) -->
     <div class="customer-details" style="display: none;">
         <p><strong>电话:</strong> <a href="tel:{{ customer.phone }}">{{ customer.phone }}</a></p>
         <p><strong>学员期数:</strong> {{ customer.student_batch }}</p>
@@ -71,10 +75,10 @@
         <a href="{% url 'edit_customer' customer.id %}" class="edit-customer-btn">编辑客户</a>
     </div>
 
+
     <!-- 切换按钮 -->
     <div class="toggle-buttons">
         <button class="toggle-details-btn">显示更多详情</button>
         <button class="toggle-audio-btn">显示录音信息</button>
     </div>
 </div>
-

@@ -1,0 +1,38 @@
+.upload-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.tag-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.tag-item {
+    margin: 8px 0;
+}
+
+.child-tags {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 1px solid #ddd;
+}
+
+.tag-checkbox {
+    margin-right: 8px;
+}
+
+.tag-content {
+    display: flex;
+    align-items: center;
+}
+
+.tag-description {
+    font-size: 12px;
+    color: #888;
+    margin-left: 8px;
+}

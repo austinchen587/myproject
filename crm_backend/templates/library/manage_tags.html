@@ -1,0 +1,92 @@
+{% extends 'library/base.html' %}
+
+{% block title %}管理标签{% endblock %}
+{% block page_title %}管理标签{% endblock %}
+
+{% block content %}
+<div class="manage-tags-container">
+    <h2>管理标签</h2>
+    
+    <!-- 消息显示 -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- 标签表单 -->
+    <form method="post" class="tag-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">添加标签</button>
+    </form>
+
+    <!-- 标签层级展示 -->
+    <div class="tag-list">
+        <ul>
+            {% for tag in tags %}
+                <li class="tag-item">
+                    <strong>{{ tag.name }}</strong>
+                    {% if tag.description %}
+                        <span class="tag-description">- {{ tag.description }}</span>
+                    {% endif %}
+                    <a href="{% url 'library:update_tags' tag.id %}" class="btn btn-sm btn-edit">编辑</a>
+                    <a href="{% url 'library:delete_tag' tag.id %}" class="btn btn-sm btn-danger">删除</a>
+
+                    <!-- 子标签展示 -->
+                    {% if tag.children.all %}
+                        <ul class="child-tags">
+                            {% for child in tag.children.all %}
+                                <li class="tag-item">
+                                    {{ child.name }}
+                                    {% if child.description %}
+                                        <span class="tag-description">- {{ child.description }}</span>
+                                    {% endif %}
+                                    <a href="{% url 'library:update_tags' child.id %}" class="btn btn-sm btn-edit">编辑</a>
+                                    <a href="{% url 'library:delete_tag' child.id %}" class="btn btn-sm btn-danger">删除</a>
+
+                                    <!-- 递归子标签 -->
+                                    {% if child.children.all %}
+                                        <ul class="child-tags">
+                                            {% for grandchild in child.children.all %}
+                                                <li class="tag-item">
+                                                    {{ grandchild.name }}
+                                                    {% if grandchild.description %}
+                                                        <span class="tag-description">- {{ grandchild.description }}</span>
+                                                    {% endif %}
+                                                    <a href="{% url 'library:update_tags' grandchild.id %}" class="btn btn-sm btn-edit">编辑</a>
+                                                    <a href="{% url 'library:delete_tag' grandchild.id %}" class="btn btn-sm btn-danger">删除</a>
+
+                                                    <!-- 递归四级标签 -->
+                                                    {% if grandchild.children.all %}
+                                                        <ul class="child-tags">
+                                                            {% for greatgrandchild in grandchild.children.all %}
+                                                                <li class="tag-item">
+                                                                    {{ greatgrandchild.name }}
+                                                                    {% if greatgrandchild.description %}
+                                                                        <span class="tag-description">- {{ greatgrandchild.description }}</span>
+                                                                    {% endif %}
+                                                                    <a href="{% url 'library:update_tags' greatgrandchild.id %}" class="btn btn-sm btn-edit">编辑</a>
+                                                                    <a href="{% url 'library:delete_tag' greatgrandchild.id %}" class="btn btn-sm btn-danger">删除</a>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <p>当前没有标签。</p>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

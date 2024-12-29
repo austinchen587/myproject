@@ -1,0 +1,39 @@
+/* 标签容器样式 */
+.tag-list {
+    list-style-type: none; /* 去除列表点 */
+    padding: 0;
+    margin: 0;
+}
+
+/* 标签项样式 */
+.tag-item {
+    margin-left: 10px;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* 子标签样式 */
+.child-tags {
+    list-style-type: none;
+    padding-left: 20px; /* 增加左边缩进 */
+}
+
+/* 子标签字体样式 */
+.child-tags .tag-item {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* 编辑按钮样式 */
+.btn-sm.btn-edit {
+    margin-left: 10px;
+    font-size: 0.8rem;
+    color: #007aff;
+    text-decoration: none;
+}
+
+/* 编辑按钮悬停效果 */
+.btn-sm.btn-edit:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}

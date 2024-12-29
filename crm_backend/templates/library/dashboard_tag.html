@@ -1,0 +1,22 @@
+<ul class="tag-list">
+    {% for tag in all_tags %}
+    <li class="tag-item">
+        <label>
+            <!-- 检查当前标签是否选中 -->
+            <input type="checkbox" name="tags" value="{{ tag.id }}" class="tag-checkbox"
+                {% if tag.id|stringformat:"s" in selected_tags %}checked{% endif %}>
+            <strong>{{ tag.name }}</strong>
+        </label>
+        {% if tag.description %}
+            <span class="tag-description">- {{ tag.description }}</span>
+        {% endif %}
+
+        <!-- 渲染子标签 -->
+        {% if tag.children.all %}
+        <ul class="child-tags">
+            {% include 'library/partials/tag_tree.html' with tags=tag.children.all selected_tags=selected_tags %}
+        </ul>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>

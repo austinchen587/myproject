@@ -1,0 +1,20 @@
+{% for tag in tags %}
+<li class="tag-item" data-id="{{ tag.id }}">
+    <div class="tag-content">
+        <label>
+            <input type="checkbox" name="tags" value="{{ tag.id }}" class="tag-checkbox">
+            <strong>{{ tag.name }}</strong>
+        </label>
+        {% if tag.description %}
+            <span class="tag-description">- {{ tag.description }}</span>
+        {% endif %}
+    </div>
+
+    <!-- 子标签 -->
+    {% if tag.children.all %}
+    <ul class="child-tags">
+        {% include "library/partials/tag_tree.html" with tags=tag.children.all level=level|add:1 %}
+    </ul>
+    {% endif %}
+</li>
+{% endfor %}

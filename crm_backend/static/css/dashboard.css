@@ -1,33 +1,31 @@
-/* 允许页面整体滚动 */
+/* 允许页面整体滚动并设定背景 */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background: url("../images/pexels.jpg") no-repeat center center fixed;
     background-size: cover;
     margin: 0;
     padding: 0;
-    overflow-y: auto; /* 允许垂直滚动 */
     display: flex;
     justify-content: center;
     align-items: flex-start; /* 从顶部开始排列内容 */
     min-height: 100vh;
 }
 
-/* 容器样式，内容居中 */
+/* 容器样式 */
 .container {
     text-align: center;
-    background: rgba(255, 255, 255, 0.9); /* 半透明白色背景，提升对比度 */
+    background: rgba(255, 255, 255, 0.9); /* 半透明白色背景 */
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 360px;
+    margin: 20px auto;
     transition: box-shadow 0.3s ease;
-    margin: 20px auto; /* 增加顶部和底部外边距，避免内容挤压 */
 }
 
-/* 鼠标悬停的阴影效果 */
 .container:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* 鼠标悬停阴影效果 */
 }
 
 /* 标题样式 */
@@ -37,19 +35,19 @@ h2 {
     margin-bottom: 10px;
 }
 
-/* 欢迎消息样式 */
+/* 欢迎消息 */
 p.welcome-message {
     font-size: 1em;
-    color: #e63946;
+    color: #e63946; /* 红色 */
     font-weight: bold;
     margin-bottom: 20px;
 }
 
-/* 按钮样式 */
+/* 按钮通用样式 */
 .button {
     display: block;
     padding: 12px 0;
-    margin: 12px auto; /* 增加按钮之间的间距 */
+    margin: 12px auto;
     font-size: 1em;
     border: none;
     border-radius: 8px;
@@ -59,16 +57,11 @@ p.welcome-message {
     text-align: center;
     text-decoration: none;
     color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 提高按钮可见性 */
 }
 
-/* 按钮悬停效果 */
-.button:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* 每个按钮的颜色样式 */
+/* 客户列表按钮 */
 .customer-list {
     background-color: #007aff;
 }
@@ -77,6 +70,7 @@ p.welcome-message {
     background-color: #005bb5;
 }
 
+/* 数据分析按钮 */
 .data-analysis {
     background-color: #34c759;
 }
@@ -85,6 +79,7 @@ p.welcome-message {
     background-color: #28a745;
 }
 
+/* 报表系统按钮 */
 .daily-report {
     background-color: #ff9f0a;
 }
@@ -93,6 +88,7 @@ p.welcome-message {
     background-color: #ff6f0a;
 }
 
+/* 手机端按钮 */
 .mobile-version {
     background-color: #ff3b30;
 }
@@ -101,26 +97,54 @@ p.welcome-message {
     background-color: #c92a20;
 }
 
-.product-manager-daily-report {
-    background-color: #6a1b9a;
+/* 成交客户详情按钮 */
+.closed-customer-detail {
+    background-color: #1e88e5;
 }
 
-.product-manager-daily-report:hover {
-    background-color: #4a148c;
+.closed-customer-detail:hover {
+    background-color: #1565c0;
 }
 
-.closed_customer_detail {
-    background-color: #1e88e5; /* 明显的蓝色背景 */
-    color: #ffffff; /* 白色文字，增强对比度 */
-    font-weight: bold; /* 字体加粗 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 添加阴影，提升立体感 */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+/* 上传文件按钮 */
+.upload-file {
+    background-color: #20c997;
 }
 
-.closed_customer_detail:hover {
-    background-color: #1565c0; /* 悬停时的深蓝色 */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 鼠标悬停时增加阴影 */
+.upload-file:hover {
+    background-color: #17a589;
 }
+
+/* 管理标签按钮 */
+.manage-tags {
+    background-color: #ff6b6b;
+}
+
+.manage-tags:hover {
+    background-color: #e63946;
+}
+
+/* 资料库按钮 */
+.library-dashboard {
+    background-color: #6c757d; /* 灰色背景 */
+}
+
+.library-dashboard:hover {
+    background-color: #495057; /* 深灰背景 */
+}
+
+/* 返回主页按钮 */
+.back-to-dashboard {
+    background-color: #007aff; /* 蓝色背景 */
+    color: #ffffff; /* 白色文字 */
+    margin-top: 20px;
+}
+
+.back-to-dashboard:hover {
+    background-color: #005bb5; /* 深蓝色背景 */
+}
+
+
 
 /* 响应式设计 */
 @media (max-width: 480px) {

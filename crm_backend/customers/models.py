@@ -3,18 +3,22 @@ from sales.models import SalesUser
 from django.core.validators import MinValueValidator
 import os
 from django.utils.timezone import now
+from customers.storages.storages import CustomerAudioOSSStorage, CustomerImagesOSSStorage
+
 
 
 def customer_audio_upload_path(instance, filename):
     """
-    保存文件到 media/customer_audio/<customer_id>/<filename>
+    保存音频文件到 OSS 的路径。
     """
-    # 获取文件扩展名
-    file_extension = os.path.splitext(filename)[1]
-    # 使用时间戳 + 文件名，避免文件名重复
-    new_filename = f"{now().strftime('%Y%m%d%H%M%S')}{file_extension}"
-    # 组织存储路径
-    return os.path.join("customer_audio", str(instance.customer.id), new_filename)
+    return f"customer_audio/{instance.customer.id}/{now().strftime('%Y%m%d%H%M%S')}_{filename}"
+
+
+def customer_image_upload_path(instance, filename):
+    """
+    保存图片文件到 OSS 的路径。
+    """
+    return f"customer_images/{instance.customer.id}/{now().strftime('%Y%m%d%H%M%S')}_{filename}"
 
 
 # 定义客户模型
@@ -190,6 +194,16 @@ class Customer(models.Model):
         verbose_name_plural = '客户列表'
 
 
+def get_audio_storage():
+    """延迟加载音频存储类"""
+    return CustomerAudioOSSStorage()
+
+
+def get_image_storage():
+    """延迟加载图片存储类"""
+    return CustomerImagesOSSStorage()
+
+
 class Recording(models.Model):
     customer = models.ForeignKey(
         "customers.Customer",
@@ -198,21 +212,29 @@ class Recording(models.Model):
         verbose_name="客户"
     )
     audio_file = models.FileField(
-        upload_to=customer_audio_upload_path,
-        verbose_name="录音文件"
+        upload_to="customer_audio/",
+        storage=get_audio_storage,  # 使用惰性加载函数
+        verbose_name="录音文件",
+        blank=True,  # 确保字段可为空
+        null=True
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="录音时间")
+    image_file = models.ImageField(
+        upload_to="customer_images/",
+        storage=get_image_storage,  # 使用惰性加载函数
+        verbose_name="图片文件",
+        blank=True,
+        null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
-        verbose_name = "录音"
-        verbose_name_plural = "录音记录"
+        verbose_name = "录音与图片记录"
+        verbose_name_plural = "录音与图片记录"
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"录音 - {self.customer.name} ({self.created_at.strftime('%Y-%m-%d %H:%M:%S')})"
+        return f"{self.customer.name} ({self.created_at.strftime('%Y-%m-%d')})"
     
-
-
 
 
 class Comment(models.Model):

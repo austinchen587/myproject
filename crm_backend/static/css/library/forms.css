@@ -1,0 +1,161 @@
+/* 表单容器：整体布局样式 */
+.upload-container {
+    background-color: #ffffff; /* 白色背景 */
+    border: 1px solid #ddd; /* 浅灰边框 */
+    border-radius: 10px; /* 圆角效果 */
+    padding: 30px; /* 内边距 */
+    max-width: 700px; /* 最大宽度 */
+    margin: 20px auto; /* 居中布局 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+    font-family: 'Arial', sans-serif; /* 默认字体 */
+}
+
+/* 表单标题：用于表单顶部显示标题 */
+.form-title {
+    text-align: center; /* 居中对齐 */
+    font-size: 1.8rem; /* 字体大小 */
+    margin-bottom: 20px; /* 标题与表单之间的间距 */
+    color: #333; /* 深灰色字体 */
+}
+
+/* 表单组：每个表单字段的容器样式 */
+.form-group {
+    margin-bottom: 20px; /* 每个表单字段之间的间距 */
+}
+
+/* 文本框通用样式：适用于 input[type="text"] 和 textarea */
+input[type="text"], textarea {
+    width: 100%; /* 占满容器宽度 */
+    padding: 12px 15px; /* 内边距 */
+    font-size: 1rem; /* 字体大小 */
+    border: 1px solid #d1d1d6; /* 浅灰边框 */
+    border-radius: 8px; /* 圆角效果 */
+    background-color: #ffffff; /* 白色背景 */
+    outline: none; /* 去掉聚焦时的默认轮廓 */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 平滑过渡效果 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+}
+
+/* 文本框聚焦状态：当用户点击输入框时的样式 */
+input[type="text"]:focus, textarea:focus {
+    border-color: #4285f4; /* 蓝色聚焦边框 */
+    box-shadow: 0 0 8px rgba(66, 133, 244, 0.3); /* 聚焦阴影效果 */
+}
+
+/* 文本框占位符（placeholder）样式 */
+input[type="text"]::placeholder, textarea::placeholder {
+    color: #888; /* 浅灰色占位符文字 */
+    font-size: 0.95rem; /* 占位符文字稍微小一些 */
+}
+
+/* 标签样式：复选框组的布局 */
+.form-check {
+    margin-bottom: 8px; /* 每个标签的间距 */
+}
+
+/* 标签文字：复选框旁边的说明文字 */
+.form-check-label {
+    font-size: 1rem; /* 字体大小 */
+    color: #555; /* 中灰色 */
+    padding-left: 5px; /* 文字与复选框之间的距离 */
+    display: flex; /* Flex 布局，用于对齐复选框和文字 */
+    align-items: center; /* 垂直居中对齐 */
+}
+
+/* 复选框：样式化复选框，增强视觉效果 */
+.stylish-checkbox {
+    margin-right: 10px; /* 复选框与文字的间距 */
+    transform: scale(1.2); /* 放大复选框 */
+    accent-color: #4285f4; /* 设置复选框的颜色为蓝色 */
+}
+
+/* 层次缩进：标签结构中的子标签缩进显示 */
+.form-check .form-check-label::before {
+    content: attr(data-indent); /* 根据数据动态添加缩进 */
+    display: inline-block; /* 设置为行内块元素 */
+    width: calc(attr(data-indent, 0) * 10px); /* 每层缩进10px */
+}
+
+/* 提交按钮：表单提交按钮的样式 */
+.btn-primary {
+    display: block; /* 独占一行 */
+    width: 100%; /* 宽度占满容器 */
+    padding: 12px; /* 内边距 */
+    background-color: #4285f4; /* Google 蓝色 */
+    color: white; /* 白色文字 */
+    font-size: 1rem; /* 字体大小 */
+    border: none; /* 去掉默认边框 */
+    border-radius: 5px; /* 圆角效果 */
+    cursor: pointer; /* 鼠标移上去时变成手形 */
+    transition: all 0.2s; /* 平滑过渡效果 */
+}
+
+/* 提交按钮悬停状态：当鼠标移到按钮上时的样式 */
+.btn-primary:hover {
+    background-color: #3367d6; /* 更深的蓝色 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 增加悬停时的阴影效果 */
+}
+
+/* 文本框多行文本（textarea）的样式 */
+textarea {
+    resize: vertical; /* 允许用户调整高度 */
+    min-height: 120px; /* 最小高度 */
+    max-height: 300px; /* 最大高度 */
+    overflow: auto; /* 添加滚动条 */
+}
+
+/* 下拉框（select）样式：美化下拉框 */
+select {
+    width: 100%; /* 占满容器宽度 */
+    padding: 12px 14px; /* 内边距 */
+    font-size: 1rem; /* 字体大小 */
+    border: 1px solid #d1d1d6; /* 浅灰边框 */
+    border-radius: 8px; /* 圆角效果 */
+    background-color: #ffffff; /* 白色背景 */
+    outline: none; /* 去掉聚焦时的默认轮廓 */
+    appearance: none; /* 移除浏览器默认的下拉箭头 */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 平滑过渡效果 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+}
+
+/* 下拉框聚焦状态：当用户点击下拉框时的样式 */
+select:focus {
+    border-color: #4285f4; /* 蓝色聚焦边框 */
+    box-shadow: 0 0 8px rgba(66, 133, 244, 0.3); /* 聚焦阴影 */
+}
+
+/* 自定义下拉箭头：移除默认箭头并使用自定义样式 */
+select::-ms-expand {
+    display: none; /* 针对 IE 浏览器优化 */
+}
+
+select::before {
+    content: '▼'; /* 自定义箭头图标 */
+    font-size: 1.2rem; /* 箭头大小 */
+    color: #4285f4; /* 设置箭头颜色 */
+    position: absolute; /* 绝对定位 */
+    right: 15px; /* 右侧间距 */
+    top: 50%; /* 垂直居中 */
+    transform: translateY(-50%); /* 调整箭头位置 */
+    pointer-events: none; /* 禁用鼠标事件 */
+}
+
+/* 下拉框悬停状态 */
+select:hover {
+    border-color: #4285f4; /* 蓝色边框 */
+    box-shadow: 0 0 6px rgba(66, 133, 244, 0.3); /* 轻微阴影 */
+}
+
+/* 下拉框选项样式 */
+select option {
+    font-size: 1rem; /* 选项文字大小 */
+    padding: 10px; /* 内边距 */
+    background-color: #fff; /* 白色背景 */
+    color: #333; /* 深灰色字体 */
+}
+
+/* 当选项被选中时的样式 */
+select option:checked {
+    background-color: #4285f4; /* 蓝色背景 */
+    color: white; /* 白色文字 */
+}

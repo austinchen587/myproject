@@ -1,0 +1,16 @@
+{% extends 'library/base.html' %}
+
+{% block title %}删除文件{% endblock %}
+{% block page_title %}删除文件{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>确认删除</h2>
+    <p>您确定要删除文件 "{{ file.name }}" 吗？此操作无法撤销。</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">删除</button>
+        <a href="{% url 'library:manage_files' %}" class="btn btn-secondary">取消</a>
+    </form>
+</div>
+{% endblock %}

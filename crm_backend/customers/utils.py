@@ -17,3 +17,13 @@ def calculate_completion_rate(customer):
     filled_fields = sum(1 for field in fields if getattr(customer, field))
 
     return (filled_fields / total_fields) * 100  # 返回百分比
+
+
+
+from customers.storages.storages import CustomerAudioOSSStorage, CustomerImagesOSSStorage
+
+def get_audio_storage():
+    return CustomerAudioOSSStorage()
+
+def get_image_storage():
+    return CustomerImagesOSSStorage()

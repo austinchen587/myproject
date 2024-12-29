@@ -1,0 +1,86 @@
+{% extends 'library/base.html' %}
+{% load custom_filters %}
+{% load custom_filters_repeat %}
+
+{% block title %}管理文件{% endblock %}
+{% block page_title %}管理文件{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>管理文件</h2>
+
+    <!-- 筛选标签部分 -->
+    <form method="get" action="" class="filter-form">
+        <label for="tag-filter">按标签筛选：</label>
+        <select name="tag" id="tag-filter" class="filter-select">
+            <option value="">全部标签</option>
+            {% include "library/partials/tag_tree_select.html" with tags=all_tags level=0 tag_filter=request.GET.tag %}
+        </select>
+        <button type="submit" class="button filter-button">筛选</button>
+    </form>
+
+    <!-- 文件列表 -->
+    <ul class="file-list">
+        {% for file in files %}
+            <li class="file-item">
+                <!-- 文件预览缩略图 -->
+                <div class="file-thumbnail">
+                    {% if file.file.url|lower|endswith:".jpg" or file.file.url|lower|endswith:".png" or file.file.url|lower|endswith:".jpeg" %}
+                        <img src="{{ file.file.url }}" alt="{{ file.name }}" class="thumbnail-image">
+                    {% elif file.file.url|lower|endswith:".pdf" %}
+                        <div class="thumbnail-placeholder">PDF</div>
+                    {% elif file.file.url|lower|endswith:".mp4" %}
+                        <div class="thumbnail-placeholder">视频</div>
+                    {% elif file.file.url|lower|endswith:".mp3" %}
+                        <div class="thumbnail-placeholder">音频</div>
+                    {% else %}
+                        <div class="thumbnail-placeholder">预览不可用</div>
+                    {% endif %}
+                </div>
+
+                <!-- 文件详细信息 -->
+                <div class="file-details">
+                    <h3 class="file-name">{{ file.name }}</h3>
+                    <p class="file-date">上传时间：{{ file.uploaded_at|date:"Y-m-d H:i" }}</p>
+                    <p class="file-tags">标签：
+                        {% for tag in file.tags.all %}
+                            <span class="tag">{{ tag.name }}</span>
+                        {% empty %}
+                            无标签
+                        {% endfor %}
+                    </p>
+                </div>
+
+                <!-- 文件操作按钮 -->
+                <div class="file-actions">
+                    <a href="{% url 'library:view_file' file.id %}" class="button view-file">查看文件</a>
+                    <a href="{% url 'library:edit_file' file.id %}" class="button edit-file">编辑文件</a>
+                    <a href="{% url 'library:delete_file' file.id %}" class="button delete-file">删除文件</a>
+                </div>
+            </li>
+        {% empty %}
+            <p>当前没有文件。</p>
+        {% endfor %}
+    </ul>
+
+    <!-- 分页控制 -->
+    <div class="pagination">
+        <span class="page-info">当前页：{{ files.number }} / {{ files.paginator.num_pages }}</span>
+        <div class="page-controls">
+            {% if files.has_previous %}
+                <a href="?{% if request.GET.tag %}tag={{ request.GET.tag }}&{% endif %}page={{ files.previous_page_number }}" class="button">上一页</a>
+            {% endif %}
+            {% if files.has_next %}
+                <a href="?{% if request.GET.tag %}tag={{ request.GET.tag }}&{% endif %}page={{ files.next_page_number }}" class="button">下一页</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 返回资料库按钮 -->
+    <a href="{% url 'library:dashboard' %}" class="button back-to-dashboard">返回资料库</a>
+</div>
+{% endblock %}

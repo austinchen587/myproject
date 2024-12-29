@@ -1,0 +1,18 @@
+{% for tag in tags %}
+<li>
+    <label>
+        <input type="checkbox" name="tags" value="{{ tag.id }}">
+        <strong>{{ tag.name }}</strong>
+    </label>
+    {% if tag.description %}
+        <span>- {{ tag.description }}</span>
+    {% endif %}
+
+    <!-- 检查是否有子标签 -->
+    {% if tag.children.exists %}
+    <ul>
+        {% include "library/partials/tag_tree_uploadfiles.html" with tags=tag.children.all level=level|add:1 %}
+    </ul>
+    {% endif %}
+</li>
+{% endfor %}

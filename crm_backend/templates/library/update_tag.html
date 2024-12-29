@@ -1,0 +1,12 @@
+{% extends 'library/base.html' %}
+
+{% block title %}更新标签{% endblock %}
+{% block page_title %}更新标签{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">更新标签</button>
+</form>
+{% endblock %}

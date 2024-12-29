@@ -1,0 +1,26 @@
+{% extends 'library/base.html' %}
+
+{% block title %}编辑文件{% endblock %}
+{% block page_title %}编辑文件{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>编辑文件</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_name">文件名</label>
+            {{ form.name }}
+        </div>
+        <div class="form-group">
+            <label for="id_file">文件</label>
+            {{ form.file }}
+        </div>
+        <div class="form-group">
+            <label for="id_tags">标签</label>
+            {{ form.tags }}
+        </div>
+        <button type="submit" class="btn btn-primary">保存更改</button>
+    </form>
+</div>
+{% endblock %}

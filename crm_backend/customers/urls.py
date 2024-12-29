@@ -1,7 +1,8 @@
 from django.urls import path
+from .views_mobile_images import test_customer_images_view
 from .views_mobile import mobile_view, customer_detail_mobile, add_comment_ajax, closed_customer_detail
 from .views_mobile_audio import upload_audio, delete_audio
-# from .views_new_customer import customer_list
+from .views_mobile_images import upload_image, delete_image, customer_images_view
 from .views import (
     customerlist,
     add_customer,
@@ -27,8 +28,18 @@ urlpatterns = [
     path('customers/recording/upload/<int:customer_id>/', upload_audio, name='upload_audio'),
     path('customers/recording/delete/<int:recording_id>/', delete_audio, name='delete_audio'),
 
-    # 新客户相关路由
-    # path('customer-list/', customer_list, name='customer_list'),
+    # 图片相关路由
+    path('upload_image/<int:customer_id>/', upload_image, name='upload_image'),
+    path('delete-image/<int:recording_id>/', delete_image, name='delete_image'),
+    #path('customer-images/<int:customer_id>/', customer_images_view, name='customer_images_view'),
+    #path('test-customer-images/<int:customer_id>/', customer_images_view, name='test_customer_images_view'),
+    path('test-customer-images/<int:customer_id>/', test_customer_images_view, name='test_customer_images_view'),
+
+    
+    
+
+    # 客户详情路由
+    path('customer-detail/<int:customer_id>/', customer_detail, name='customer_detail'),
 
     # 核心功能路由
     path('customerlist/', customerlist, name='customerlist'),

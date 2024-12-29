@@ -4,15 +4,17 @@
     <h2>录音记录</h2>
     <ul id="audioRecordList">
         {% for recording in customer.recordings.all %}
-            <li id="recording-{{ recording.id }}">
-                <p>上传时间: {{ recording.created_at|date:"Y-m-d H:i:s" }}</p>
-                <audio controls>
-                    <source src="{{ recording.audio_file.url }}" type="audio/mpeg">
-                    您的浏览器不支持音频播放。
-                </audio>
-                <!-- 删除按钮 -->
-                <button class="delete-audio-btn" data-recording-id="{{ recording.id }}">删除</button>
-            </li>
+            {% if recording.audio_file %}
+                <li id="recording-{{ recording.id }}">
+                    <p>上传时间: {{ recording.created_at|date:"Y-m-d H:i:s" }}</p>
+                    <audio controls>
+                        <source src="{{ recording.audio_file.url }}" type="audio/mpeg">
+                        您的浏览器不支持音频播放。
+                    </audio>
+                    <!-- 删除按钮 -->
+                    <button class="delete-audio-btn" data-recording-id="{{ recording.id }}">删除</button>
+                </li>
+            {% endif %}
         {% empty %}
             <p>暂无录音记录。</p>
         {% endfor %}
@@ -31,5 +33,36 @@
     <div id="uploadProgress" style="display: none;">
         <p>上传中，请稍候...</p>
     </div>
-</div>
 
+    <script>
+        // 处理删除按钮的点击事件
+        document.querySelectorAll('.delete-audio-btn').forEach(button => {
+            button.addEventListener('click', async function() {
+                const recordingId = this.getAttribute('data-recording-id');
+                const confirmed = confirm("确定要删除这条录音吗？");
+    
+                if (confirmed) {
+                    try {
+                        const response = await fetch("{% url 'delete_audio' 0 %}".replace('0', recordingId), {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }
+                        });
+    
+                        const result = await response.json();
+                        if (response.ok) {
+                            alert(result.message || '音频删除成功');
+                            document.getElementById(`recording-${recordingId}`).remove();
+                        } else {
+                            alert(result.error || '音频删除失败');
+                        }
+                    } catch (error) {
+                        console.error('删除音频时发生错误:', error);
+                        alert('删除音频失败，请稍后重试。');
+                    }
+                }
+            });
+        });
+    </script>
+</div>

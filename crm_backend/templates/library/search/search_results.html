@@ -1,0 +1,75 @@
+{% load static custom_filters %}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索结果</title>
+    <link rel="stylesheet" href="{% static 'css/library/search_results.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>搜索结果</h2>
+        <p>关键词：<strong>{{ query }}</strong></p>
+
+        <!-- 标签过滤 -->
+        <div class="tag-filter">
+            <h3>按标签过滤</h3>
+            <form method="get" action="{% url 'library:search_files' %}">
+                <input type="hidden" name="q" value="{{ query }}"> <!-- 保留关键词搜索 -->
+                <ul class="tag-list">
+                    {% include "library/partials/tag_tree_recursive.html" with tags=all_tags level=0 selected_tags=selected_tags %}
+                </ul>
+                <button type="submit" class="button filter-button">应用过滤</button>
+            </form>
+        </div>
+
+        <!-- 搜索结果 -->
+        {% if results %}
+            <ul class="results-list">
+                {% for file in results %}
+                    <li class="result-item">
+                        <h3>{{ file.name }}</h3>
+                        <p>上传时间：{{ file.uploaded_at|date:"Y-m-d H:i" }}</p>
+                        <p>标签：
+                            {% for tag in file.tags.all %}
+                                <span class="tag">{{ tag.name }}</span>
+                            {% empty %}
+                                无标签
+                            {% endfor %}
+                        </p>
+
+                        <!-- 文件类型判断 -->
+                        {% if file.file.url|lower|endswith:".mp3" or file.file.url|lower|endswith:".wav" %}
+                            <audio controls>
+                                <source src="{{ file.file.url }}" type="audio/mpeg">
+                                您的浏览器不支持音频播放。
+                            </audio>
+                        {% elif file.file.url|lower|endswith:".mp4" or file.file.url|lower|endswith:".mov" %}
+                            <video controls width="100%" height="auto">
+                                <source src="{{ file.file.url }}" type="video/mp4">
+                                您的浏览器不支持视频播放。
+                            </video>
+                        {% elif file.file.url|lower|endswith:".pdf" %}
+                            <a href="{{ file.file.url }}" target="_blank" class="view-link">在线查看 PDF</a>
+                        {% elif file.file.url|lower|endswith:".jpg" or file.file.url|lower|endswith:".png" or file.file.url|lower|endswith:".jpeg" %}
+                            <img src="{{ file.file.url }}" alt="{{ file.name }}" class="preview-image" style="max-width: 100%; height: auto; border: 1px solid #ccc; margin-top: 10px;">
+                        {% else %}
+                            <a href="{{ file.file.url }}" target="_blank" class="download-link">下载文件</a>
+                        {% endif %}
+
+                        <div class="download-section" style="margin-top: 10px;">
+                            <a href="{{ file.file.url }}" download="{{ file.name }}" class="button download-button">下载文件</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>未找到相关结果。</p>
+        {% endif %}
+
+        <a href="{% url 'library:dashboard' %}" class="button back-button">返回资料库</a>
+    </div>
+</body>
+</html>

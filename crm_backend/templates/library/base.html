@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}系统标题{% endblock %}</title>
+    {% load static %}
+    <!-- 全局样式 -->
+    <link rel="stylesheet" href="{% static 'css/library/base.css' %}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <!-- 主体内容 -->
+    <main class="main-content">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- 页面脚部 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 南昌摩尔狮 保留所有权利。</p>
+        </div>
+    </footer>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

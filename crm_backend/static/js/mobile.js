@@ -114,3 +114,16 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("筛选器相关 DOM 元素未找到！");
     }
 });
+
+document.querySelector('.toggle-images-btn').addEventListener('click', function () {
+    const section = document.querySelector('.customer-images-section');
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+    } else {
+        section.style.display = 'none';
+    }
+});
+
+
+
+

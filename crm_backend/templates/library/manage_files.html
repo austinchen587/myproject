@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理文件</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/library/manage_files.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>管理文件</h2>
+
+        <!-- 标签筛选 -->
+        <form method="get" class="tag-filter-form">
+            <label for="tag-filter">按标签筛选：</label>
+            <select name="tag" id="tag-filter" onchange="this.form.submit()">
+                <option value="">全部标签</option>
+                <!-- 调用递归标签模板 -->
+                {% include "library/partials/tag_tree_select.html" with tags=all_tags level=0 tag_filter=tag_filter %}
+            </select>
+        </form>
+
+        <!-- 文件列表 -->
+        <ul class="file-list">
+            {% for file in files %}
+                <li>
+                    <h3>{{ file.name }}</h3>
+                    <p>上传时间：{{ file.uploaded_at|date:"Y-m-d H:i" }}</p>
+                    <p>标签：
+                        {% for tag in file.tags.all %}
+                            <span class="tag">{{ tag.name }}</span>
+                        {% empty %}
+                            无标签
+                        {% endfor %}
+                    </p>
+                    <a href="{{ file.file.url }}" class="button view-file" target="_blank">查看文件</a>
+                    <a href="{% url 'library:edit_file' file.id %}" class="button edit-file">编辑文件</a>
+                    <a href="{% url 'library:delete_file' file.id %}" class="button delete-file">删除文件</a>
+                </li>
+            {% empty %}
+                <p>当前没有文件。</p>
+            {% endfor %}
+        </ul>
+
+        <!-- 分页导航 -->
+        <div class="pagination">
+            {% if files.has_previous %}
+                <a href="?page={{ files.previous_page_number }}{% if tag_filter %}&tag={{ tag_filter }}{% endif %}" class="page-link">上一页</a>
+            {% endif %}
+            <span>第 {{ files.number }} 页，共 {{ files.paginator.num_pages }} 页</span>
+            {% if files.has_next %}
+                <a href="?page={{ files.next_page_number }}{% if tag_filter %}&tag={{ tag_filter }}{% endif %}" class="page-link">下一页</a>
+            {% endif %}
+        </div>
+
+        <a href="{% url 'library:dashboard' %}" class="button back-to-dashboard">返回资料库</a>
+    </div>
+</body>
+</html>

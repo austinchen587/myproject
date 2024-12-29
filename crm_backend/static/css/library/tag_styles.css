@@ -1,0 +1,108 @@
+/* 表单容器 */
+.upload-container {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 700px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+/* 表单标题 */
+.form-title {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 表单组 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* 标签样式 */
+.form-check {
+    margin-bottom: 8px;
+}
+
+.form-check-label {
+    font-size: 1rem;
+    color: #555;
+    padding-left: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.stylish-checkbox {
+    margin-right: 10px;
+    transform: scale(1.2);
+    accent-color: #4285f4; /* 设置选择框的颜色 */
+}
+
+/* 缩进显示层次 */
+.form-check .form-check-label::before {
+    content: attr(data-indent); /* 根据数据动态添加缩进 */
+    display: inline-block;
+    width: calc(attr(data-indent, 0) * 10px);
+}
+
+/* 提交按钮 */
+.btn-primary {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #4285f4;
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #3367d6;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* 树形结构样式 */
+.tag-list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tag-item {
+    margin: 5px 0;
+    padding-left: 20px;
+    position: relative;
+}
+
+.tag-item:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 10px;
+    height: 1px;
+    background: #ccc;
+}
+
+.child-tags {
+    padding-left: 20px;
+    border-left: 1px dashed #ccc;
+    margin-top: 5px;
+}
+
+.tag-checkbox {
+    margin-right: 8px;
+}
+
+
+body {
+    background-color: yellow; /* 测试用的明显样式 */
+}

@@ -12,11 +12,16 @@
     <div class="container">
         <h2>欢迎进入南昌摩尔狮CRM系统</h2>
         <p class="welcome-message">欢迎销冠 {{ user.username }}，努力一定会有收获！</p>
-        <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
-        <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
-        <a href="{% url 'daily_report' %}" class="button daily-report">报表系统</a>
-        <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
-        <a href="{% url 'closed_customer_detail' %}" class="button closed_customer_detail">成交客户详情</a>
+        
+        <!-- 按钮列表 -->
+        <div class="button-list">
+            <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
+            <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
+            <a href="{% url 'daily_report' %}" class="button daily-report">报表系统</a>
+            <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
+            <a href="{% url 'closed_customer_detail' %}" class="button closed-customer-detail">成交客户详情</a>
+            <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
+        </div>
     </div>
 </body>
 </html>

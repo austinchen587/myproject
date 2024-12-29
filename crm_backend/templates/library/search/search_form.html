@@ -1,0 +1,16 @@
+<div class="search-container">
+    <form method="get" action="{% url 'library:search_files' %}">
+        <div class="search-box">
+            <input
+                type="text"
+                name="q"
+                placeholder="请输入关键词进行搜索..."
+                value="{{ query }}"
+                class="search-input"
+            />
+            <button type="submit" class="search-button">
+                搜 索
+            </button>
+        </div>
+    </form>
+</div>

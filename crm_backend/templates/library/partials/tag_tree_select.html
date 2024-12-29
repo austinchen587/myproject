@@ -1,0 +1,11 @@
+{% load custom_filters_repeat %}
+
+{% for tag in tags %}
+<option value="{{ tag.id }}" {% if tag.id|stringformat:"s" == tag_filter %}selected{% endif %}>
+    {{ "---" | repeat:level }} {{ tag.name }}
+</option>
+
+{% if tag.children.exists %}
+    {% include "library/partials/tag_tree_select.html" with tags=tag.children.all level=level|add:1 tag_filter=tag_filter %}
+{% endif %}
+{% endfor %}

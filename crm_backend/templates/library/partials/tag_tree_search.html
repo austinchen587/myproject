@@ -1,0 +1,20 @@
+{% for tag in tags %}
+<li>
+    <label>
+        <input
+            type="checkbox"
+            name="tags"
+            value="{{ tag.id }}"
+            {% if tag.id|stringformat:"s" in selected_tags %}checked{% endif %}
+        />
+        {{ tag.name }}
+    </label>
+
+    <!-- 递归展示子标签 -->
+    {% if tag.children.exists %}
+    <ul>
+        {% include "library/partials/tag_tree_search.html" with tags=tag.children.all selected_tags=selected_tags %}
+    </ul>
+    {% endif %}
+</li>
+{% endfor %}
