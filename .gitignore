@@ -1,3 +1,6 @@
 *.pyc
 __pycache__/
 /media/
+
+# 忽略 settings.py
+crm_backend/crm_backend/settings.py
