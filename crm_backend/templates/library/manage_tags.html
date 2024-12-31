@@ -1,4 +1,5 @@
 {% extends 'library/base.html' %}
+{% load static %}
 
 {% block title %}管理标签{% endblock %}
 {% block page_title %}管理标签{% endblock %}
@@ -6,7 +7,7 @@
 {% block content %}
 <div class="manage-tags-container">
     <h2>管理标签</h2>
-    
+    <link rel="stylesheet" href="{% static 'css/library/manage_tags.css' %}">
     <!-- 消息显示 -->
     {% if messages %}
         <div class="messages">

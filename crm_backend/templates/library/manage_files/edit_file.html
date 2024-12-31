@@ -1,11 +1,12 @@
 {% extends 'library/base.html' %}
-
+{% load static %}
 {% block title %}编辑文件{% endblock %}
 {% block page_title %}编辑文件{% endblock %}
 
 {% block content %}
 <div class="container">
     <h2>编辑文件</h2>
+    <link rel="stylesheet" href="{% static 'css/library/edit_file.css' %}">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
@@ -22,5 +23,9 @@
         </div>
         <button type="submit" class="btn btn-primary">保存更改</button>
     </form>
+</div>
+
+<a href="{% url 'library:manage_files' %}" class="button back-to-dashboard">返回文件管理</a>
+</div>
 </div>
 {% endblock %}

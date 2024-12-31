@@ -1,9 +1,18 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>资料库</title>
+    <link rel="stylesheet" href="{% static 'css/library/library_dashboard.css' %}">
+    <style>
+        body {
+            background: url("{% static 'images/pexels.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -31,6 +40,9 @@
                     class="search-input"
                 />
 
+                <!-- 搜索按钮 -->
+                <button type="submit" class="search-button">搜 索</button>
+
                 <!-- 标签筛选 -->
                 <div class="tag-filter">
                     <h3>按标签筛选</h3>
@@ -39,34 +51,8 @@
                     </ul>
                 </div>
 
-                <!-- 搜索按钮 -->
-                <button type="submit" class="search-button">搜 索</button>
             </form>
         </div>
-
-        <!-- 搜索结果展示 -->
-        {% if results %}
-        <div class="search-results">
-            <h3>搜索结果：</h3>
-            <ul>
-                {% for file in results %}
-                <li>
-                    <strong>{{ file.name }}</strong>
-                    <p>上传时间：{{ file.uploaded_at|date:"Y-m-d H:i" }}</p>
-                    <p>标签：
-                        {% for tag in file.tags.all %}
-                        <span class="tag">{{ tag.name }}</span>
-                        {% empty %}
-                        无标签
-                        {% endfor %}
-                    </p>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% else %}
-
-        {% endif %}
 
         <!-- 返回主页 -->
         <div class="footer">

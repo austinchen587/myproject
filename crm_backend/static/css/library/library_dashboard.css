@@ -1,328 +1,128 @@
-/* 页面容器 */
-.container {
-    max-width: 1100px; /* 最大宽度 */
-    max-height: fit-content; /* 高度自适应 */
-    margin: 20px auto; /* 上下居中 */
-    padding: 20px; /* 内边距 */
-    font-family: 'Arial', sans-serif; /* 字体 */
-    background-color: #f9f9f9; /* 背景色 */
-    border-radius: 12px; /* 圆角 */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+/* library_dashboard */
+
+
+body {
+    font-family: Arial, Helvetica, sans-serif; /* 字体 */
+    margin: 0; /* 外边距 */
+    padding: 0%; /* 内边距 */
+    color: #333; /* 文字颜色 */
+    background: url("{% static 'images/pexels.jpg' %}") no-repeat center center fixed;
 }
 
-/* 页面标题 */
+/* 容器 */
+.container {
+    max-width: 1200px; /* 最大宽度 */
+    margin: 0 auto; /* 外边距 */
+    padding: 20px; /* 内边距 */
+    
+}
+
+/* 标题 */
 .title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
+    text-align: center; /* 文字居中 */
+    font-size: 2em; /* 字体大小 */
+    margin-bottom: 20px; /* 下边距 */
+    color:#fefefe; /* 文字颜色 */
 }
 
 .admin-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 40px; /* 间距 */
-    margin-top: 20px;
-    font-size: 16px;
+    text-align: center; /* 文字居中 */
+    margin-bottom: 20px; /* 下边距 */
+    font-family: Arial, Helvetica, sans-serif; /* 字体 */
+    
 }
 
+
+/* 按钮 */
 .action-button {
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-    background-color: #4285f4;
+    display: inline-block; /* 行内块元素 */
+    padding: 8px 30px; /* 内边距 */
+    margin: 0 10px; /* 外边距 */
+    font-size: 1em; /* 字体大小 */
+    border: none; /* 无边框 */
+    border-radius: 5px; /* 边框圆角 */
+    cursor: pointer; /* 鼠标样式 */
+    text-align: center; /* 文字居中 */
+    text-decoration: none; /* 文字无下划线 */
+    color: #fff; /* 文字颜色 */
+    background-color: #007bff; /* 背景颜色 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影 */
 }
 
-/* 搜索框容器 */
+
+
 .search-container {
-    margin-top: 30px; /* 顶部间距 */
-    display: flex; /* 水平布局 */
-    justify-content: center; /* 居中对齐 */
-    align-items: center;
-    gap: 10px; /* 间距 */
+    background-color: #fff; /* 背景颜色 */
+    padding: 20px; /* 内边距 */
+    border-radius: 10px; /* 边框圆角 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* 阴影 */
+    margin-bottom: 20px; /* 下边距 */
 }
 
-/* 搜索输入框 */
 .search-input {
-    flex: 1; /* 占满剩余空间 */
-    padding: 12px 16px; /* 上下左右内边距 */
-    font-size: 16px; /* 字体大小 */
-    border: 1px solid #ccc; /* 边框 */
-    border-radius: 8px; /* 圆角 */
-    width: 400px; /* 宽度 */
-
-}
-
-/* 搜索输入框：聚焦时 */
-.search-input:focus {
-    border-color: #4285f4; /* Google蓝色聚焦边框 */
-    box-shadow: 0 0 10px rgba(66, 133, 244, 0.2); /* 聚焦时的阴影效果 */
-    background-color: #f9f9f9; /* 聚焦时背景色 */
-}
-
-/* 搜索按钮 */
-.search-button {
-    border: none; /* 去掉边框 */
-    background-color: #4285f4;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 30px; /* 圆形边角 */
-    cursor: pointer;
-    margin-left: 15px; /* 按钮和输入框之间的间距 */
-    transition: all 0.2s ease;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.search-button:hover {
-    background-color: #3367d6; /* 悬停时深蓝色 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 悬停时的阴影 */
-}
-
-/* 标签容器 */
-.tag-search-container,
-.tag-list {
-    width: 100%;
-    margin-bottom: 20px;
-
-}
-
-.tag-list {
-    list-style-type: none; /* 去除列表点 */
-    padding: 0;
-    margin: 0 0 20px 0;
-}
-
-.tat-item {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    display: flex;
-    align-items: center;
-    gap: 10px; /* 复选框和文本之间的间距 */
-    cursor: pointer; /* 鼠标悬停时变成手形 */
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-/* 悬停样式 */
-.tag-item:hover {
-    background-color: #f1f1f1;
-    border-color: #aaa;
-}
-
-/* 选中状态 */
-.tag-item[data-selected="true"] {
-    background-color: #007bff; /* 选中时的背景色 */
-    color: #fff; /* 选中文字颜色 */
-    border-color: #0056b3;
-}
-
-/* 自定义复选框样式 */
-.tag-checkbox {
-    width: 20px;
-    height: 20px;
-    margin: 0;
-    accent-color: #007bff; /* 自定义复选框颜色 */
-    cursor: pointer;
-}
-
-/* 标签描述样式 */
-.tag-description {
-    font-size: 14px;
-    color: #666;
-}
-
-
-/* 标签描述样式 */
-
-/* 可选：为每个区域添加背景和内边距，提升视觉效果 */
-.tag-search-container {
-    margin-bottom: 20px;
+    width: calc(100% - 120px); /* 宽度 */
     padding: 15px; /* 内边距 */
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1em; /* 字体大小 */
+    border: 1px solid #ddd; /* 边框 */
+    border-radius: 20px; /* 边框圆角 */
+    margin-right: 20px; /* 左边距 */
+    background-color: #f1f1ec;
+
 }
 
-.tag-search-container from {
-    display: flex;
-    flex-direction: column; /* 垂直布局 */
-    gap:10px;
-}
-
-.tag-search-container label {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 5px; /* 与下方的选择框分开 */
-}
-
-.tag-select {
-    width: 100%; /* 占满容器宽度 */
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff; /* 白色背景 */
+.search-input:hover {
+    border-color: #007bff; /* 鼠标悬停边框颜色 */
 }
 
 .search-button {
-    align-self: flex-start; /* 按钮靠左显示 */
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff; /* 按钮背景色 */
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 16px;
+    padding: 10px 12px; /* 内边距 */
+    font-size: 1em; /* 字体大小 */
+    border: none; /* 无边框 */
+    border-radius: 10px; /* 边框圆角 */
+    cursor: pointer; /* 鼠标样式 */
+    text-align: center; /* 文字居中 */
+    text-decoration: none; /* 文字无下划线 */
+    color: #fff; /* 文字颜色 */
+    background-color: #007bff; /* 背景颜色 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影 */
 }
-
 .search-button:hover {
-    background-color: #0056b3; /* 悬停时颜色变化 */
+    background-color: #e0a800; /* 鼠标悬停背景颜色 */
 }
 
-h3 {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 10px;
-    text-align: center;
+.tag-filter {
+    margin-top: 20px; /* 上边距 */
+    background-color: rgb(251, 251, 251);
 }
 
-
-
-
-/* 按钮样式 */
-.btn-sm {
-    background-color: #f5f5f5;
-    color: #4285f4;
-    padding: 5px 12px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    text-decoration: none;
-    transition: all 0.2s ease;
+.tag-filter h3 {
+    font-size: 1.2em; /* 字体大小 */
+    margin-bottom: 10px; /* 下边距 */
+    color: #555; /* 文字颜色 */
+    margin-left: 5px;
 }
 
-.btn-sm:hover {
-    background-color: #4285f4;
-    color: white;
+.tag-filter ul {
+    font-size: 1em; /* 字体大小 */
 }
 
-/* 子标签和层级缩进 */
-.child-tags {
-    padding-left: 20px;
-    margin-top: 10px;
-}
-
-/* 页脚 */
 .footer {
-    margin-top: 50px;
-    text-align: center;
+    text-align: right; /* 文字居中 */
+
 }
 
-.back-button {
-    background-color: #ddd;
-    padding: 12px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #333;
-    display: inline-block;
-    transition: all 0.2s ease;
+.footer .back-button {
+    padding: 10px 15px; /* 内边距 */
+    font-size: 0.9em; /* 字体大小 */
+    border: none; /* 无边框 */
+    border-radius: 5px; /* 边框圆角 */
+    background-color: #007bff; /* 背景颜色 */
+    color: #fff; /* 文字颜色 */
+    text-decoration: none; /* 文字无下划线 */
+    cursor: pointer; /* 鼠标样式 */
+    margin-right: 0px;
 }
 
 .back-button:hover {
-    background-color: #bbb;
-}
-
-/* 响应式设计：在小屏幕设备上调整布局 */
-@media (max-width: 768px) {
-    .container {
-        padding: 20px;
-        max-width: 95%;
-    }
-
-    .search-button {
-        width: auto;
-        margin-left: 10px;
-    }
-
-    .search-input {
-        max-width: 90%; /* 小屏幕设备上占用90%的宽度 */
-    }
-
-    .search-container {
-        flex-direction: column;
-        align-items: center;
-    }
-}
-
-/* 容器样式 */
-.container {
-    width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
-    font-family: Arial, sans-serif;
-}
-
-/* 搜索区域样式 */
-.tag-search-container, .tag-hierarchy-container {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* 标签列表样式 */
-.tag-list ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.tag-item {
-    margin-bottom: 10px;
-    line-height: 1.6;
-}
-
-/* 子标签样式 */
-.child-tags {
-    margin-left: 20px;
-    padding-left: 10px;
-    border-left: 1px dashed #ccc; /* 子标签左侧虚线 */
-}
-
-/* 标签描述样式 */
-.tag-description {
-    font-size: 14px;
-    color: #666;
-}
-
-/* 复选框样式 */
-.tag-checkbox {
-    margin-right: 8px;
-    accent-color: #007bff;
-}
-
-/* 搜索按钮样式 */
-.search-button {
-    display: block;
-    margin: 20px 0;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.search-button:hover {
-    background-color: #0056b3;
+    background-color: #e0a800;
 }

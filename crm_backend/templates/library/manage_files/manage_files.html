@@ -1,9 +1,10 @@
 {% extends 'library/base.html' %}
+{% load static %}
 {% load custom_filters %}
 {% load custom_filters_repeat %}
 
 {% block title %}管理文件{% endblock %}
-{% block page_title %}管理文件{% endblock %}
+{% block page_title %}管理文件{% endblock %} 
 
 {% block head %}
 
@@ -12,7 +13,7 @@
 {% block content %}
 <div class="container">
     <h2>管理文件</h2>
-
+    <link rel="stylesheet" href="{% static 'css/library/manage_files.css' %}">
     <!-- 筛选标签部分 -->
     <form method="get" action="" class="filter-form">
         <label for="tag-filter">按标签筛选：</label>
