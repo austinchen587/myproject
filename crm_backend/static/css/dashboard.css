@@ -75,8 +75,19 @@ p.welcome-message {
     background-color: #34c759;
 }
 
+
+
 .data-analysis:hover {
     background-color: #28a745;
+}
+
+/* 成交客户追踪系统 */
+.client-data-list {
+    background-color: #c734a5;
+}
+
+.client-data-list:hover {
+    background-color: #a61d7f;
 }
 
 /* 报表系统按钮 */

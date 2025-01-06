@@ -1,3 +1,5 @@
+{% load role_filters %}
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -5,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>选择页面</title>
     {% load static %}
-    <!-- 引入 dashboard.css -->
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
@@ -15,12 +16,28 @@
         
         <!-- 按钮列表 -->
         <div class="button-list">
-            <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
-            <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
-            <a href="{% url 'daily_report' %}" class="button daily-report">报表系统</a>
-            <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
-            <a href="{% url 'closed_customer_detail' %}" class="button closed-customer-detail">成交客户详情</a>
-            <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
+            {% if user|has_role:"assistant,assistant_leader" %}
+                <!-- 助教和助教管理可以看到 -->
+                <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
+                <a href="{% url 'closed:client_data_list' %}" class="button client-data-list">成交客户追踪系统</a>
+            {% elif user|has_role:"admin" %}
+                <!-- 管理员可以看到 -->
+                <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
+                <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
+                <a href="{% url 'daily_report' %}" class="button daily-report">报表系统</a>
+                <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
+                <a href="{% url 'closed_customer_detail' %}" class="button closed-customer-detail">成交客户详情</a>
+                <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
+                <a href="{% url 'closed:client_data_list' %}" class="button client-data-list">成交客户追踪系统</a>
+            {% else %}
+                <!-- 其他用户看到完整列表 -->
+                <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
+                <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
+                <a href="{% url 'daily_report' %}" class="button daily-report">报表系统</a>
+                <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
+                <a href="{% url 'closed_customer_detail' %}" class="button closed-customer-detail">成交客户详情</a>
+                <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
+            {% endif %}
         </div>
     </div>
 </body>

@@ -10,7 +10,7 @@ def is_admin(user):
     return user.is_staff or user.is_superuser
 
 
-@user_passes_test(is_admin)
+@user_passes_test(is_admin) 
 def manage_files(request):
     """
     管理文件视图，支持分页和标签筛选

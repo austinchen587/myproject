@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin
 @admin.register(SalesUser)
 class SalesUserAdmin(admin.ModelAdmin):
     # 显示列表中的字段
-    list_display = ('username', 'role', 'group_leader', 'assistant_leader', 'sales_super_admin', 'is_active', 'is_superuser')
+    list_display = ('username', 'role', 'group_leader', 'assistant_leader', 'sales_super_admin', 'hr_manager', 'is_active', 'is_superuser')
     list_filter = ('role', 'is_active')  # 根据角色和激活状态进行过滤
     search_fields = ('username', 'role')  # 添加搜索功能
 
@@ -23,7 +23,7 @@ class SalesUserAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('个人信息', {'fields': ('first_name', 'last_name', 'email')}),
-        ('角色与权限', {'fields': ('role', 'group_leader', 'assistant_leader', 'sales_super_admin')}),
+        ('角色与权限', {'fields': ('role', 'group_leader', 'assistant_leader', 'sales_super_admin', 'hr_manager')}),
         ('状态', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         ('组与权限', {'fields': ('groups', 'user_permissions')}),
     )

@@ -1,0 +1,142 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户学习情况追踪</title>
+    <link rel="stylesheet" href="{% static 'css/closed/closed_list_follow.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="text-center">客户学习情况追踪</h1>
+        </header>
+
+        <div class="action-buttons">
+            <a href="{% url 'closed:client_data_list' %}" class="btn btn-primary">返回成交清单</a>
+        </div>
+
+        <div class="table-container">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>日期</th>
+                        <th>跟进记录</th>
+                        <th>学习进度</th>
+                        <th>情况分析</th>
+                        <th>是否学完就业</th>
+                        <th>负责人</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td>{{ client.name }}</td>
+                        <td>{{ client.registration_date }}</td>
+                        <td>{{ client.follow_up_record }}</td>
+                        <td>{{ client.study_progress }}</td>
+                        <td>{{ client.situation_analysis }}</td>
+                        <td>{{ client.is_employed_after_study }}</td>
+                        <td>{{ client.responsible_person }}</td>
+                        <td>
+                            <a href="{% url 'closed:update_client_follow' client.id %}" class="btn btn-warning btn-sm">更新</a>
+                            <button class="btn btn-info btn-sm toggle-history" data-target="history-{{ client.id }}">
+                                查看历史
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="history-row" id="history-{{ client.id }}">
+                        <td colspan="8" class="history-details">
+                            <div class="history-section">
+                                <h5>学习进度历史</h5>
+                                <ul>
+                                    {% for history in client.study_progress_histories.all %}
+                                    <li>
+                                        <strong>{{ history.modified_at|date:"Y-m-d H:i" }}</strong>: {{ history.progress_content }}
+                                        <span>(操作人: {{ history.modified_by }})</span>
+                                    </li>
+                                    {% empty %}
+                                    <li class="empty">暂无学习进度历史记录</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="history-section">
+                                <h5>跟进记录历史</h5>
+                                <ul>
+                                    {% for history in client.follow_up_record_histories.all %}
+                                    <li>
+                                        <strong>{{ history.modified_at|date:"Y-m-d H:i" }}</strong>: {{ history.record_content }}
+                                        <span>(操作人: {{ history.modified_by }})</span>
+                                        {% if history.record_audio %}
+                                            <a href="{{ history.record_audio.url }}" target="_blank" class="btn btn-secondary btn-sm">播放语音</a>
+                                        {% endif %}
+                                        {% if history.record_image %}
+                                            <a href="{{ history.record_image.url }}" target="_blank" class="btn btn-secondary btn-sm">查看图片</a>
+                                        {% endif %}
+                                    </li>
+                                    {% empty %}
+                                    <li class="empty">暂无跟进记录历史记录</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="history-section">
+                                <h5>情况分析历史</h5>
+                                <ul>
+                                    {% for history in client.situation_analysis_histories.all %}
+                                    <li>
+                                        <strong>{{ history.modified_at|date:"Y-m-d H:i" }}</strong>: {{ history.analysis_content }}
+                                        <span>(操作人: {{ history.modified_by }})</span>
+                                    </li>
+                                    {% empty %}
+                                    <li class="empty">暂无情况分析历史记录</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="empty">暂无数据</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        <nav class="pagination-container">
+            <ul class="pagination">
+                {% if clients.has_previous %}
+                <li><a href="?page={{ clients.previous_page_number }}">&laquo; 上一页</a></li>
+                {% endif %}
+
+                {% for num in clients.paginator.page_range %}
+                <li {% if clients.number == num %}class="active"{% endif %}><a href="?page={{ num }}">{{ num }}</a></li>
+                {% endfor %}
+
+                {% if clients.has_next %}
+                <li><a href="?page={{ clients.next_page_number }}">下一页 &raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <!-- 使用 JavaScript 控制历史记录的显示和隐藏 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const buttons = document.querySelectorAll(".toggle-history");
+            buttons.forEach(button => {
+                button.addEventListener("click", function() {
+                    const targetId = this.getAttribute("data-target");
+                    const targetRow = document.getElementById(targetId);
+                    targetRow.style.display = targetRow.style.display === "none" ? "table-row" : "none";
+                });
+            });
+        });
+    </script>
+</body>
+</html>

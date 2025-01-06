@@ -1,0 +1,101 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加客户信息</title>
+    <link rel="stylesheet" href="{% static 'css/closed/closed_add.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>添加客户信息</h1>
+        <form method="post">
+            {% csrf_token %}
+
+
+
+            <!-- 来源渠道 -->
+            <div class="form-group">
+                <label for="source_channel">来源渠道</label>
+                <input type="text" id="source_channel" name="source_channel" class="form-control" required>
+            </div>
+
+            <!-- 姓名 -->
+            <div class="form-group">
+                <label for="name">姓名</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+
+            <!-- 性别 -->
+            <div class="form-group">
+                <label for="gender">性别</label>
+                <select id="gender" name="gender" class="form-control">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+            </div>
+
+            <!-- 年龄 -->
+            <div class="form-group">
+                <label for="age">年龄</label>
+                <input type="text" id="age" name="age" class="form-control">
+            </div>
+
+            <!-- 学历 -->
+            <div class="form-group">
+                <label for="education">学历</label>
+                <input type="text" id="education" name="education" class="form-control">
+            </div>
+
+            <!-- 专业 -->
+            <div class="form-group">
+                <label for="major">专业</label>
+                <input type="text" id="major" name="major" class="form-control">
+            </div>
+
+            <!-- 就业情况 -->
+            <div class="form-group">
+                <label for="employment_status">就业情况</label>
+                <input type="text" id="employment_status" name="employment_status" class="form-control">
+            </div>
+
+            <!-- 电话 -->
+            <div class="form-group">
+                <label for="phone">电话</label>
+                <input type="text" id="phone" name="phone" class="form-control" required>
+            </div>
+
+            <!-- 就业老师 -->
+            <div class="form-group">
+                <label for="sales_teacher">就业老师</label>
+                <input type="text" id="sales_teacher" name="sales_teacher" class="form-control">
+            </div>
+
+            <!-- 成交情况 -->
+            <div class="form-group">
+                <label for="deal_status">成交情况</label>
+                <input type="text" id="deal_status" name="deal_status" class="form-control">
+            </div>
+
+            <!-- 支付方式 -->
+            <div class="form-group">
+                <label for="payment_method">支付方式</label>
+                <input type="text" id="payment_method" name="payment_method" class="form-control">
+            </div>
+
+            <!-- 支付金额 -->
+            <div class="form-group">
+                <label for="payment_amount">支付金额</label>
+                <input type="number" step="0.01" id="payment_amount" name="payment_amount" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">保存</button>
+        </form>
+    </div>
+</body>
+
+</html>

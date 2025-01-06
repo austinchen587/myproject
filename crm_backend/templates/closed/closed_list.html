@@ -1,0 +1,116 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户数据列表</title>
+
+    <!-- 引入外部 CSS 文件 -->
+    <link rel="stylesheet" href="{% static 'css/closed/closed_list.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>成交客户列表</h1>
+
+        <div class="action-buttons">
+            <a href="{% url 'closed:add_client' %}" class="button-group">
+                <button type="button">添加成交客户</button>
+            </a>
+            <a href="{% url 'closed:client_data_list_follow' %}" class="button-group">
+                <button type="button">客户学习情况追踪</button>
+            </a>
+            <a href="{% url 'dashboard' %}" class="button-group">
+                <button type="button">返回首页</button>
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>电话</th>
+                        <th>专业</th>
+                        <th>学历</th>
+                        <th>就业情况</th>
+                        <th>日期</th>
+                        <th>渠道</th>
+                        <th>销售</th>
+                        <th>成交状态</th>
+                        <th>方式</th>
+                        <th>金额</th>
+                        <th>负责人</th>
+                        <th>操作</th> <!-- 新增操作列 -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td>{{ client.name }}</td>
+                        <td>{{ client.phone }}</td>
+                        <td>{{ client.major }}</td>
+                        <td>{{ client.education }}</td>
+                        <td>{{ client.employment_status }}</td>
+                        <td>{{ client.registration_date }}</td>
+                        <td>{{ client.source_channel }}</td>
+                        <td>{{ client.sales_teacher }}</td>
+                        <td>{{ client.deal_status }}</td>
+                        <td>{{ client.payment_method }}</td>
+                        <td>{{ client.payment_amount }}</td>
+                        <td>{{ client.responsible_person }}</td>
+                        <td>
+                            <a href="{% url 'closed:update_client' client.id %}" class="btn btn-sm btn-warning">更新</a>
+                            <a href="{% url 'closed:delete_client' client.id %}" class="btn btn-sm btn-danger" onclick="return confirm('确定删除该客户吗？');">删除</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="14" class="text-center text-muted">暂无数据</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if clients.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ clients.previous_page_number }}" aria-label="上一页">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                </li>
+                {% endif %}
+
+                {% for num in clients.paginator.page_range %}
+                <li class="page-item {% if clients.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+
+                {% if clients.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ clients.next_page_number }}" aria-label="下一页">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</body>
+
+</html>

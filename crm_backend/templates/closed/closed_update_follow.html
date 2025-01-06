@@ -1,0 +1,149 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更新客户信息</title>
+    <link rel="stylesheet" href="{% static 'css/closed/closed_add.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>更新客户信息</h1>
+        <!-- 确保支持文件上传 -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- 跟进记录 -->
+            <div class="form-group">
+                <label for="follow_up_record">跟进记录</label>
+                <textarea id="follow_up_record" name="follow_up_record" class="form-control">{{ client.follow_up_record }}</textarea>
+            </div>
+
+            <!-- 上传语音文件 -->
+            <div class="form-group">
+                <label for="record_audio">上传语音文件</label>
+                <input type="file" id="record_audio" name="record_audio" class="form-control" accept="audio/*" multiple>
+                <div id="audio_preview"></div>
+                <small id="audio_error" style="color: red;"></small>
+                {% if client.follow_up_record_histories.last %}
+                <p>现有语音文件:
+                    <a href="{{ client.follow_up_record_histories.last.record_audio.url }}" target="_blank">
+                        {{ client.follow_up_record_histories.last.record_audio.name }}
+                    </a>
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- 上传聊天截图 -->
+            <div class="form-group">
+                <label for="record_image">上传聊天截图</label>
+                <input type="file" id="record_image" name="record_image" class="form-control" accept="image/*" multiple>
+                <div id="image_preview"></div>
+                <small id="image_error" style="color: red;"></small>
+                {% if client.follow_up_record_histories.last and client.follow_up_record_histories.last.record_image %}
+                <p>现有聊天截图:
+                    <a href="{{ client.follow_up_record_histories.last.record_image.url }}" target="_blank">
+                        {{ client.follow_up_record_histories.last.record_image.name }}
+                    </a>
+                </p>
+                {% else %}
+                <p>暂无聊天截图</p>
+                {% endif %}
+            </div>
+
+            <!-- 学习进度 -->
+            <div class="form-group">
+                <label for="study_progress">学习进度</label>
+                <textarea id="study_progress" name="study_progress" class="form-control">{{ client.study_progress }}</textarea>
+            </div>
+
+            <!-- 情况分析 -->
+            <div class="form-group">
+                <label for="situation_analysis">情况分析</label>
+                <textarea id="situation_analysis" name="situation_analysis" class="form-control">{{ client.situation_analysis }}</textarea>
+            </div>
+
+            <!-- 是否学完就业 -->
+            <div class="form-group">
+                <label for="is_employed_after_study">是否学完就业</label>
+                <textarea id="is_employed_after_study" name="is_employed_after_study" class="form-control">{{ client.is_employed_after_study }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3" id="submit_button">保存修改</button>
+        </form>
+    </div>
+
+    <script>
+        // 语音文件上传验证
+        const audioInput = document.getElementById('record_audio');
+        const audioError = document.getElementById('audio_error');
+        const audioPreview = document.getElementById('audio_preview');
+
+        audioInput.addEventListener('change', function () {
+            const files = this.files;
+            audioPreview.innerHTML = ''; // 清空预览
+            audioError.textContent = ''; // 清空错误消息
+            Array.from(files).forEach(file => {
+                if (file.size > 100 * 1024 * 1024) { // 100MB
+                    audioError.textContent = "每个语音文件大小不能超过100MB";
+                    this.value = ''; // 清空文件选择
+                } else {
+                    audioPreview.innerHTML += `<p>已选择文件: ${file.name}</p>`;
+                }
+            });
+        });
+
+        // 图片文件上传验证和预览
+        const imageInput = document.getElementById('record_image');
+        const imageError = document.getElementById('image_error');
+        const imagePreview = document.getElementById('image_preview');
+
+        imageInput.addEventListener('change', function () {
+            const files = this.files;
+            imagePreview.innerHTML = ''; // 清空预览
+            imageError.textContent = ''; // 清空错误消息
+            Array.from(files).forEach(file => {
+                if (file.size > 50 * 1024 * 1024) { // 50MB
+                    imageError.textContent = "每个图片文件大小不能超过50MB";
+                    this.value = ''; // 清空文件选择
+                } else if (!['image/jpeg', 'image/png'].includes(file.type)) {
+                    imageError.textContent = "仅支持 JPEG 或 PNG 格式的图片";
+                    this.value = ''; // 清空文件选择
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.innerHTML += `<img src="${e.target.result}" alt="图片预览" style="max-width: 100%; height: auto; margin-bottom: 10px;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        // 提交前检查
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function (event) {
+            if (audioInput.files.length > 0) {
+                Array.from(audioInput.files).forEach(file => {
+                    if (file.size > 100 * 1024 * 1024) {
+                        alert("语音文件大小不能超过100MB");
+                        event.preventDefault();
+                    }
+                });
+            }
+            if (imageInput.files.length > 0) {
+                Array.from(imageInput.files).forEach(file => {
+                    if (file.size > 50 * 1024 * 1024) {
+                        alert("图片文件大小不能超过50MB");
+                        event.preventDefault();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
