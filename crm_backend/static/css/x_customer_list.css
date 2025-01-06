@@ -78,7 +78,7 @@ button[type="submit"]:hover {
     font-size: 0.85rem;
     padding: 6px 12px;
     border-radius: 6px;
-    text-decoration: none;
+    text-decoration: none; /* 去除链接下划线 */
     color: #fff;
     background-color: #007aff;
     margin: 0 4px;
