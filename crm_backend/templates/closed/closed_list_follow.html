@@ -14,6 +14,10 @@
             <h1 class="text-center">客户学习情况追踪</h1>
         </header>
 
+        <!-- 筛选功能 -->
+        {% include 'closed/closed_list_follow_filter.html' %}
+
+
         <div class="action-buttons">
             <a href="{% url 'closed:client_data_list' %}" class="btn btn-primary">返回成交清单</a>
         </div>
@@ -72,10 +76,13 @@
                                         <strong>{{ history.modified_at|date:"Y-m-d H:i" }}</strong>: {{ history.record_content }}
                                         <span>(操作人: {{ history.modified_by }})</span>
                                         {% if history.record_audio %}
-                                            <a href="{{ history.record_audio.url }}" target="_blank" class="btn btn-secondary btn-sm">播放语音</a>
+                                        <audio controls class="audio-player">
+                                            <source src="{{ history.record_audio.url }}" type="audio/mpeg">
+                                            您的浏览器不支持音频播放。
+                                        </audio>
                                         {% endif %}
                                         {% if history.record_image %}
-                                            <a href="{{ history.record_image.url }}" target="_blank" class="btn btn-secondary btn-sm">查看图片</a>
+                                        <img src="{{ history.record_image.url }}" alt="跟进图片" class="history-image" onclick="showImageModal('{{ history.record_image.url }}')">
                                         {% endif %}
                                     </li>
                                     {% empty %}
@@ -125,8 +132,14 @@
         </nav>
     </div>
 
-    <!-- 使用 JavaScript 控制历史记录的显示和隐藏 -->
+    <!-- 图片模态框 -->
+    <div id="imageModal" class="image-modal">
+        <span class="close" onclick="closeImageModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
     <script>
+        // 控制历史记录的显示和隐藏
         document.addEventListener("DOMContentLoaded", function() {
             const buttons = document.querySelectorAll(".toggle-history");
             buttons.forEach(button => {
@@ -137,6 +150,20 @@
                 });
             });
         });
+
+        // 显示图片模态框
+        function showImageModal(imageUrl) {
+            const modal = document.getElementById("imageModal");
+            const modalImage = document.getElementById("modalImage");
+            modalImage.src = imageUrl;
+            modal.style.display = "block";
+        }
+
+        // 关闭图片模态框
+        function closeImageModal() {
+            const modal = document.getElementById("imageModal");
+            modal.style.display = "none";
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,28 @@
+<div class="filter-container">
+    <form method="get" action="{% url 'closed:client_data_list_follow' %}" class="filter-form">
+        <!-- 自定义时间段 -->
+        <label for="start_date">开始日期</label>
+        <input type="date" id="start_date" name="start_date" class="form-control" value="{{ request.GET.start_date }}">
+
+        <label for="end_date">结束日期</label>
+        <input type="date" id="end_date" name="end_date" class="form-control" value="{{ request.GET.end_date }}">
+
+        <!-- 快捷筛选 -->
+        <label for="quick_filter">追踪时间段筛选</label>
+        <select id="quick_filter" name="quick_filter" class="form-control">
+            <option value="" {% if not quick_filter %}selected{% endif %}>请选择</option>
+            <option value="3_days" {% if quick_filter == "3_days" %}selected{% endif %}>3天内</option>
+            <option value="4_15_days" {% if quick_filter == "4_15_days" %}selected{% endif %}>4-15天</option>
+            <option value="16_30_days" {% if quick_filter == "16_30_days" %}selected{% endif %}>16-30天</option>
+            <option value="30_plus_days" {% if quick_filter == "30_plus_days" %}selected{% endif %}>30天以后</option>
+        </select>
+
+        <!-- 负责人筛选 -->
+        <label for="responsible_person">负责人</label>
+        <input type="text" id="responsible_person" name="responsible_person" class="form-control" placeholder="输入负责人" value="{{ request.GET.responsible_person }}">
+
+        <!-- 提交按钮 -->
+        <button type="submit" class="btn btn-primary">筛选</button>
+        <a href="{% url 'closed:client_data_list_follow' %}" class="btn btn-secondary">重置</a>
+    </form>
+</div>

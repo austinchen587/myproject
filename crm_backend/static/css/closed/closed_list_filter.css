@@ -1,0 +1,32 @@
+.filter-form {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 140px; /* 与下一个元素的间距 */
+
+}
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap; /* 强制所有内容在同一行 */
+    gap: 20px; /* 控制每个筛选项之间的间距 */
+    overflow-x: auto; /* 如果超出屏幕，支持水平滚动 */
+}
+
+.filter-row label {
+    white-space: nowrap; /* 防止文字换行 */
+    margin-right: 5px;
+}
+
+.filter-row .form-control {
+    width: 150px; /* 控制输入框宽度 */
+    max-width: 100%;
+}
+
+.filter-row button {
+    white-space: nowrap; 
+    margin-left: 20px; 
+}

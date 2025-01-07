@@ -39,9 +39,11 @@ class ClientData(models.Model):
         verbose_name="客户"
     )
     registration_date = models.DateField(
-        default=now,  # 自动设置为当前日期
-        verbose_name="日期"
+        verbose_name="日期",  # 字段的显示名称
+        null=True,           # 允许空值，如果用户没有提供日期
+        blank=True           # 允许表单中留空
     )
+    
     source_channel = models.CharField(
         max_length=150,
         null=True,

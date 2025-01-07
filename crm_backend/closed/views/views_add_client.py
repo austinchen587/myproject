@@ -1,15 +1,16 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from ..models import ClientData
-from django.utils.timezone import now
 from decimal import Decimal, InvalidOperation
 
 
 def add_client(request):
     if request.method == "POST":
         try:
-            # 自动获取当前日期作为 registration_date
-            registration_date = now().date()
+            # 获取手动输入的日期
+            registration_date = request.POST.get("registration_date")
+            if not registration_date:
+                raise ValueError("注册日期是必填项")  # 如果没有提供日期，抛出异常
 
             # 自动获取当前操作用户的用户名作为负责人
             responsible_person = request.user.username if request.user.is_authenticated else "未知"
@@ -40,7 +41,7 @@ def add_client(request):
 
             # 创建新的 ClientData 对象
             ClientData.objects.create(
-                registration_date=registration_date,  # 自动添加日期
+                registration_date=registration_date,  # 使用手动输入的日期
                 source_channel=source_channel,
                 name=name,
                 gender=gender,

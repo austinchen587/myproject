@@ -1,0 +1,78 @@
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+
+.filter-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-form label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-right: 5px;
+}
+
+.filter-form input[type="date"],
+.filter-form input[type="text"],
+.filter-form select {
+    font-size: 14px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 150px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+.filter-form button {
+    padding: 5px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.filter-form .btn-primary {
+    background-color: #007aff;
+    color: #fff;
+}
+
+.filter-form .btn-primary:hover {
+    background-color: #005bb5;
+}
+
+.filter-form .btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.filter-form .btn-secondary:hover {
+    background-color: #ccc;
+}
+
+@media (max-width: 768px) {
+    .filter-form {
+        flex-wrap: wrap;
+    }
+
+    .filter-form input[type="date"],
+    .filter-form input[type="text"],
+    .filter-form select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

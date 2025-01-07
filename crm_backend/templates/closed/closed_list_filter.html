@@ -1,0 +1,30 @@
+<div class="filter-form">
+    <form method="get" action="{% url 'closed:client_data_list' %}" class="filter-row">
+        <!-- 日期范围筛选 -->
+        <label for="start_date">开始日期</label>
+        <input type="date" id="start_date" name="start_date" class="form-control" value="{{ request.GET.start_date }}">
+
+        <label for="end_date">结束日期</label>
+        <input type="date" id="end_date" name="end_date" class="form-control" value="{{ request.GET.end_date }}">
+
+        <!-- 字段筛选 -->
+        <label for="name">姓名</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="输入姓名" value="{{ request.GET.name }}">
+
+        <label for="phone">电话</label>
+        <input type="text" id="phone" name="phone" class="form-control" placeholder="输入电话" value="{{ request.GET.phone }}">
+
+        <label for="sales_teacher">销售</label>
+        <input type="text" id="sales_teacher" name="sales_teacher" class="form-control" placeholder="输入销售姓名" value="{{ request.GET.sales_teacher }}">
+
+        <label for="deal_status">成交状态</label>
+        <input type="text" id="deal_status" name="deal_status" class="form-control" placeholder="输入成交状态" value="{{ request.GET.deal_status }}">
+
+        <label for="responsible_person">负责人</label>
+        <input type="text" id="responsible_person" name="responsible_person" class="form-control" placeholder="输入负责人姓名" value="{{ request.GET.responsible_person }}">
+
+        <!-- 按钮 -->
+        <button type="submit" class="btn btn-primary">筛选</button>
+        <a href="{% url 'closed:client_data_list' %}" class="btn btn-secondary">重置</a>
+    </form>
+</div>

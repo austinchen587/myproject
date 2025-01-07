@@ -11,6 +11,7 @@ def update_client(request, client_id):
     if request.method == "POST":
         try:
             # 更新表单数据，不处理 `registration_date`
+            client.registration_date = request.POST.get("registration_date", client.registration_date)
             client.source_channel = request.POST.get("source_channel", "未知")
             client.name = request.POST.get("name", "未知")
             client.gender = request.POST.get("gender", "未知")
