@@ -23,37 +23,35 @@
                 <textarea id="follow_up_record" name="follow_up_record" class="form-control">{{ client.follow_up_record }}</textarea>
             </div>
 
-            <!-- 上传语音文件 -->
-            <div class="form-group">
-                <label for="record_audio">上传语音文件</label>
-                <input type="file" id="record_audio" name="record_audio" class="form-control" accept="audio/*" multiple>
-                <div id="audio_preview"></div>
-                <small id="audio_error" style="color: red;"></small>
-                {% if client.follow_up_record_histories.last %}
-                <p>现有语音文件:
-                    <a href="{{ client.follow_up_record_histories.last.record_audio.url }}" target="_blank">
-                        {{ client.follow_up_record_histories.last.record_audio.name }}
-                    </a>
-                </p>
-                {% endif %}
-            </div>
+<!-- 上传语音文件 -->
+<div class="form-group">
+    <label for="record_audio">上传语音文件</label>
+    <input type="file" id="record_audio" name="record_audio" class="form-control" accept="audio/*" multiple>
+    <div id="audio_preview"></div>
+    <small id="audio_error" style="color: red;"></small>
+    {% if client.follow_up_record_histories.last and client.follow_up_record_histories.last.record_audio %}
+        <p>现有语音文件:
+            <a href="{{ client.follow_up_record_histories.last.record_audio.url }}" target="_blank">
+                {{ client.follow_up_record_histories.last.record_audio.name }}
+            </a>
+        </p>
+    {% endif %}
+</div>
 
-            <!-- 上传聊天截图 -->
-            <div class="form-group">
-                <label for="record_image">上传聊天截图</label>
-                <input type="file" id="record_image" name="record_image" class="form-control" accept="image/*" multiple>
-                <div id="image_preview"></div>
-                <small id="image_error" style="color: red;"></small>
-                {% if client.follow_up_record_histories.last and client.follow_up_record_histories.last.record_image %}
-                <p>现有聊天截图:
-                    <a href="{{ client.follow_up_record_histories.last.record_image.url }}" target="_blank">
-                        {{ client.follow_up_record_histories.last.record_image.name }}
-                    </a>
-                </p>
-                {% else %}
-                <p>暂无聊天截图</p>
-                {% endif %}
-            </div>
+<!-- 上传聊天截图 -->
+<div class="form-group">
+    <label for="record_image">上传聊天截图</label>
+    <input type="file" id="record_image" name="record_image" class="form-control" accept="image/*" multiple>
+    <div id="image_preview"></div>
+    <small id="image_error" style="color: red;"></small>
+    {% if client.follow_up_record_histories.last and client.follow_up_record_histories.last.record_image %}
+        <p>现有聊天截图:
+            <a href="{{ client.follow_up_record_histories.last.record_image.url }}" target="_blank">
+                {{ client.follow_up_record_histories.last.record_image.name }}
+            </a>
+        </p>
+    {% endif %}
+</div>
 
             <!-- 学习进度 -->
             <div class="form-group">
