@@ -97,6 +97,11 @@
                 <input type="number" step="0.01" id="payment_amount" name="payment_amount" class="form-control" value="{{ client.payment_amount }}">
             </div>
 
+            <!-- 备注 -->
+            <div class="form-group">
+                <label for="remarks">备注</label>
+                <textarea id="remarks" name="remarks" class="form-control">{{ client.remarks }}</textarea>
+
             <button type="submit" class="btn btn-primary mt-3">保存修改</button>
         </form>
     </div>
