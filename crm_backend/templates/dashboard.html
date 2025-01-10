@@ -16,7 +16,18 @@
         
         <!-- 按钮列表 -->
         <div class="button-list">
-            {% if user|has_role:"assistant,assistant_leader" %}
+            {% if user.username in "austin,任侠" %}
+                <!-- 仅用户名为 austin 和 任侠 可以看到 -->
+                <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
+                <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
+                <a href="{% url 'daily_report' %}" class="button daily-report">报表系统</a>
+                <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
+                <a href="{% url 'closed_customer_detail' %}" class="button closed-customer-detail">成交客户详情</a>
+                <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
+                <a href="{% url 'closed:client_data_list' %}" class="button client-data-list">成交客户追踪系统</a>
+                <a href="{% url 'hr:candidate_list' %}" class="button candidate-list">面试资料库</a>
+                <a href="{% url 'employee:employee_list' %}" class="button employee-list">员工列表</a>
+            {% elif user|has_role:"assistant,assistant_leader" %}
                 <!-- 助教和助教管理可以看到 -->
                 <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
                 <a href="{% url 'closed:client_data_list' %}" class="button client-data-list">成交客户追踪系统</a>
@@ -35,8 +46,14 @@
                 <a href="{% url 'closed_customer_detail' %}" class="button closed-customer-detail">成交客户详情</a>
                 <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
                 <a href="{% url 'closed:client_data_list' %}" class="button client-data-list">成交客户追踪系统</a>
-                <a href="{% url 'hr:candidate_list' %}" class="button candidate-list">面试资料库</a>
-                <a href="{% url 'employee:employee_list' %}" class="button employee-list">员工列表</a>
+            {% elif user|has_role:"sales_super_admin" %}
+                <!-- 管理员可以看到 -->
+                <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
+                <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
+                <a href="{% url 'daily_report' %}" class="button daily-report">报表系统</a>
+                <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
+                <a href="{% url 'closed_customer_detail' %}" class="button closed-customer-detail">成交客户详情</a>
+                <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
             {% else %}
                 <!-- 其他用户看到完整列表 -->
                 <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
