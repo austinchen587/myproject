@@ -1,0 +1,79 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.container {
+    max-width: 2000px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.candidate-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.candidate-table thead th {
+    background: #007aff;
+    color: #fff;
+    text-align: left;
+    padding: 12px 8px;
+}
+
+.candidate-table tbody td {
+    border-bottom: 1px solid #ddd;
+    padding: 12px 8px;
+}
+
+.candidate-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.candidate-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.pagination .button {
+    text-decoration: none;
+    background: #007aff;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 5px;
+    margin: 0 4px;
+    transition: background 0.3s ease;
+}
+
+.pagination .button:hover {
+    background: #005bb5;
+}
+
+.pagination .current-page {
+    background: #005bb5;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 5px;
+    margin: 0 4px;
+}

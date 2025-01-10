@@ -1,0 +1,106 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>候选人列表</title>
+    <link rel="stylesheet" href="{% static 'css/hr/hr_candidate.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>面试人员情况表</h1>
+
+        <a href="{% url 'hr:add_candidate' %}" class="button-group">
+            <button type="button">添加面试人员</button>
+        </a>
+        
+        <a href="{% url 'dashboard' %}" class="button-group">
+            <button type="button">返回首页</button>
+        </a>
+
+        <table class="candidate-table">
+            <thead>
+                <tr>
+                    <th>面试日期</th>
+                    <th>求职者</th>
+                    <th>求职岗位</th>
+                    <th>性别</th>
+                    <th>手机号码</th>
+                    <th>年龄</th>
+                    <th>婚姻状况</th>
+                    <th>是否做过销售</th>
+                    <th>初试官</th>
+                    <th>复试官</th>
+                    <th>面试结果</th>
+                    <th>不通过原因</th>
+                    <th>邀约人</th>
+                    <th>邀约渠道</th>
+                    <th>是否入职</th>
+                    <th>入职日期</th>
+                    <th>是否通过3天试岗</th>
+                    <th>入职1个月跟踪</th>
+                    <th>入职3个月跟踪</th>
+                    <th>操作</th> <!-- 新增操作列 -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for candidate in candidates %}
+                <tr>
+                    <td>{{ candidate.interview_date }}</td>
+                    <td>{{ candidate.candidate_name }}</td>
+                    <td>{{ candidate.job_position }}</td>
+                    <td>{{ candidate.gender }}</td>
+                    <td>{{ candidate.phone_number }}</td>
+                    <td>{{ candidate.age }}</td>
+                    <td>{{ candidate.marital_status }}</td>
+                    <td>{{ candidate.has_sales_experience|yesno:"是,否,未填写" }}</td>
+                    <td>{{ candidate.initial_interviewer }}</td>
+                    <td>{{ candidate.final_interviewer }}</td>
+                    <td>{{ candidate.interview_result }}</td>
+                    <td>{{ candidate.rejection_reason }}</td>
+                    <td>{{ candidate.inviter }}</td>
+                    <td>{{ candidate.invitation_channel }}</td>
+                    <td>{{ candidate.is_employed|yesno:"是,否,未填写" }}</td>
+                    <td>{{ candidate.employment_date }}</td>
+                    <td>{{ candidate.passed_3_day_trial|yesno:"是,否,未填写" }}</td>
+                    <td>{{ candidate.tracking_1_month }}</td>
+                    <td>{{ candidate.tracking_3_months }}</td>
+                    <td>
+                        <!-- 添加更新和删除操作 -->
+                        <a href="{% url 'hr:update_candidate' candidate.id %}" class="button">更新</a>
+                        <a href="{% url 'hr:delete_candidate' candidate.id %}" class="button" onclick="return confirm('确定删除该候选人吗？')">删除</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="20">暂无数据</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {% if candidates.has_previous %}
+                <a href="?page=1" class="button">首页</a>
+                <a href="?page={{ candidates.previous_page_number }}" class="button">上一页</a>
+            {% endif %}
+
+            {% for page in candidates.paginator.page_range %}
+                {% if page >= candidates.number|add:-2 and page <= candidates.number|add:2 %}
+                    {% if page == candidates.number %}
+                        <span class="current-page">{{ page }}</span>
+                    {% else %}
+                        <a href="?page={{ page }}" class="button">{{ page }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if candidates.has_next %}
+                <a href="?page={{ candidates.next_page_number }}" class="button">下一页</a>
+                <a href="?page={{ candidates.paginator.num_pages }}" class="button">末页</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

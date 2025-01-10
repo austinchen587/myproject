@@ -1,0 +1,126 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑候选人信息</title>
+    <link rel="stylesheet" href="{% static 'css/hr/candidate_edit.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>编辑候选人信息</h1>
+        <form method="post" action="{% url 'hr:update_candidate' candidate.id %}">
+            {% csrf_token %}
+            <div>
+                <label for="interview_date">面试日期:</label>
+                <input type="date" id="interview_date" name="interview_date" value="{{ candidate.interview_date|date:'Y-m-d' }}" required>
+            </div>
+            <div>
+                <label for="candidate_name">求职者:</label>
+                <input type="text" id="candidate_name" name="candidate_name" value="{{ candidate.candidate_name }}" required>
+            </div>
+            <div>
+                <label for="job_position">求职岗位:</label>
+                <input type="text" id="job_position" name="job_position" value="{{ candidate.job_position }}" required>
+            </div>
+            <div>
+                <label for="gender">性别:</label>
+                <select id="gender" name="gender">
+                    <option value="男" {% if candidate.gender == "男" %}selected{% endif %}>男</option>
+                    <option value="女" {% if candidate.gender == "女" %}selected{% endif %}>女</option>
+                </select>
+            </div>
+            <div>
+                <label for="phone_number">手机号码:</label>
+                <input type="text" id="phone_number" name="phone_number" value="{{ candidate.phone_number }}">
+            </div>
+            <div>
+                <label for="age">年龄:</label>
+                <input type="number" id="age" name="age" min="0" value="{{ candidate.age }}">
+            </div>
+            <div>
+                <label for="marital_status">婚姻状况:</label>
+                <select id="marital_status" name="marital_status">
+                    <option value="未婚" {% if candidate.marital_status == "未婚" %}selected{% endif %}>未婚</option>
+                    <option value="已婚" {% if candidate.marital_status == "已婚" %}selected{% endif %}>已婚</option>
+                </select>
+            </div>
+            <div>
+                <label for="has_sales_experience">是否做过销售:</label>
+                <select id="has_sales_experience" name="has_sales_experience">
+                    <option value="是" {% if candidate.has_sales_experience %}selected{% endif %}>是</option>
+                    <option value="否" {% if not candidate.has_sales_experience %}selected{% endif %}>否</option>
+                </select>
+            </div>
+            <div>
+                <label for="initial_interviewer">初试官:</label>
+                <input type="text" id="initial_interviewer" name="initial_interviewer" value="{{ candidate.initial_interviewer }}">
+            </div>
+            <div>
+                <label for="final_interviewer">复试官:</label>
+                <input type="text" id="final_interviewer" name="final_interviewer" value="{{ candidate.final_interviewer }}">
+            </div>
+            <div>
+                <label for="interview_result">面试结果:</label>
+                <input type="text" id="interview_result" name="interview_result" value="{{ candidate.interview_result }}" required>
+            </div>
+            <div>
+                <label for="rejection_reason">不通过原因:</label>
+                <input type="text" id="rejection_reason" name="rejection_reason" value="{{ candidate.rejection_reason }}">
+            </div>
+            <div>
+                <label for="inviter">邀约人:</label>
+                <input type="text" id="inviter" name="inviter" value="{{ candidate.inviter }}">
+            </div>
+            <div>
+                <label for="invitation_channel">邀约渠道:</label>
+                <input type="text" id="invitation_channel" name="invitation_channel" value="{{ candidate.invitation_channel }}">
+            </div>
+            <div>
+                <label for="is_employed">是否入职:</label>
+                <select id="is_employed" name="is_employed">
+                    <option value="是" {% if candidate.is_employed %}selected{% endif %}>是</option>
+                    <option value="否" {% if not candidate.is_employed %}selected{% endif %}>否</option>
+                </select>
+            </div>
+            <div>
+                <label for="employment_date">入职日期:</label>
+                <input type="date" id="employment_date" name="employment_date" value="{{ candidate.employment_date|date:'Y-m-d' }}">
+            </div>
+            <div>
+                <label for="passed_3_day_trial">是否通过3天试岗:</label>
+                <select id="passed_3_day_trial" name="passed_3_day_trial">
+                    <option value="是" {% if candidate.passed_3_day_trial %}selected{% endif %}>是</option>
+                    <option value="否" {% if not candidate.passed_3_day_trial %}selected{% endif %}>否</option>
+                </select>
+            </div>
+            <div>
+                <label for="tracking_1_month">入职1个月跟踪:</label>
+                <input type="text" id="tracking_1_month" name="tracking_1_month" value="{{ candidate.tracking_1_month }}">
+            </div>
+            <div>
+                <label for="tracking_3_months">入职3个月跟踪:</label>
+                <input type="text" id="tracking_3_months" name="tracking_3_months" value="{{ candidate.tracking_3_months }}">
+            </div>
+            <div>
+                <div>
+                    <label for="photo">照片:</label>
+                    <input type="file" id="photo" name="photo">
+                    {% if candidate.photo %}
+                        <div class="photo-preview">
+                            <p>当前照片:</p>
+                            <img src="{{ candidate.photo.url }}" alt="候选人照片" class="photo-thumbnail">
+                        </div>
+                    {% endif %}
+                </div>
+                <div>
+                <button type="submit">保存</button>
+                <a href="{% url 'hr:delete_candidate' candidate.id %}" onclick="return confirm('确认删除此候选人吗？')" class="button">删除</a>
+                <a href="{% url 'hr:candidate_list' %}" class="button">返回</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

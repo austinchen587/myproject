@@ -144,6 +144,24 @@ p.welcome-message {
     background-color: #495057; /* 深灰背景 */
 }
 
+/* 候选人列表 */
+.candidate-list {
+    background-color: #e91466; /* 浅灰背景 */
+}
+
+.candidate-list:hover {
+    background-color: #c3135a; /* 深灰背景 */
+}
+
+/* 员工列表 */
+.employee-list {
+    background-color: #ff9f0a; /* 橙色背景 */
+}
+
+.employee-list:hover {
+    background-color: #ff6f0a; /* 深橙色背景 */
+}
+
 /* 返回主页按钮 */
 .back-to-dashboard {
     background-color: #007aff; /* 蓝色背景 */

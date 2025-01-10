@@ -68,10 +68,14 @@
                                 {% for recording in customer.recordings.all %}
                                     <li>
                                         <p>上传时间: {{ recording.created_at|date:"Y-m-d H:i:s" }}</p>
-                                        <audio controls>
-                                            <source src="{{ recording.audio_file.url }}" type="audio/mpeg">
-                                            您的浏览器不支持音频播放。
-                                        </audio>
+                                        {% if recording.audio_file %}
+                                            <audio controls>
+                                                <source src="{{ recording.audio_file.url }}" type="audio/mpeg">
+                                                您的浏览器不支持音频播放。
+                                            </audio>
+                                        {% else %}
+                                            <p>录音文件未上传。</p>
+                                        {% endif %}
                                     </li>
                                 {% empty %}
                                     <li>暂无录音记录。</li>

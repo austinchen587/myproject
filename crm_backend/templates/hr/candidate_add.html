@@ -1,0 +1,101 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/hr/candidate_add.css' %}">
+
+<form method="post" action="{% url 'hr:add_candidate' %}">
+    {% csrf_token %}
+    <div>
+        <label for="interview_date">面试日期:</label>
+        <input type="date" id="interview_date" name="interview_date" required>
+    </div>
+    <div>
+        <label for="candidate_name">求职者:</label>
+        <input type="text" id="candidate_name" name="candidate_name" required>
+    </div>
+    <div>
+        <label for="job_position">求职岗位:</label>
+        <input type="text" id="job_position" name="job_position" required>
+    </div>
+    <div>
+        <label for="gender">性别:</label>
+        <select id="gender" name="gender">
+            <option value="男">男</option>
+            <option value="女">女</option>
+        </select>
+    </div>
+    <div>
+        <label for="phone_number">手机号码:</label>
+        <input type="text" id="phone_number" name="phone_number">
+    </div>
+    <div>
+        <label for="age">年龄:</label>
+        <input type="number" id="age" name="age" min="0">
+    </div>
+    <div>
+        <label for="marital_status">婚姻状况:</label>
+        <select id="marital_status" name="marital_status">
+            <option value="未婚">未婚</option>
+            <option value="已婚">已婚</option>
+        </select>
+    </div>
+    <div>
+        <label for="has_sales_experience">是否做过销售:</label>
+        <select id="has_sales_experience" name="has_sales_experience">
+            <option value="是">是</option>
+            <option value="否">否</option>
+        </select>
+    </div>
+    <div>
+        <label for="initial_interviewer">初试官:</label>
+        <input type="text" id="initial_interviewer" name="initial_interviewer">
+    </div>
+    <div>
+        <label for="final_interviewer">复试官:</label>
+        <input type="text" id="final_interviewer" name="final_interviewer">
+    </div>
+    <div>
+        <label for="interview_result">面试结果:</label>
+        <input type="text" id="interview_result" name="interview_result" required>
+    </div>
+    <div>
+        <label for="rejection_reason">不通过原因:</label>
+        <input type="text" id="rejection_reason" name="rejection_reason">
+    </div>
+    <div>
+        <label for="inviter">邀约人:</label>
+        <input type="text" id="inviter" name="inviter">
+    </div>
+    <div>
+        <label for="invitation_channel">邀约渠道:</label>
+        <input type="text" id="invitation_channel" name="invitation_channel">
+    </div>
+    <div>
+        <label for="is_employed">是否入职:</label>
+        <select id="is_employed" name="is_employed">
+            <option value="是">是</option>
+            <option value="否">否</option>
+        </select>
+    </div>
+    <div>
+        <label for="employment_date">入职日期:</label>
+        <input type="date" id="employment_date" name="employment_date">
+    </div>
+    <div>
+        <label for="passed_3_day_trial">是否通过3天试岗:</label>
+        <select id="passed_3_day_trial" name="passed_3_day_trial">
+            <option value="是">是</option>
+            <option value="否">否</option>
+        </select>
+    </div>
+    <div>
+        <label for="tracking_1_month">入职1个月跟踪:</label>
+        <input type="text" id="tracking_1_month" name="tracking_1_month">
+    </div>
+    <div>
+        <label for="tracking_3_months">入职3个月跟踪:</label>
+        <input type="text" id="tracking_3_months" name="tracking_3_months">
+    </div>
+    <div>
+        <button type="submit">保存</button>
+    </div>
+</form>

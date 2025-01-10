@@ -60,7 +60,7 @@
                         <td>{{ client.major }}</td>
                         <td>{{ client.education }}</td>
                         <td>{{ client.employment_status }}</td>
-                        <td>{{ client.registration_date }}</td>
+                        <td>{{ client.registration_date|date:"Y-m-d" }}</td> <!-- 日期格式化 -->
                         <td>{{ client.source_channel }}</td>
                         <td>{{ client.sales_teacher }}</td>
                         <td>{{ client.deal_status }}</td>

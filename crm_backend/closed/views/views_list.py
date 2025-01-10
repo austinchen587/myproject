@@ -34,10 +34,16 @@ def client_data_list(request):
     if responsible_person:
         clients = clients.filter(responsible_person__icontains=responsible_person)
 
+    # 打印查询集调试
+    print(clients.query)
+
     # 分页
     paginator = Paginator(clients, 20)  # 每页显示20条
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
+
+    # 打印分页对象调试
+    print(page_obj.object_list)
 
     # 渲染模板
     return render(request, "closed/closed_list.html", {"clients": page_obj})

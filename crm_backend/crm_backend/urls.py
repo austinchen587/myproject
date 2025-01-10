@@ -12,6 +12,8 @@ urlpatterns = [
     path('', include('customers.urls')),    # 引入 customers 应用的 URL 配置
     path('library/', include('library.urls', namespace='library')),
     path('closed/', include('closed.urls', namespace='closed')),
+    path('hr/', include('hr.urls', namespace='hr')),
+    path('employee/', include('employee.urls', namespace='employee')),
 
 
 ]
