@@ -47,15 +47,17 @@ def sales_analysis_view(request):
             "total_amount": "总金额 (元)",
             "total_count": "总单量"
         }, inplace=True)
+        # 调整列顺序（总单量放中间，总金额放右边）
+        df = df[["销售老师", "总单量", "总金额 (元)"]]
     else:
-        df = pd.DataFrame(columns=["销售老师", "总金额 (元)", "总单量"])
+        df = pd.DataFrame(columns=["销售老师", "总单量", "总金额 (元)"])
 
     # 添加汇总行
     if not df.empty:
         summary_row = pd.DataFrame({
             "销售老师": ["汇总"],
-            "总金额 (元)": [df["总金额 (元)"].sum()],
             "总单量": [df["总单量"].sum()],
+            "总金额 (元)": [df["总金额 (元)"].sum()],
         })
         df = pd.concat([df, summary_row], ignore_index=True)
 

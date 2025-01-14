@@ -6,11 +6,11 @@
     {% csrf_token %}
     <div>
         <label for="interview_date">面试日期:</label>
-        <input type="date" id="interview_date" name="interview_date" >
+        <input type="date" id="interview_date" name="interview_date" required>
     </div>
     <div>
         <label for="candidate_name">求职者:</label>
-        <input type="text" id="candidate_name" name="candidate_name" >
+        <input type="text" id="candidate_name" name="candidate_name" required>
     </div>
     <div>
         <label for="job_position">求职岗位:</label>
