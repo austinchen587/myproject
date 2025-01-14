@@ -1,3 +1,7 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/closed/closed_list_filter.css' %}">
+
+
 <div class="filter-form">
     <form method="get" action="{% url 'closed:client_data_list' %}" class="filter-row">
         <!-- 日期范围筛选 -->

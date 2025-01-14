@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR 数据分析</title>
+    <link rel="stylesheet" href="{% static 'css/hr/hr_analysis.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>HR 数据分析</h1>
+       
+        <!-- 筛选表单和返回选项 -->
+        <div class="filter-form-container">
+            <form method="get" class="filter-form">
+                <label for="start_date">开始日期:</label>
+                <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+
+                <label for="end_date">结束日期:</label>
+                <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+
+                <button type="submit">筛选</button>
+            </form>
+
+            <a href="{% url 'hr:candidate_list' %}" class="button candidate-list">候选人列表</a>
+        </div>
+
+        <!-- 初试官统计表 -->
+        <h2>初试官面试统计</h2>
+        <div class="table-container">
+            {{ df_initial|safe }}
+        </div>
+
+        <!-- 邀约人统计表 -->
+        <h2>邀约人统计</h2>
+        <div class="table-container">
+            {{ df_inviter|safe }}
+        </div>
+    </div>
+</body>
+</html>

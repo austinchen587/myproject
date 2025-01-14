@@ -58,7 +58,7 @@
                             <div class="history-section">
                                 <h5>学习进度历史</h5>
                                 <ul>
-                                    {% for history in client.study_progress_histories.all %}
+                                    {% for history in client.study_progress_histories.all|dictsortreversed:"modified_at" %}
                                     <li>
                                         <strong>{{ history.modified_at|date:"Y-m-d H:i" }}</strong>: {{ history.progress_content }}
                                         <span>(操作人: {{ history.modified_by }})</span>
@@ -71,7 +71,7 @@
                             <div class="history-section">
                                 <h5>跟进记录历史</h5>
                                 <ul>
-                                    {% for history in client.follow_up_record_histories.all %}
+                                    {% for history in client.follow_up_record_histories.all|dictsortreversed:"modified_at" %}
                                     <li>
                                         <strong>{{ history.modified_at|date:"Y-m-d H:i" }}</strong>: {{ history.record_content }}
                                         <span>(操作人: {{ history.modified_by }})</span>
@@ -93,7 +93,7 @@
                             <div class="history-section">
                                 <h5>情况分析历史</h5>
                                 <ul>
-                                    {% for history in client.situation_analysis_histories.all %}
+                                    {% for history in client.situation_analysis_histories.all|dictsortreversed:"modified_at" %}
                                     <li>
                                         <strong>{{ history.modified_at|date:"Y-m-d H:i" }}</strong>: {{ history.analysis_content }}
                                         <span>(操作人: {{ history.modified_by }})</span>

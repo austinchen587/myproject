@@ -1,0 +1,51 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>销售分析</title>
+    <link rel="stylesheet" href="{% static 'css/closed/closed_sales_analysis.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>销售分析</h1>
+
+        <!-- 筛选表单 -->
+        <form method="get" class="filter-form">
+            <label for="start_date">开始日期:</label>
+            <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+            
+            <label for="end_date">结束日期:</label>
+            <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+
+            <label for="include_teachers">包含销售老师:</label>
+            <select id="include_teachers" name="include_teachers" multiple>
+                {% for teacher in sales_teachers %}
+                <option value="{{ teacher }}" {% if teacher in selected_includes %}selected{% endif %}>
+                    {{ teacher }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label for="exclude_teachers">排除销售老师:</label>
+            <select id="exclude_teachers" name="exclude_teachers" multiple>
+                {% for teacher in sales_teachers %}
+                <option value="{{ teacher }}" {% if teacher in selected_excludes %}selected{% endif %}>
+                    {{ teacher }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">筛选</button>
+            <div class="action-buttons">
+                <a href="{% url 'closed:client_data_list' %}" class="btn btn-primary">返回成交清单</a>
+            </div>
+        </form>
+
+        <!-- 数据表 -->
+        <div>{{ df|safe }}</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,212 @@
+/* Global Styles */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #333333;
+}
+
+/* Container Styles */
+.container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h1, h2 {
+    text-align: center;
+    color: #222222;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Filter Form */
+.filter-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.filter-form label {
+    font-weight: 600;
+    color: #555555;
+}
+
+.filter-form input[type="date"],
+.filter-form button {
+    padding: 10px 14px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.filter-form input[type="date"] {
+    background-color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filter-form input[type="date"]:focus {
+    border-color: #007aff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 122, 255, 0.5);
+}
+
+.filter-form button {
+    background-color: #007aff;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+
+.filter-form button:hover {
+    background-color: #005bb5;
+}
+
+.filter-form button:active {
+    background-color: #004080;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Table Styles */
+.table-container {
+    margin-top: 30px;
+    overflow-x: auto;
+}
+
+.table-striped {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center align all text */
+}
+
+.table-striped th,
+.table-striped td {
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    text-align: center; /* Center align individual cells */
+    vertical-align: middle; /* Vertical align text in the middle */
+}
+
+.table-striped th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    color: #555555;
+}
+
+.table-striped td {
+    background-color: #ffffff;
+}
+
+.table-striped tr:nth-child(even) td {
+    background-color: #f8f8f8;
+}
+
+.table-striped tr:hover td {
+    background-color: #eaf3ff;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-form input[type="date"],
+    .filter-form button {
+        width: 100%; /* Form elements take full width on small screens */
+    }
+}
+/* Container for form and return button */
+.filter-form-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Filter form */
+.filter-form {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 0;
+}
+
+/* Input and button styles */
+.filter-form input[type="date"],
+.filter-form button {
+    padding: 8px 12px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.filter-form button {
+    background-color: #007aff;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.filter-form button:hover {
+    background-color: #005bb5;
+}
+
+/* Return button */
+.button.candidate-list {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #007aff;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.button.candidate-list:hover {
+    background-color: #005bb5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-form-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .filter-form {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .button.candidate-list {
+        align-self: flex-start;
+    }
+}

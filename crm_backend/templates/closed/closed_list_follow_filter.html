@@ -1,3 +1,7 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/closed/closed_list_follow_filter.css' %}">
+
+
 <div class="filter-container">
     <form method="get" action="{% url 'closed:client_data_list_follow' %}" class="filter-form">
         <!-- 自定义时间段 -->
