@@ -101,12 +101,12 @@ h1 {
 /* 表格容器样式 */
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: collapse;  
     margin-top: 20px;
     background-color: #ffffff;
     border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 /* 表头样式 */
