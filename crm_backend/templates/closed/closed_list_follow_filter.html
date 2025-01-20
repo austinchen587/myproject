@@ -24,7 +24,10 @@
         <!-- 负责人筛选 -->
         <label for="responsible_person">负责人</label>
         <input type="text" id="responsible_person" name="responsible_person" class="form-control" placeholder="输入负责人" value="{{ request.GET.responsible_person }}">
-
+        
+        <!-- 客户名称筛选 -->
+        <label for="name">客户名称</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="输入客户名称" value="{{ request.GET.name }}">
         <!-- 提交按钮 -->
         <button type="submit" class="btn btn-primary">筛选</button>
         <a href="{% url 'closed:client_data_list_follow' %}" class="btn btn-secondary">重置</a>

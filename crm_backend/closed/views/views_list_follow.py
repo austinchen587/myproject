@@ -9,6 +9,7 @@ def client_data_list_follow(request):
     end_date = request.GET.get("end_date")
     quick_filter = request.GET.get("quick_filter")
     responsible_person = request.GET.get("responsible_person")  # 新增负责人的筛选参数
+    name = request.GET.get("name")
 
     # 初始查询集
     clients = ClientData.objects.order_by('-registration_date')
@@ -39,6 +40,9 @@ def client_data_list_follow(request):
     if responsible_person:
         clients = clients.filter(responsible_person__icontains=responsible_person)
 
+    if name:
+        clients = clients.filter(name__icontains=name)
+
     # 分页逻辑
     paginator = Paginator(clients, 20)  # 每页显示20条
     page_number = request.GET.get('page')
@@ -51,4 +55,5 @@ def client_data_list_follow(request):
         'end_date': end_date,
         'quick_filter': quick_filter,
         'responsible_person': responsible_person,  # 传递负责人筛选的值到模板
+        'name': name,
     })
