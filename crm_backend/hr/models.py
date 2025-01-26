@@ -2,6 +2,11 @@ from django.db import models
 from hr.storages.aliyun_storages import AliyunOSSHRStorage
 
 
+def get_aliyun_storage():
+    """返回 Aliyun OSS HR 存储实例"""
+    return AliyunOSSHRStorage()
+
+
 class Candidate(models.Model):
     # 字段定义
     interview_date = models.DateField(verbose_name="面试日期")  # 面试日期
@@ -25,7 +30,7 @@ class Candidate(models.Model):
     tracking_3_months = models.CharField(max_length=200, null=True, blank=True, verbose_name="入职3个月跟踪")  # 入职3个月跟踪
 
     photo = models.ImageField(
-        storage='hr.storages.aliyun_storages.AliyunOSSHRStorage',  # 使用字符串路径
+        storage= get_aliyun_storage(),
         upload_to="candidates/photos/", 
         null=True, 
         blank=True, 

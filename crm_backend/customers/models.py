@@ -175,17 +175,6 @@ class Customer(models.Model):
         verbose_name='客户等级'
     )
 
-    
-
-
-
-
-
-
-
-
-    
-
     def __str__(self):
         return self.name
 
