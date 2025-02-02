@@ -25,10 +25,28 @@
     </button>
 
 
-    <!-- 客户描述 -->
-    <div class="customer-description">
+    <div class="description-history-section">
         <h4>客户描述</h4>
-        <p>{% if customer.description %}{{ customer.description }}{% else %}暂无描述{% endif %}</p>
+        {% if customer.description_history_list %}
+            <ul class="description-history-list">
+                {% for history in customer.description_history_list %}
+                    <li>
+                        <p>{{ history.new_description }}</p>
+                        <small>
+                            <strong>时间:</strong> {{ history.modified_at|date:"Y-m-d H:i" }}<br>
+                            <strong>更新人:</strong>
+                            {% if history.modified_by %}
+                                {{ history.modified_by.username }}
+                            {% else %}
+                                未知
+                            {% endif %}
+                        </small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>暂无描述历史记录。</p>
+        {% endif %}
     </div>
 
     <!-- 评论记录 -->

@@ -72,6 +72,11 @@ def customerlist(request):
     for customer in customers:
         customer.needs_highlight = customer.created_by != customer.updated_by
 
+    # 获取所有客户的描述历史
+    for customer in customers:
+        customer.description_history_list = customer.description_history.order_by('-modified_at')
+
+
     return render(request, 'x_customer_list/customer_list.html', {
         'customers': customers,
         'start_date': start_date,

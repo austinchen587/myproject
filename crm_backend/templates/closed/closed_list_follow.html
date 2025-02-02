@@ -31,6 +31,7 @@
                         <th>跟进记录</th>
                         <th>学习进度</th>
                         <th>情况分析</th>
+                        <th>请假</th>
                         <th>是否学完就业</th>
                         <th>负责人</th>
                         <th>操作</th>
@@ -44,6 +45,7 @@
                         <td>{{ client.follow_up_record }}</td>
                         <td>{{ client.study_progress }}</td>
                         <td>{{ client.situation_analysis }}</td>
+                        <td>{% if client.is_on_leave %}是 {% else %}否 {% endif %}</td>
                         <td>{{ client.is_employed_after_study }}</td>
                         <td>{{ client.responsible_person }}</td>
                         <td>
@@ -115,21 +117,27 @@
         </div>
 
         <!-- 分页 -->
-        <nav class="pagination-container">
-            <ul class="pagination">
-                {% if clients.has_previous %}
-                <li><a href="?page={{ clients.previous_page_number }}">&laquo; 上一页</a></li>
-                {% endif %}
+<!-- 分页 -->
+<!-- 分页 -->
+<nav class="pagination-container">
+    <ul class="pagination">
+        {% if clients.has_previous %}
+        <li><a href="?page=1&{{ query_string }}">&laquo; 首页</a></li>
+        <li><a href="?page={{ clients.previous_page_number }}&{{ query_string }}">上一页</a></li>
+        {% endif %}
 
-                {% for num in clients.paginator.page_range %}
-                <li {% if clients.number == num %}class="active"{% endif %}><a href="?page={{ num }}">{{ num }}</a></li>
-                {% endfor %}
+        {% for num in clients.paginator.page_range %}
+        <li {% if clients.number == num %}class="active"{% endif %}>
+            <a href="?page={{ num }}&{{ query_string }}">{{ num }}</a>
+        </li>
+        {% endfor %}
 
-                {% if clients.has_next %}
-                <li><a href="?page={{ clients.next_page_number }}">下一页 &raquo;</a></li>
-                {% endif %}
-            </ul>
-        </nav>
+        {% if clients.has_next %}
+        <li><a href="?page={{ clients.next_page_number }}&{{ query_string }}">下一页 &raquo;</a></li>
+        <li><a href="?page={{ clients.paginator.num_pages }}&{{ query_string }}">末页 &raquo;</a></li>
+        {% endif %}
+    </ul>
+</nav>
     </div>
 
     <!-- 图片模态框 -->

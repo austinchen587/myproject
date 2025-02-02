@@ -48,7 +48,23 @@
                         <td>{% if customer.is_invited %}✔️{% else %}✘{% endif %}</td>
                         <td>{% if customer.is_wechat_added %}✔️{% else %}✘{% endif %}</td>
                         <td>{% if customer.is_joined %}✔️{% else %}✘{% endif %}</td>
-                        <td>{{ customer.description }}</td>
+                        <td class="description-column">
+                            {% if customer.description_history_list.exists %}
+                                <ul>
+                                    {% for history in customer.description_history_list %}
+                                        <li>
+                                            <p>{{ history.new_description }}</p>
+                                            <small>
+                                                <strong>更新时间:</strong> {{ history.modified_at|date:"Y-m-d H:i" }}<br>
+                                                <strong>更新人:</strong> {{ history.modified_by.username }}
+                                            </small>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                无描述历史
+                            {% endif %}
+                        </td>
                         <td>{{ customer.customer_level }}</td>
                         <td class="comments-column">
                             {% if customer.comments.exists %}

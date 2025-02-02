@@ -29,14 +29,14 @@ class Candidate(models.Model):
     tracking_1_month = models.CharField(max_length=200, null=True, blank=True, verbose_name="入职1个月跟踪")  # 入职1个月跟踪
     tracking_3_months = models.CharField(max_length=200, null=True, blank=True, verbose_name="入职3个月跟踪")  # 入职3个月跟踪
 
+    # 使用延迟加载的存储类避免迁移序列化问题
     photo = models.ImageField(
-        storage= get_aliyun_storage(),
-        upload_to="candidates/photos/", 
-        null=True, 
-        blank=True, 
+        storage=get_aliyun_storage,  # 改为函数调用
+        upload_to="candidates/photos/",
+        null=True,
+        blank=True,
         verbose_name="面试照片"
     )  # 面试照片
-
 
     class Meta:
         verbose_name = "候选人"

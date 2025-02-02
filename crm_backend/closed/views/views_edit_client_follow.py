@@ -118,7 +118,7 @@ def update_client_fields(request, client):
         "registration_date", "source_channel", "name", "gender", "age",
         "education", "major", "employment_status", "phone", "sales_teacher",
         "problem_exists", "solution", "remarks", "deal_status", "payment_method",
-        "payment_amount", "customer_summary"
+        "payment_amount", "customer_summary",
     ]
 
     for field in fields_to_update:
@@ -133,5 +133,13 @@ def update_client_fields(request, client):
             setattr(client, field, new_value)
             has_changes = True
             logger.debug(f"{field} 更新为: {new_value}")
+
+    # **处理布尔字段 is_on_leave**
+    is_on_leave_value = request.POST.get("is_on_leave", "off")
+    new_is_on_leave = is_on_leave_value == "on"  # "on" 表示 True，否则 False
+    if new_is_on_leave != client.is_on_leave:
+        client.is_on_leave = new_is_on_leave
+        has_changes = True
+        logger.debug(f"是否请假更新为: {new_is_on_leave}")
 
     return has_changes

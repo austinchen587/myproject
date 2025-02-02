@@ -7,6 +7,32 @@
     <h2>{{ customer.name }}</h2>
 </div>
 
+<div class="description-history-section">
+    <h4>描述历史</h4>
+    {% if customer.description_history_list %}
+        <ul class="description-history-list">
+            {% for history in customer.description_history_list %}
+                <li>
+                    <p><strong>新描述:</strong> {{ history.new_description }}</p>
+                    <p><strong>旧描述:</strong> {{ history.old_description }}</p>
+                    <small>
+                        <strong>更新时间:</strong> {{ history.modified_at|date:"Y-m-d H:i" }}<br>
+                        <strong>更新人:</strong>
+                        {% if history.modified_by %}
+                            {{ history.modified_by.username }}
+                        {% else %}
+                            未知
+                        {% endif %}
+                    </small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>暂无描述历史记录。</p>
+    {% endif %}
+</div>
+
+<!-- 评论记录 -->
 <div class="comments-section">
     <h3>评论记录</h3>
     <ul class="comments-timeline">
@@ -32,4 +58,14 @@
     <input type="hidden" name="customer_id" value="{{ customer.id }}">
     <button type="submit">提交评论</button>
 </form>
+
+<!-- 调试数据输出 -->
+<pre>
+描述历史数量: {{ description_history|length }}
+描述历史: 
+{% for history in description_history %}
+    - 新描述: {{ history.new_description }}
+    - 修改时间: {{ history.modified_at|date:"Y-m-d H:i" }}
+{% endfor %}
+</pre>
 {% endblock %}

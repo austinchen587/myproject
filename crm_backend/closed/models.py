@@ -104,6 +104,12 @@ class ClientData(models.Model):
     )
     responsible_person = models.CharField(max_length=30, null=True, blank=True, verbose_name="负责人")
 
+    # **新增请假字段**
+    is_on_leave = models.BooleanField(
+        default=False,  # 默认为未请假
+        verbose_name="是否请假"
+    )
+
     def __str__(self):
         return f"{self.name} ({self.phone})"
 

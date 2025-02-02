@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.utils.timezone import make_aware
 from datetime import datetime, timedelta
-from .models import Customer, Recording,Comment
+from .models import Customer, Recording,Comment,DescriptionHistory
 import mimetypes
 import os
 from django.contrib.auth.decorators import login_required
@@ -13,7 +13,7 @@ import json
 from sales.models import SalesUser
 from django.utils.timezone import make_aware
 from datetime import datetime, timedelta
-
+from django.db.models import Prefetch
 
 @login_required
 def mobile_view(request):
@@ -76,6 +76,16 @@ def mobile_view(request):
     # 按创建时间降序排列
     customers = customers.order_by('-created_at')
 
+
+    # 使用 Prefetch 预加载描述历史记录
+    customers = customers.prefetch_related(
+        Prefetch(
+            'description_history',
+            queryset=DescriptionHistory.objects.order_by('-modified_at'),
+            to_attr='description_history_list'
+        )
+    )
+
     # 获取所有 SalesUser 信息供筛选使用
     all_users = SalesUser.objects.all()
 
@@ -97,6 +107,7 @@ def mobile_view(request):
 
 @login_required
 def customer_detail_mobile(request, id):
+    # 获取客户信息
     customer = get_object_or_404(Customer, id=id)
 
     # 权限检查
@@ -107,10 +118,18 @@ def customer_detail_mobile(request, id):
         messages.error(request, '您只能查看本组的客户')
         return redirect('customerlist')
 
-    # 获取与客户相关的评论
+    # 获取描述历史，按修改时间降序排列
+    description_history = customer.description_history.order_by('-modified_at')
+
+    # 调试打印
+    print(f"描述历史记录数量: {description_history.count()}")
+    for history in description_history:
+        print(f"- 新描述: {history.new_description}, 修改人: {history.modified_by}, 修改时间: {history.modified_at}")
+
+    # 获取评论记录
     comments = customer.comments.all()
 
-    # 如果是 POST 请求，则处理评论添加逻辑
+    # 如果是 POST 请求，处理添加评论逻辑
     if request.method == 'POST':
         content = request.POST.get('content')
         if content:
@@ -124,8 +143,10 @@ def customer_detail_mobile(request, id):
         else:
             messages.error(request, "评论内容不能为空")
 
+    # 渲染模板
     return render(request, 'mobile/mobile_sub/customer_detail.html', {
         'customer': customer,
+        'description_history': description_history,
         'comments': comments,
     })
 

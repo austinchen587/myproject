@@ -71,6 +71,11 @@
                 <textarea id="is_employed_after_study" name="is_employed_after_study" class="form-control">{{ client.is_employed_after_study }}</textarea>
             </div>
 
+            <!-- 请假 -->
+            <div class="form-group">
+                <label for="is_on_leave">请假</label>
+                <input type="checkbox" id="is_on_leave" name="is_on_leave" {% if client.is_on_leave %}checked{% endif %}>
+
             <button type="submit" class="btn btn-primary mt-3" id="submit_button">保存修改</button>
         </form>
     </div>

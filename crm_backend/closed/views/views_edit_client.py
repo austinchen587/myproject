@@ -27,6 +27,7 @@ def update_client(request, client_id):
             client.remarks = request.POST.get("remarks", "无备注")
             client.deal_status = request.POST.get("deal_status", "未知")
             client.payment_method = request.POST.get("payment_method", "未知")
+            client.responsible_person = request.POST.get("responsible_person", "未知")
 
             # 处理支付金额
             payment_str = request.POST.get("payment_amount")

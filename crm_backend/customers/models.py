@@ -131,6 +131,21 @@ class Customer(models.Model):
 
     description = models.TextField(blank=True, null=True, verbose_name='客户描述')
 
+    def save(self, *args, **kwargs):
+        """
+        重写保存方法，记录描述字段的修改历史。
+        """
+        if self.pk:
+            old_instance = Customer.objects.get(pk=self.pk)
+            if old_instance.description != self.description:
+                DescriptionHistory.objects.create(
+                    customer=self,
+                    old_description=old_instance.description or "",
+                    new_description=self.description or "",
+                    modified_by=self.updated_by
+                )
+        super().save(*args, **kwargs)    
+
 
         # 添加一个方法获取所有评论
     def get_comments(self):
@@ -169,6 +184,7 @@ class Customer(models.Model):
         choices=[
             ('A', 'A 等级'),
             ('B', 'B 等级'),
+            ('C', 'C 等级'),
             ('未知', '未知'),
         ],
         default='未知',
@@ -250,3 +266,32 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.customer.name} 的评论 ({self.created_at.strftime('%Y-%m-%d %H:%M:%S')})"
+    
+
+class DescriptionHistory(models.Model):
+    """
+    描述字段的修改历史记录
+    """
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="description_history",
+        verbose_name="客户"
+    )
+    old_description = models.TextField(verbose_name="旧描述")
+    new_description = models.TextField(verbose_name="新描述")
+    modified_by = models.ForeignKey(
+        SalesUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name="修改人"
+    )
+    modified_at = models.DateTimeField(auto_now_add=True, verbose_name="修改时间")
+
+    class Meta:
+        verbose_name = "描述修改历史"
+        verbose_name_plural = "描述修改历史"
+        ordering = ["-modified_at"]
+
+    def __str__(self):
+        return f"{self.customer.name} 的描述修改记录 ({self.modified_at.strftime('%Y-%m-%d %H:%M:%S')})"
