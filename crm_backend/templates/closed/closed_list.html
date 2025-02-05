@@ -86,52 +86,39 @@
             </table>
         </div>
 
-    <!-- 分页 -->
+<!-- 分页 -->
+<!-- 分页 -->
 <nav class="mt-4">
     <ul class="pagination justify-content-center">
         {% if clients.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="?page=1&{{ request.GET.urlencode }}" aria-label="首页">
+            <a class="page-link" href="?{{ query_string }}&page=1" aria-label="首页">
                 <span aria-hidden="true">««</span>
             </a>
         </li>
         <li class="page-item">
-            <a class="page-link" href="?page={{ clients.previous_page_number }}&{{ request.GET.urlencode }}" aria-label="上一页">
+            <a class="page-link" href="?{{ query_string }}&page={{ clients.previous_page_number }}" aria-label="上一页">
                 <span aria-hidden="true">«</span>
             </a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <span class="page-link">««</span>
-        </li>
-        <li class="page-item disabled">
-            <span class="page-link">«</span>
         </li>
         {% endif %}
 
         {% for num in clients.paginator.page_range %}
         <li class="page-item {% if clients.number == num %}active{% endif %}">
-            <a class="page-link" href="?page={{ num }}&{{ request.GET.urlencode }}">{{ num }}</a>
+            <a class="page-link" href="?{{ query_string }}&page={{ num }}">{{ num }}</a>
         </li>
         {% endfor %}
 
         {% if clients.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ clients.next_page_number }}&{{ request.GET.urlencode }}" aria-label="下一页">
+            <a class="page-link" href="?{{ query_string }}&page={{ clients.next_page_number }}" aria-label="下一页">
                 <span aria-hidden="true">»</span>
             </a>
         </li>
         <li class="page-item">
-            <a class="page-link" href="?page={{ clients.paginator.num_pages }}&{{ request.GET.urlencode }}" aria-label="末页">
+            <a class="page-link" href="?{{ query_string }}&page={{ clients.paginator.num_pages }}" aria-label="末页">
                 <span aria-hidden="true">»»</span>
             </a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <span class="page-link">»</span>
-        </li>
-        <li class="page-item disabled">
-            <span class="page-link">»»</span>
         </li>
         {% endif %}
     </ul>
