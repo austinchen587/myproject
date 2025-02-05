@@ -20,12 +20,19 @@
 
 
         <form method="get" class="filter-form">
+            <!-- 状态筛选 -->
             <label for="status_filter">筛选状态:</label>
             <select name="status" id="status_filter" onchange="this.form.submit()">
-                <option value="">全部</option>
-                <option value="在职" {% if request.GET.status == "在职" %}selected{% endif %}>在职</option>
+                <option value="在职" {% if request.GET.status == "在职" or request.GET.status == "" %}selected{% endif %}>在职</option>
                 <option value="离职" {% if request.GET.status == "离职" %}selected{% endif %}>离职</option>
+                <option value="" {% if request.GET.status == "" %}selected{% endif %}>全部</option>
             </select>
+        
+            <!-- 部门筛选 -->
+            <label for="department_filter">部门:</label>
+            <input type="text" name="department" id="department_filter" placeholder="请输入部门名称" value="{{ request.GET.department }}">
+            
+            <button type="submit" class="button">筛选</button>
         </form>
 
         <table class="employee-table">
@@ -55,7 +62,8 @@
             </thead>
             <tbody>
                 {% for employee in employees %}
-                <tr>
+                <tr {% if employee.contract_end_date and employee.contract_end_date|date:"Y-m-d" <= today_plus_30 %}class="expired-contract"{% endif %}>
+
                     <td>{{ employee.name }}</td>
                     <td>{{ employee.department }}</td>
                     <td>{{ employee.position }}</td>
@@ -90,23 +98,23 @@
 
         <div class="pagination">
             {% if employees.has_previous %}
-                <a href="?page=1&status={{ request.GET.status }}" class="button">首页</a>
-                <a href="?page={{ employees.previous_page_number }}&status={{ request.GET.status }}" class="button">上一页</a>
+                <a href="?page=1&status={{ request.GET.status }}&department={{ request.GET.department }}" class="button">首页</a>
+                <a href="?page={{ employees.previous_page_number }}&status={{ request.GET.status }}&department={{ request.GET.department }}" class="button">上一页</a>
             {% endif %}
-
+        
             {% for page in employees.paginator.page_range %}
                 {% if page >= employees.number|add:-2 and page <= employees.number|add:2 %}
                     {% if page == employees.number %}
                         <span class="current-page">{{ page }}</span>
                     {% else %}
-                        <a href="?page={{ page }}&status={{ request.GET.status }}" class="button">{{ page }}</a>
+                        <a href="?page={{ page }}&status={{ request.GET.status }}&department={{ request.GET.department }}" class="button">{{ page }}</a>
                     {% endif %}
                 {% endif %}
             {% endfor %}
-
+        
             {% if employees.has_next %}
-                <a href="?page={{ employees.next_page_number }}&status={{ request.GET.status }}" class="button">下一页</a>
-                <a href="?page={{ employees.paginator.num_pages }}&status={{ request.GET.status }}" class="button">末页</a>
+                <a href="?page={{ employees.next_page_number }}&status={{ request.GET.status }}&department={{ request.GET.department }}" class="button">下一页</a>
+                <a href="?page={{ employees.paginator.num_pages }}&status={{ request.GET.status }}&department={{ request.GET.department }}" class="button">末页</a>
             {% endif %}
         </div>
     </div>
