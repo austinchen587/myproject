@@ -49,7 +49,8 @@
                         <td>{{ client.is_employed_after_study }}</td>
                         <td>{{ client.responsible_person }}</td>
                         <td>
-                            <a href="{% url 'closed:update_client_follow' client.id %}" class="btn btn-warning btn-sm">更新</a>
+                            <a href="{% url 'closed:update_client_follow' client.id %}?page={{ clients.number }}&{{ query_string }}" 
+   class="btn btn-warning btn-sm">更新</a>
                             <button class="btn btn-info btn-sm toggle-history" data-target="history-{{ client.id }}">
                                 查看历史
                             </button>
@@ -117,27 +118,25 @@
         </div>
 
         <!-- 分页 -->
-<!-- 分页 -->
-<!-- 分页 -->
-<nav class="pagination-container">
-    <ul class="pagination">
-        {% if clients.has_previous %}
-        <li><a href="?page=1&{{ query_string }}">&laquo; 首页</a></li>
-        <li><a href="?page={{ clients.previous_page_number }}&{{ query_string }}">上一页</a></li>
-        {% endif %}
-
-        {% for num in clients.paginator.page_range %}
-        <li {% if clients.number == num %}class="active"{% endif %}>
-            <a href="?page={{ num }}&{{ query_string }}">{{ num }}</a>
-        </li>
-        {% endfor %}
-
-        {% if clients.has_next %}
-        <li><a href="?page={{ clients.next_page_number }}&{{ query_string }}">下一页 &raquo;</a></li>
-        <li><a href="?page={{ clients.paginator.num_pages }}&{{ query_string }}">末页 &raquo;</a></li>
-        {% endif %}
-    </ul>
-</nav>
+        <nav class="pagination-container">
+            <ul class="pagination">
+                {% if clients.has_previous %}
+                <li><a href="?page=1&{{ query_string }}">&laquo; 首页</a></li>
+                <li><a href="?page={{ clients.previous_page_number }}&{{ query_string }}">上一页</a></li>
+                {% endif %}
+        
+                {% for num in clients.paginator.page_range %}
+                <li {% if clients.number == num %}class="active"{% endif %}>
+                    <a href="?page={{ num }}&{{ query_string }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+        
+                {% if clients.has_next %}
+                <li><a href="?page={{ clients.next_page_number }}&{{ query_string }}">下一页 &raquo;</a></li>
+                <li><a href="?page={{ clients.paginator.num_pages }}&{{ query_string }}">末页 &raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
 
     <!-- 图片模态框 -->

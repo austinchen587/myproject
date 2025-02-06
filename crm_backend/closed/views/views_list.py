@@ -1,6 +1,5 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
-from django.http import QueryDict  # 用于处理查询参数
 from ..models import ClientData
 
 
@@ -40,7 +39,7 @@ def client_data_list(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    # 处理查询参数，去掉 "page" 避免重复
+    # 保留筛选条件的查询参数
     query_params = request.GET.copy()
     query_params.pop("page", None)  # 移除 page 参数
     query_string = query_params.urlencode()  # 编码查询参数

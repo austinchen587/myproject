@@ -1,16 +1,22 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from urllib.parse import urlencode
 from ..models import ClientData
 from decimal import Decimal, InvalidOperation
+import logging
 
+logger = logging.getLogger(__name__)
 
-# 更新客户信息
 def update_client(request, client_id):
     client = get_object_or_404(ClientData, id=client_id)
 
+    # 获取查询参数，包括当前页码
+    query_params = request.GET.copy()  # 获取筛选条件和页码参数
+    current_page = query_params.get("page")  # 获取当前页码
+
     if request.method == "POST":
         try:
-            # 更新表单数据，不处理 `registration_date`
+            # 更新表单数据
             client.registration_date = request.POST.get("registration_date", client.registration_date)
             client.source_channel = request.POST.get("source_channel", "未知")
             client.name = request.POST.get("name", "未知")
@@ -42,22 +48,36 @@ def update_client(request, client_id):
             # 保存更新
             client.save()
 
-            return redirect(reverse("closed:client_data_list"))
+            
+            # 重定向回来源页
+            query_params["page"] = current_page  # 确保保留当前页码
+            redirect_url = f"{reverse('closed:client_data_list')}?{query_params.urlencode()}"
+            return redirect(redirect_url)
 
         except Exception as e:
             # 捕获错误并显示
-            print(f"Error occurred: {e}")
+            logger.error(f"Error occurred during update: {e}")
             return render(request, "closed/closed_update.html", {"client": client, "error": str(e)})
 
-    return render(request, "closed/closed_update.html", {"client": client})
+    return render(request, "closed/closed_update.html", {"client": client, "query_string": query_params.urlencode()})
 
 
-# 删除客户信息
+
 def delete_client(request, client_id):
     client = get_object_or_404(ClientData, id=client_id)
 
     if request.method == "POST":
-        client.delete()
-        return redirect(reverse("closed:client_data_list"))
+        query_params = request.GET.copy()
+        current_page = query_params.get("page")  # 获取当前页码
 
-    return render(request, "closed/closed_delete_confirm.html", {"client": client})
+        if current_page:
+            query_params["page"] = current_page
+
+        client.delete()
+        logger.info(f"客户 {client.id} 删除成功")
+
+        # 删除后回到列表，并保留筛选条件和当前页码
+        redirect_url = f"{reverse('closed:client_data_list')}?{query_params.urlencode()}"
+        return redirect(redirect_url)
+
+    return render(request, "closed/closed_delete_confirm.html", {"client": client, "query_string": request.GET.urlencode()})
