@@ -2,7 +2,7 @@ from django.urls import path
 from .views_mobile_images import test_customer_images_view
 from .views_mobile import mobile_view, customer_detail_mobile, add_comment_ajax, closed_customer_detail
 from .views_mobile_audio import upload_audio, delete_audio
-from .views_mobile_images import upload_image, delete_image
+from .views_mobile_images import upload_image, delete_image, customer_images_view
 from .views import (
     customerlist,
     add_customer,
@@ -15,7 +15,6 @@ from .views import (
     get_completion_data,
     daily_report,
     product_manager_daily_report,
-    check_new_comments,
 )
 
 urlpatterns = [
@@ -44,7 +43,6 @@ urlpatterns = [
 
     # 核心功能路由
     path('customerlist/', customerlist, name='customerlist'),
-    path('check_new_comments/', check_new_comments, name='check_new_comments'),
     path('add_customer/', add_customer, name='add_customer'),
     path('customer/<int:id>/', customer_detail, name='customer_detail'),
     path('edit-customer/<int:id>/', edit_customer, name='edit_customer'),

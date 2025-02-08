@@ -3,8 +3,6 @@ from django.contrib.auth.decorators import login_required
 from sales.models import SalesUser
 from ..models import Customer
 from django.utils import timezone
-from django.http import JsonResponse
-from datetime import timedelta
 
 @login_required
 def customerlist(request):
@@ -98,22 +96,3 @@ def customerlist(request):
         'current_user_role': current_user_role,
         'current_user_group_id': current_user_group_id,
     })
-
-
-def check_new_comments(request):
-    """
-    服务器端：检查最近 5 秒的评论，如果最新评论人不是归属人，则返回客户信息（持续警告）
-    """
-    customers = Customer.objects.all()  # 获取所有客户
-    new_comments = []
-
-    for c in customers:
-        latest_comment = c.comments.last()
-        if latest_comment and latest_comment.created_by.username != c.created_by.username:
-            new_comments.append({
-                "id": c.id,
-                "name": c.name,
-                "phone": c.phone,  # 增加电话号码
-            })
-
-    return JsonResponse({"new_comments": new_comments})
