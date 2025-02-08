@@ -7,6 +7,7 @@
         <h3 class="customer-name">{{ customer.name }}</h3>
         <p class="customer-meta">
             <strong>归属人:</strong> {{ customer.created_by.username }} |
+            <strong>加微信:</strong> {% if customer.is_wechat_added %}是{% else %}否{% endif %} |
             <strong>感兴趣:</strong> {% if customer.is_invited %}是{% else %}否{% endif %} |
             <strong>客户等级:</strong> {{ customer.customer_level }}
         </p>

@@ -125,6 +125,10 @@ tbody tr:hover {
     padding: 10px; /* 添加内边距 */
 }
 
+.highlighted-row {
+    background-color: #ffcccc !important; /* 浅红色背景 */
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
     thead th,

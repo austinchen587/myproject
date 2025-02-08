@@ -35,7 +35,7 @@
             </thead>
             <tbody>
                 {% for customer in customers %}
-                    <tr>
+                    <tr {% if customer.comments.exists and customer.comments.last.created_by.username != customer.created_by %}class="highlighted-row"{% endif %}>
                         <td>{{ customer.name }}</td>
                         <td>{{ customer.phone }}</td>
                         <td>{{ customer.created_by }}</td>
