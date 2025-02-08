@@ -6,6 +6,71 @@
     <title>客户列表</title>
     {% load static %} <!-- 加载 Django 的 static 标签库 -->
     <link rel="stylesheet" href="{% static 'css/x_list_table.css' %}"> <!-- 引入 CSS 文件 -->
+    <script>
+        function checkNewComments() {
+            fetch("{% url 'check_new_comments' %}")  // 访问 Django API
+                .then(response => response.json())
+                .then(data => {
+                    let alertBox = document.getElementById("alert-box");
+    
+                    // 如果没有异常评论，清除提示框
+                    if (data.new_comments.length === 0) {
+                        if (alertBox) {
+                            alertBox.remove();
+                        }
+                        return;  // 终止函数
+                    }
+    
+                    // 如果提示框不存在，则创建
+                    if (!alertBox) {
+                        alertBox = document.createElement("div");
+                        alertBox.id = "alert-box";
+                        alertBox.style.position = "fixed";
+                        alertBox.style.top = "10px";
+                        alertBox.style.right = "10px";
+                        alertBox.style.background = "#ffeb3b";
+                        alertBox.style.padding = "15px";
+                        alertBox.style.border = "2px solid #ff9800";
+                        alertBox.style.borderRadius = "5px";
+                        alertBox.style.cursor = "pointer";
+                        alertBox.style.zIndex = "1000";
+                        alertBox.style.maxWidth = "300px";
+                        alertBox.style.boxShadow = "2px 2px 10px rgba(0,0,0,0.2)";
+                        document.body.appendChild(alertBox);
+                    }
+    
+                    // 更新提示框内容
+                    let html = `<strong>注意：</strong> 有 ${data.new_comments.length} 个客户最新评论不是归属人！<br><ul>`;
+    
+                    data.new_comments.forEach(customer => {
+                        html += `<li><a href="#" data-customer-id="${customer.id}">${customer.name} (${customer.phone})</a></li>`;
+                    });
+    
+                    html += `</ul><p style="margin-top:5px;font-size:12px;color:red;">点击客户姓名跳转</p>`;
+    
+                    alertBox.innerHTML = html;
+    
+                    // 监听点击事件
+                    alertBox.addEventListener("click", function (event) {
+                        if (event.target.tagName === "A") {
+                            let customerId = event.target.getAttribute("data-customer-id");
+                            let targetRow = document.getElementById("customer-" + customerId);
+                            
+                            if (targetRow) {
+                                targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+                                targetRow.classList.add("highlighted-row");
+                                setTimeout(() => targetRow.classList.remove("highlighted-row"), 2000);
+                            } else {
+                                alert("该客户数据尚未加载，请检查筛选条件");
+                            }
+                        }
+                    });
+                });
+        }
+    
+        // **每 5 秒检查一次新评论**
+        setInterval(checkNewComments, 5000);
+    </script>
 </head>
 <body>
     <div class="table-container">
@@ -35,7 +100,11 @@
             </thead>
             <tbody>
                 {% for customer in customers %}
-                    <tr {% if customer.comments.exists and customer.comments.last.created_by.username != customer.created_by %}class="highlighted-row"{% endif %}>
+                <tr id="customer-{{ customer.id }}"
+                {% if customer.comments.exists and customer.comments.last.created_by.username != customer.created_by.username %}
+                    class="highlighted-row"
+                {% endif %}
+            >
                         <td>{{ customer.name }}</td>
                         <td>{{ customer.phone }}</td>
                         <td>{{ customer.created_by }}</td>
@@ -70,8 +139,8 @@
                             {% if customer.comments.exists %}
                                 {% for comment in customer.comments.all %}
                                     <p>
-                                        <strong>{{ comment.created_by.username }}:</strong> <!-- 评论人 -->
-                                        {{ comment.content }} <!-- 评论内容 -->
+                                        <strong>{{ comment.created_by.username }}:</strong>
+                                        {{ comment.content }}
                                     </p>
                                 {% endfor %}
                             {% else %}
