@@ -8,19 +8,19 @@
     <link rel="stylesheet" href="{% static 'css/x_list_table.css' %}"> <!-- 引入 CSS 文件 -->
     <script>
         function checkNewComments() {
-            fetch("{% url 'check_new_comments' %}")  // 访问 Django API
+            fetch("{% url 'check_new_comments' %}")  // 调用 Django API
                 .then(response => response.json())
                 .then(data => {
                     let alertBox = document.getElementById("alert-box");
-    
+
                     // 如果没有异常评论，清除提示框
                     if (data.new_comments.length === 0) {
                         if (alertBox) {
                             alertBox.remove();
                         }
-                        return;  // 终止函数
+                        return;
                     }
-    
+
                     // 如果提示框不存在，则创建
                     if (!alertBox) {
                         alertBox = document.createElement("div");
@@ -38,37 +38,74 @@
                         alertBox.style.boxShadow = "2px 2px 10px rgba(0,0,0,0.2)";
                         document.body.appendChild(alertBox);
                     }
-    
+
                     // 更新提示框内容
                     let html = `<strong>注意：</strong> 有 ${data.new_comments.length} 个客户最新评论不是归属人！<br><ul>`;
-    
                     data.new_comments.forEach(customer => {
                         html += `<li><a href="#" data-customer-id="${customer.id}">${customer.name} (${customer.phone})</a></li>`;
                     });
-    
                     html += `</ul><p style="margin-top:5px;font-size:12px;color:red;">点击客户姓名跳转</p>`;
-    
                     alertBox.innerHTML = html;
-    
-                    // 监听点击事件
+
+                    // 添加点击事件监听器
                     alertBox.addEventListener("click", function (event) {
                         if (event.target.tagName === "A") {
+                            event.preventDefault();
                             let customerId = event.target.getAttribute("data-customer-id");
                             let targetRow = document.getElementById("customer-" + customerId);
-                            
+
                             if (targetRow) {
+                                // 滚动到目标行并高亮显示
                                 targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
                                 targetRow.classList.add("highlighted-row");
                                 setTimeout(() => targetRow.classList.remove("highlighted-row"), 2000);
                             } else {
-                                alert("该客户数据尚未加载，请检查筛选条件");
+                                // 如果目标行未找到，则动态加载客户数据
+                                fetch(`/api/customer/${customerId}/`)
+    .then(response => response.json())
+    .then(customer => {
+        let tbody = document.querySelector("table tbody");
+        let newRow = document.createElement("tr");
+        newRow.id = "customer-" + customer.id;
+        newRow.innerHTML = `
+            <td>${customer.name}</td>
+            <td>${customer.phone}</td>
+            <td>${customer.created_by}</td>
+            <td>${customer.created_at}</td>
+            <td>${customer.data_source}</td>
+            <td>${customer.student_batch}</td>
+            <td>${customer.wechat_name}</td>
+            <td>${customer.city}</td>
+            <td>${customer.is_contacted ? '✔️' : '✘'}</td>
+            <td>${customer.is_invited ? '✔️' : '✘'}</td>
+            <td>${customer.is_wechat_added ? '✔️' : '✘'}</td>
+            <td>${customer.is_joined ? '✔️' : '✘'}</td>
+            <td>${customer.description_history_list ? customer.description_history_list.map(h => `
+                <p>${h.new_description}<br><small>更新时间: ${h.modified_at}, 更新人: ${h.modified_by}</small></p>`).join('') : '无历史记录'}
+            </td>
+            <td>${customer.customer_level}</td>
+            <td>${customer.comments ? customer.comments.map(c => `<p>${c.created_by}: ${c.content}</p>`).join('') : '无评论'}</td>
+            <td>${customer.reconsider_checked ? '✔️' : '✘'}</td>
+            <td>${customer.discuss_checked ? '✔️' : '✘'}</td>
+            <td>${customer.is_closed ? '✔️' : '✘'}</td>
+            <td><a href="/edit-customer/${customer.id}/">更新</a></td>
+        `;
+        tbody.appendChild(newRow);
+        newRow.scrollIntoView({ behavior: "smooth", block: "center" });
+        newRow.classList.add("highlighted-row");
+        setTimeout(() => newRow.classList.remove("highlighted-row"), 2000);
+    })
+    .catch(error => {
+        alert("无法加载客户数据，请重试！");
+        console.error(error);
+    });
                             }
                         }
                     });
                 });
         }
-    
-        // **每 5 秒检查一次新评论**
+
+        // 定时每 5 秒检查一次
         setInterval(checkNewComments, 5000);
     </script>
 </head>
@@ -100,61 +137,57 @@
             </thead>
             <tbody>
                 {% for customer in customers %}
-                <tr id="customer-{{ customer.id }}"
-                {% if customer.comments.exists and customer.comments.last.created_by.username != customer.created_by.username %}
-                    class="highlighted-row"
-                {% endif %}
-            >
-                        <td>{{ customer.name }}</td>
-                        <td>{{ customer.phone }}</td>
-                        <td>{{ customer.created_by }}</td>
-                        <td>{{ customer.created_at|date:"Y-m-d" }}</td>
-                        <td>{{ customer.data_source }}</td>
-                        <td>{{ customer.student_batch }}</td>
-                        <td>{{ customer.wechat_name }}</td>
-                        <td>{{ customer.city }}</td>
-                        <td>{% if customer.is_contacted %}✔️{% else %}✘{% endif %}</td>
-                        <td>{% if customer.is_invited %}✔️{% else %}✘{% endif %}</td>
-                        <td>{% if customer.is_wechat_added %}✔️{% else %}✘{% endif %}</td>
-                        <td>{% if customer.is_joined %}✔️{% else %}✘{% endif %}</td>
-                        <td class="description-column">
-                            {% if customer.description_history_list.exists %}
-                                <ul>
-                                    {% for history in customer.description_history_list %}
-                                        <li>
-                                            <p>{{ history.new_description }}</p>
-                                            <small>
-                                                <strong>更新时间:</strong> {{ history.modified_at|date:"Y-m-d H:i" }}<br>
-                                                <strong>更新人:</strong> {{ history.modified_by.username }}
-                                            </small>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% else %}
-                                无描述历史
-                            {% endif %}
-                        </td>
-                        <td>{{ customer.customer_level }}</td>
-                        <td class="comments-column">
-                            {% if customer.comments.exists %}
-                                {% for comment in customer.comments.all %}
-                                    <p>
-                                        <strong>{{ comment.created_by.username }}:</strong>
-                                        {{ comment.content }}
-                                    </p>
+                <tr id="customer-{{ customer.id }}">
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.phone }}</td>
+                    <td>{{ customer.created_by }}</td>
+                    <td>{{ customer.created_at|date:"Y-m-d" }}</td>
+                    <td>{{ customer.data_source }}</td>
+                    <td>{{ customer.student_batch }}</td>
+                    <td>{{ customer.wechat_name }}</td>
+                    <td>{{ customer.city }}</td>
+                    <td>{% if customer.is_contacted %}✔️{% else %}✘{% endif %}</td>
+                    <td>{% if customer.is_invited %}✔️{% else %}✘{% endif %}</td>
+                    <td>{% if customer.is_wechat_added %}✔️{% else %}✘{% endif %}</td>
+                    <td>{% if customer.is_joined %}✔️{% else %}✘{% endif %}</td>
+                    <td class="description-column">
+                        {% if customer.description_history_list.exists %}
+                            <ul>
+                                {% for history in customer.description_history_list %}
+                                    <li>
+                                        <p>{{ history.new_description }}</p>
+                                        <small>
+                                            <strong>更新时间:</strong> {{ history.modified_at|date:"Y-m-d H:i" }}<br>
+                                            <strong>更新人:</strong> {{ history.modified_by.username }}
+                                        </small>
+                                    </li>
                                 {% endfor %}
-                            {% else %}
-                                无评论
-                            {% endif %}
-                        </td>
-                        <td>{% if customer.reconsider_checked %}✔️{% else %}✘{% endif %}</td>
-                        <td>{% if customer.discuss_checked %}✔️{% else %}✘{% endif %}</td>
-                        <td>{% if customer.is_closed %}✔️{% else %}✘{% endif %}</td>
-                        <td>
-                            <a href="{% url 'edit_customer' customer.id %}">更新</a>
-                            <button class="delete-btn" data-id="{{ customer.id }}" onclick="deleteCustomer(this)">删除</button>
-                        </td>
-                    </tr>
+                            </ul>
+                        {% else %}
+                            无描述历史
+                        {% endif %}
+                    </td>
+                    <td>{{ customer.customer_level }}</td>
+                    <td class="comments-column">
+                        {% if customer.comments.exists %}
+                            {% for comment in customer.comments.all %}
+                                <p>
+                                    <strong>{{ comment.created_by.username }}:</strong>
+                                    {{ comment.content }}
+                                </p>
+                            {% endfor %}
+                        {% else %}
+                            无评论
+                        {% endif %}
+                    </td>
+                    <td>{% if customer.reconsider_checked %}✔️{% else %}✘{% endif %}</td>
+                    <td>{% if customer.discuss_checked %}✔️{% else %}✘{% endif %}</td>
+                    <td>{% if customer.is_closed %}✔️{% else %}✘{% endif %}</td>
+                    <td>
+                        <a href="{% url 'edit_customer' customer.id %}">更新</a>
+                        <button class="delete-btn" data-id="{{ customer.id }}" onclick="deleteCustomer(this)">删除</button>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>

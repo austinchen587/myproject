@@ -100,20 +100,67 @@ def customerlist(request):
     })
 
 
+@login_required
 def check_new_comments(request):
     """
-    服务器端：检查最近 5 秒的评论，如果最新评论人不是归属人，则返回客户信息（持续警告）
+    检查当前用户归属的客户，提示最新评论人不是归属人的客户。
     """
-    customers = Customer.objects.all()  # 获取所有客户
-    new_comments = []
+    # 获取当前用户归属的客户
+    customers = Customer.objects.filter(created_by=request.user)
 
-    for c in customers:
-        latest_comment = c.comments.last()
-        if latest_comment and latest_comment.created_by.username != c.created_by.username:
+    # 筛选出最新评论人不是归属人的客户
+    new_comments = []
+    for customer in customers:
+        latest_comment = customer.comments.last()  # 获取最新评论
+        if latest_comment and latest_comment.created_by != customer.created_by:
             new_comments.append({
-                "id": c.id,
-                "name": c.name,
-                "phone": c.phone,  # 增加电话号码
+                "id": customer.id,
+                "name": customer.name,
+                "phone": customer.phone,  # 添加电话号码
             })
 
     return JsonResponse({"new_comments": new_comments})
+
+
+@login_required
+def get_customer_detail(request, customer_id):
+    """
+    允许管理员查看所有客户，普通用户只能查看自己归属的客户
+    """
+
+    print(f"当前请求 API 的用户: {request.user.username}")  # 打印访问 API 的用户
+    
+    try:
+        customer = Customer.objects.get(id=customer_id)  # 先尝试获取客户
+        
+        print(f"客户 {customer_id} 的归属人: {customer.created_by.username}")  # 打印该客户的归属人
+
+        # 如果当前用户不是归属人，返回 403 错误
+        if request.user != customer.created_by:
+            return JsonResponse({"error": "您无权访问该客户"}, status=403)
+
+        return JsonResponse({
+            "id": customer.id,
+            "name": customer.name,
+            "phone": customer.phone,
+            "created_by": customer.created_by.username,
+            "created_at": customer.created_at.strftime('%Y-%m-%d'),
+            "data_source": customer.data_source,
+            "student_batch": customer.student_batch,
+            "wechat_name": customer.wechat_name,
+            "city": customer.city,
+            "is_contacted": customer.is_contacted,
+            "is_invited": customer.is_invited,
+            "is_wechat_added": customer.is_wechat_added,
+            "is_joined": customer.is_joined,
+            "customer_level": customer.customer_level,
+            "comments": [
+                {"created_by": comment.created_by.username, "content": comment.content}
+                for comment in customer.comments.all()
+            ],
+            "reconsider_checked": customer.reconsider_checked,
+            "discuss_checked": customer.discuss_checked,
+            "is_closed": customer.is_closed,
+        })
+    except Customer.DoesNotExist:
+        return JsonResponse({"error": "客户不存在，或您无权访问该客户"}, status=404)
