@@ -44,7 +44,7 @@
                         document.body.appendChild(alertBox);
                     }
     
-                    let html = `<strong>注意：</strong> 有 ${data.new_comments.length} 个客户被主管提示！<br><ul>`;
+                    let html = `<strong>注意：</strong> 你有 ${data.new_comments.length} 个客户被主管提示！<br><ul>`;
                     data.new_comments.forEach(customer => {
                         html += `<li>
                             <a href="#" data-customer-id="${customer.id}">${customer.name} (${customer.phone})</a>

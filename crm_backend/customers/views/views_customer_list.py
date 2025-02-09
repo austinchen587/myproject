@@ -122,7 +122,7 @@ def check_new_comments(request):
 
     return JsonResponse({"new_comments": new_comments})
 
-
+@login_required
 def get_customer_detail(request, customer_id):
     """
     获取单个客户的详细信息。
