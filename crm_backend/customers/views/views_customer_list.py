@@ -106,18 +106,19 @@ def customerlist(request):
 @login_required
 def check_new_comments(request):
     """
-    检查最近客户评论，如果最新评论人不是归属人，则返回客户信息
+    检查最近 5 秒的评论，如果最新评论人不是归属人，则返回客户信息（仅当前用户的客户）
     """
-    customers = Customer.objects.all()
+    customers = Customer.objects.filter(created_by=request.user)  # **只查询当前用户的客户**
     new_comments = []
 
-    for customer in customers:
-        latest_comment = customer.comments.order_by('-created_at').first()  # 按时间排序，确保获取最新评论
-        if latest_comment and latest_comment.created_by != customer.created_by:
+    for c in customers:
+        latest_comment = c.comments.order_by('-created_at').first()
+        if latest_comment and latest_comment.created_by != c.created_by:
             new_comments.append({
-                "id": customer.id,
-                "name": customer.name,
-                "phone": customer.phone,
+                "id": c.id,
+                "name": c.name,
+                "phone": c.phone,
+                "latest_comment": latest_comment.content  # 直接返回最新评论内容
             })
 
     return JsonResponse({"new_comments": new_comments})
@@ -125,10 +126,13 @@ def check_new_comments(request):
 @login_required
 def get_customer_detail(request, customer_id):
     """
-    获取单个客户的详细信息。
+    仅获取当前用户归属的客户详细信息，防止查看他人客户数据
     """
     try:
-        customer = Customer.objects.get(id=customer_id, created_by=request.user)
+        # **筛选条件：只允许用户访问自己创建的客户**
+        customer = Customer.objects.get(id=customer_id, created_by=request.user, created_by__isnull=False)
+        
+        # 返回客户数据
         data = {
             "id": customer.id,
             "name": customer.name,
@@ -164,7 +168,9 @@ def get_customer_detail(request, customer_id):
             "is_closed": customer.is_closed,
         }
         return JsonResponse(data)
+
     except Customer.DoesNotExist:
+        # **如果用户试图访问不是自己创建的客户，则返回 404**
         raise Http404("客户不存在或无权访问")
     
 
