@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from sales.models import SalesUser
-from ..models import Customer
+from ..models import Customer, Comment
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import JsonResponse,Http404
 from datetime import timedelta
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 
 @login_required
 def customerlist(request):
@@ -103,48 +106,35 @@ def customerlist(request):
 @login_required
 def check_new_comments(request):
     """
-    检查当前用户归属的客户，提示最新评论人不是归属人的客户。
+    检查最近客户评论，如果最新评论人不是归属人，则返回客户信息
     """
-    # 获取当前用户归属的客户
-    customers = Customer.objects.filter(created_by=request.user)
-
-    # 筛选出最新评论人不是归属人的客户
+    customers = Customer.objects.all()
     new_comments = []
+
     for customer in customers:
-        latest_comment = customer.comments.last()  # 获取最新评论
+        latest_comment = customer.comments.order_by('-created_at').first()  # 按时间排序，确保获取最新评论
         if latest_comment and latest_comment.created_by != customer.created_by:
             new_comments.append({
                 "id": customer.id,
                 "name": customer.name,
-                "phone": customer.phone,  # 添加电话号码
+                "phone": customer.phone,
             })
 
     return JsonResponse({"new_comments": new_comments})
 
 
-@login_required
 def get_customer_detail(request, customer_id):
     """
-    允许管理员查看所有客户，普通用户只能查看自己归属的客户
+    获取单个客户的详细信息。
     """
-
-    print(f"当前请求 API 的用户: {request.user.username}")  # 打印访问 API 的用户
-    
     try:
-        customer = Customer.objects.get(id=customer_id)  # 先尝试获取客户
-        
-        print(f"客户 {customer_id} 的归属人: {customer.created_by.username}")  # 打印该客户的归属人
-
-        # 如果当前用户不是归属人，返回 403 错误
-        if request.user != customer.created_by:
-            return JsonResponse({"error": "您无权访问该客户"}, status=403)
-
-        return JsonResponse({
+        customer = Customer.objects.get(id=customer_id, created_by=request.user)
+        data = {
             "id": customer.id,
             "name": customer.name,
             "phone": customer.phone,
             "created_by": customer.created_by.username,
-            "created_at": customer.created_at.strftime('%Y-%m-%d'),
+            "created_at": customer.created_at.strftime("%Y-%m-%d"),
             "data_source": customer.data_source,
             "student_batch": customer.student_batch,
             "wechat_name": customer.wechat_name,
@@ -153,14 +143,60 @@ def get_customer_detail(request, customer_id):
             "is_invited": customer.is_invited,
             "is_wechat_added": customer.is_wechat_added,
             "is_joined": customer.is_joined,
+            "description_history_list": [
+                {
+                    "new_description": history.new_description,
+                    "modified_at": history.modified_at.strftime("%Y-%m-%d %H:%M"),
+                    "modified_by": history.modified_by.username
+                }
+                for history in customer.description_history.order_by('-modified_at')
+            ],
             "customer_level": customer.customer_level,
             "comments": [
-                {"created_by": comment.created_by.username, "content": comment.content}
+                {
+                    "created_by": comment.created_by.username,
+                    "content": comment.content
+                }
                 for comment in customer.comments.all()
             ],
             "reconsider_checked": customer.reconsider_checked,
             "discuss_checked": customer.discuss_checked,
             "is_closed": customer.is_closed,
-        })
+        }
+        return JsonResponse(data)
     except Customer.DoesNotExist:
-        return JsonResponse({"error": "客户不存在，或您无权访问该客户"}, status=404)
+        raise Http404("客户不存在或无权访问")
+    
+
+
+@csrf_exempt
+@login_required  # 确保用户已登录
+def add_comment(request):
+    """
+    添加评论到指定客户
+    """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            customer_id = data.get("customer_id")
+            comment_content = data.get("comment_content")
+
+            if not customer_id or not comment_content:
+                return JsonResponse({"success": False, "message": "客户ID或评论内容不能为空"})
+
+            # 获取客户对象
+            customer = Customer.objects.get(id=customer_id)
+
+            # 创建评论
+            Comment.objects.create(
+                customer=customer,
+                content=comment_content,
+                created_by=request.user  # 使用当前登录用户
+            )
+
+            return JsonResponse({"success": True, "message": "评论添加成功"})
+        except Customer.DoesNotExist:
+            return JsonResponse({"success": False, "message": "客户不存在"})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": f"出错了: {str(e)}"})
+    return JsonResponse({"success": False, "message": "无效的请求方法"})

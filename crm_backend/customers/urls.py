@@ -17,6 +17,7 @@ from .views import (
     product_manager_daily_report,
     check_new_comments,
     get_customer_detail,
+    add_comment,
 )
 
 urlpatterns = [
@@ -46,6 +47,7 @@ urlpatterns = [
     # 核心功能路由
     path('customerlist/', customerlist, name='customerlist'),
     path('check_new_comments/', check_new_comments, name='check_new_comments'),
+    path('add_comment/', add_comment, name='add_comment'),
     path('api/customer/<int:customer_id>/', get_customer_detail, name='get_customer_detail'),
     path('add_customer/', add_customer, name='add_customer'),
     path('customer/<int:id>/', customer_detail, name='customer_detail'),
