@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Microsoft YaHei', sans-serif;
     background-color: #f7f7f7;
     color: #333;
     display: flex;
@@ -45,7 +45,14 @@ h2 {
     margin-bottom: 15px;
     padding: 8px;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.chat-message .request-id {
+    background-color: #f1f1f1;
+    font-style: italic;
+    color: #555;
 }
 
 .chat-message.user {

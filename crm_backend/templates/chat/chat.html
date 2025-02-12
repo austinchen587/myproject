@@ -9,30 +9,48 @@
 </head>
 <body>
     <div id="chat-container">
-        <h2>摩尔狮AI-智能问答助手</h2>
+        <h2>智能聊天</h2>
         <div id="chat-box" class="chat-box"></div>
 
         <form method="POST" id="chat-form" class="chat-form">
             {% csrf_token %}
             <div id="input-container">
-                <input type="text" id="user-input" placeholder="请输入消息..." autofocus>
+                <textarea id="user-input" placeholder="请输入消息..." autofocus></textarea>
                 <button id="send-btn" type="button" onclick="sendMessage()">发送</button>
             </div>
         </form>
     </div>
 
     <script>
+        // 监听回车键和 Shift+回车的行为
+        document.getElementById('user-input').addEventListener('keydown', function(event) {
+            const userInput = document.getElementById('user-input');
+
+            // 当按下回车键（Enter）时
+            if (event.key === 'Enter') {
+                if (event.shiftKey) {
+                    // 如果按下了 Shift + Enter，插入换行符
+                    return;  // 不执行表单提交
+                } else {
+                    // 防止回车键提交表单
+                    event.preventDefault();
+                    sendMessage();  // 触发发送消息
+                }
+            }
+        });
+
         async function sendMessage() {
             const userMessage = document.getElementById('user-input').value;
             if (userMessage.trim() === "") return;
+
+            // 禁用输入框和发送按钮，防止用户在等待时发送消息
+            document.getElementById('user-input').disabled = true;
+            document.getElementById('send-btn').disabled = true;
 
             // 显示用户消息
             const chatBox = document.getElementById('chat-box');
             chatBox.innerHTML += `<div class="chat-message user"><strong>用户:</strong> ${userMessage}</div>`;
             document.getElementById('user-input').value = ""; // 清空输入框
-
-            // 禁用发送按钮，防止重复点击
-            document.getElementById('send-btn').disabled = true;
 
             // 显示加载提示
             chatBox.innerHTML += `<div class="chat-message loading"><i>AI 正在思考...</i></div>`;
@@ -62,7 +80,8 @@
                 chatBox.innerHTML += `<div class="chat-message error"><strong>系统:</strong> 出现错误，请重试。</div>`;
             }
 
-            // 启用发送按钮
+            // 启用输入框和发送按钮
+            document.getElementById('user-input').disabled = false;
             document.getElementById('send-btn').disabled = false;
 
             chatBox.scrollTop = chatBox.scrollHeight; // 自动滚动到最新消息
