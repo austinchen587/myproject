@@ -14,6 +14,8 @@ urlpatterns = [
     path('closed/', include('closed.urls', namespace='closed')),
     path('hr/', include('hr.urls', namespace='hr')),
     path('employee/', include('employee.urls', namespace='employee')),
+    path('chat/', include('chat.urls')),  # 引入 chat 应用的 URL 配置
+    
 
 
 ]

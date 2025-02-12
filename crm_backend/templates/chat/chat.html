@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能聊天</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/chat/chat.css' %}">
+</head>
+<body>
+    <div id="chat-container">
+        <h2>AI聊天机器人</h2>
+
+        <div id="chat-box"></div>
+
+        <form method="POST" id="chat-form">
+            {% csrf_token %}  <!-- CSRF token -->
+            <div id="input-container">
+                <input type="text" id="user-input" placeholder="请输入消息..." autofocus>
+                <button id="send-btn" type="button" onclick="sendMessage()">发送</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const userMessage = document.getElementById('user-input').value;
+            if (userMessage.trim() === "") return;
+
+            // 显示用户消息
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML += `<div class="chat-message user"><strong>用户:</strong> ${userMessage}</div>`;
+            document.getElementById('user-input').value = ""; // 清空输入框
+
+            // 禁用发送按钮，防止重复点击
+            document.getElementById('send-btn').disabled = true;
+
+            // 显示加载提示
+            chatBox.innerHTML += `<div class="chat-message loading"><i>AI 正在思考...</i></div>`;
+
+            // 获取 CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;  // 获取 CSRF token
+
+            // 发送请求到后端
+            const response = await fetch('/chat/api/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken  // 传递 CSRF token
+                },
+                body: JSON.stringify({ message: userMessage })
+            });
+
+            const data = await response.json();
+
+            // 删除加载提示
+            chatBox.querySelector('.loading').remove();
+
+            if (data.reply) {
+                // 显示 AI 回复
+                chatBox.innerHTML += `<div class="chat-message ai"><strong>AI:</strong> ${data.reply}</div>`;
+            } else {
+                chatBox.innerHTML += `<div class="chat-message error"><strong>系统:</strong> 出现错误，请重试。</div>`;
+            }
+
+            // 启用发送按钮
+            document.getElementById('send-btn').disabled = false;
+
+            chatBox.scrollTop = chatBox.scrollHeight; // 自动滚动到最新消息
+        }
+    </script>
+</body>
+</html>

@@ -162,6 +162,12 @@ p.welcome-message {
     background-color: #ff6f0a; /* 深橙色背景 */
 }
 
+.chat-button {
+    background-color: #007aff; /* 蓝色背景 */
+    color: #ffffff; /* 白色文字 */
+    margin-top: 20px;
+}
+
 /* 返回主页按钮 */
 .back-to-dashboard {
     background-color: #007aff; /* 蓝色背景 */

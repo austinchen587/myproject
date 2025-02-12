@@ -27,16 +27,19 @@
                 <a href="{% url 'closed:client_data_list' %}" class="button client-data-list">成交客户追踪系统</a>
                 <a href="{% url 'hr:candidate_list' %}" class="button candidate-list">面试资料库</a>
                 <a href="{% url 'employee:employee_list' %}" class="button employee-list">员工列表</a>
+                <a href="{% url 'chat_view' %}" class="button chat-button">智能聊天</a>
             {% elif user|has_role:"assistant,assistant_leader" %}
                 <!-- 助教和助教管理可以看到 -->
                 <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
                 <a href="{% url 'closed:client_data_list' %}" class="button client-data-list">成交客户追踪系统</a>
+                <a href="{% url 'chat_view' %}" class="button chat-button">智能聊天</a>
 
             {% elif user|has_role:"hr,hr_leader" %}
                 <!-- HR和HR管理可以看到 -->
                 <a href="{% url 'hr:candidate_list' %}" class="button candidate-list">候选人列表</a>
                 <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
                 <a href="{% url 'employee:employee_list' %}" class="button employee-list">员工列表</a>
+                <a href="{% url 'chat_view' %}" class="button chat-button">智能聊天</a>
             {% elif user|has_role:"admin" %}
                 <!-- 管理员可以看到 -->
                 <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
@@ -46,6 +49,7 @@
                 <a href="{% url 'closed_customer_detail' %}" class="button closed-customer-detail">成交客户详情</a>
                 <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
                 <a href="{% url 'closed:client_data_list' %}" class="button client-data-list">成交客户追踪系统</a>
+                <a href="{% url 'chat_view' %}" class="button chat-button">智能聊天</a>
             {% elif user|has_role:"sales_super_admin" %}
                 <!-- 管理员可以看到 -->
                 <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
@@ -54,6 +58,7 @@
                 <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
                 <a href="{% url 'closed_customer_detail' %}" class="button closed-customer-detail">成交客户详情</a>
                 <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
+                <a href="{% url 'chat_view' %}" class="button chat-button">智能聊天</a>
             {% else %}
                 <!-- 其他用户看到完整列表 -->
                 <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
@@ -62,6 +67,7 @@
                 <a href="{% url 'mobile_view' %}" class="button mobile-version">手机端</a>
                 <a href="{% url 'closed_customer_detail' %}" class="button closed-customer-detail">成交客户详情</a>
                 <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
+                <a href="{% url 'chat_view' %}" class="button chat-button">智能聊天</a>
             {% endif %}
         </div>
     </div>
