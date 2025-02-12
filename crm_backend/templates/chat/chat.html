@@ -9,12 +9,11 @@
 </head>
 <body>
     <div id="chat-container">
-        <h2>摩尔狮AI助手</h2>
+        <h2>摩尔狮AI-智能问答助手</h2>
+        <div id="chat-box" class="chat-box"></div>
 
-        <div id="chat-box"></div>
-
-        <form method="POST" id="chat-form">
-            {% csrf_token %}  <!-- CSRF token -->
+        <form method="POST" id="chat-form" class="chat-form">
+            {% csrf_token %}
             <div id="input-container">
                 <input type="text" id="user-input" placeholder="请输入消息..." autofocus>
                 <button id="send-btn" type="button" onclick="sendMessage()">发送</button>
