@@ -39,7 +39,7 @@ def chat_api(request):
 
     # 将对话历史传递给外部 API
     payload = {
-        "model": "qwen-max",  # 选择合适的模型
+        "model": "qwen-max-latest",  # 选择合适的模型
         "messages": chat_history  # 传递完整的对话历史作为上下文
     }
 
