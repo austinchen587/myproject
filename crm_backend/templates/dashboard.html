@@ -34,12 +34,19 @@
                 <a href="{% url 'closed:client_data_list' %}" class="button client-data-list">成交客户追踪系统</a>
                 <a href="{% url 'chat_view' %}" class="button chat-button">摩尔狮AI助手</a>
 
-            {% elif user|has_role:"hr,hr_leader" %}
+            {% elif user|has_role:"hr_manager" %}
                 <!-- HR和HR管理可以看到 -->
                 <a href="{% url 'hr:candidate_list' %}" class="button candidate-list">候选人列表</a>
                 <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
                 <a href="{% url 'employee:employee_list' %}" class="button employee-list">员工列表</a>
                 <a href="{% url 'chat_view' %}" class="button chat-button">摩尔狮AI助手</a>
+
+            {% elif user|has_role:"hr" %}
+                <!-- HR和HR管理可以看到 -->
+                <a href="{% url 'hr:candidate_list' %}" class="button candidate-list">候选人列表</a>
+                <a href="{% url 'library:dashboard' %}" class="button library-dashboard">资料库</a>
+                <a href="{% url 'chat_view' %}" class="button chat-button">摩尔狮AI助手</a>
+
             {% elif user|has_role:"admin" %}
                 <!-- 管理员可以看到 -->
                 <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
