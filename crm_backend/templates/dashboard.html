@@ -16,7 +16,7 @@
         
         <!-- 按钮列表 -->
         <div class="button-list">
-            {% if user.username in "austin,任侠" %}
+            {% if user.username in "austin,任侠,董婷婷" %}
                 <!-- 仅用户名为 austin 和 任侠 可以看到 -->
                 <a href="{% url 'customerlist' %}" class="button customer-list">客户列表</a>
                 <a href="{% url 'data_analysis' %}" class="button data-analysis">数据分析</a>
