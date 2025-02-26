@@ -1,0 +1,36 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/closed/tag_statistics.css' %}">
+
+{% block content %}
+    <h2>标签统计</h2>
+    <form method="get">
+        <label for="start_date">开始日期：</label>
+        <input type="date" name="start_date" value="{{ request.GET.start_date }}">
+        
+        <label for="end_date">结束日期：</label>
+        <input type="date" name="end_date" value="{{ request.GET.end_date }}">
+        
+        <button type="submit">筛选</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>标签</th>
+                <th>客户数量</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tag in tag_counts %}
+                <tr>
+                    <td>{{ tag.name }}</td>
+                    <td>{{ tag.tag_count }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">没有标签统计数据</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

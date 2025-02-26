@@ -26,6 +26,38 @@ def get_image_storage():
     """延迟加载图片存储类"""
     return AliyunOSSClosedImagesStorage()
 
+class Tag(models.Model):
+    """
+    标签模型
+    """
+    TAG_CHOICES = [
+        ("病假", "病假"),
+        ("缓慢进行中（正常）", "缓慢进行中（正常）"),
+        ("加速学习中（正常）", "加速学习中（正常）"),
+        ("事假", "事假"),
+        ("停滞", "停滞"),
+        ("休学", "休学"),
+        ("已结业C1", "已结业C1"),
+        ("已解约", "已解约"),
+        ("已就业C1", "已就业C1"),
+        ("空白单元格", "空白单元格"),
+        ("全天脱产", "全天脱产"),
+        ("脱产转在职过程中", "脱产转在职过程中"),
+        ("在岗人员", "在岗人员"),
+        ("在校学生", "在校学生"),
+        ("在职转脱产过程中", "在职转脱产过程中"),
+    ]
+    
+    # 标签名称
+    name = models.CharField(max_length=100, choices=TAG_CHOICES, verbose_name="标签名称", unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "标签"
+        verbose_name_plural = "标签列表"
+
 
 class ClientData(models.Model):
     """
@@ -109,6 +141,8 @@ class ClientData(models.Model):
         default=False,  # 默认为未请假
         verbose_name="是否请假"
     )
+
+    tags = models.ManyToManyField(Tag, blank=True, related_name="clients", verbose_name="客户标签")
 
     def __str__(self):
         return f"{self.name} ({self.phone})"
@@ -196,3 +230,5 @@ class SituationAnalysisHistory(models.Model):
 
     def __str__(self):
         return f"{self.client.name} - 修改时间: {self.modified_at}"
+
+

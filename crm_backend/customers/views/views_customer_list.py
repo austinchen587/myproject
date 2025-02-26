@@ -64,7 +64,7 @@ def customerlist(request):
         customers = customers.filter(product_manager_contact=product_manager_contact_filter)
 
     # 获取所有归属人用于筛选选择框
-    all_users = SalesUser.objects.all()
+    all_users = SalesUser.objects.filter(status='active')
 
     # 获取所有产品经理对接人选项
     product_manager_contacts = Customer.objects.values_list('product_manager_contact', flat=True).distinct()

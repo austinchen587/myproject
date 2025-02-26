@@ -2,7 +2,10 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.utils.timezone import now, timedelta
 from django.http import QueryDict  # 用于处理查询参数
-from ..models import ClientData
+from ..models import ClientData,Tag
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 def client_data_list_follow(request):
     # 获取筛选参数
@@ -64,6 +67,9 @@ def client_data_list_follow(request):
 
     query_string = query_params.urlencode()  # 将筛选参数转换为 URL 查询字符串
 
+    # 获取所有标签，用于选择框
+    tags = Tag.objects.all()
+
     # 将分页数据和筛选信息传递到模板
     return render(request, 'closed/closed_list_follow.html', {
         'clients': page_obj,
@@ -74,4 +80,31 @@ def client_data_list_follow(request):
         'name': name,
         'query_string': query_string,  # 传递查询字符串到模板
         'is_on_leave': is_on_leave,
+        'tags': tags,  # 将所有标签传递到模板
     })
+
+
+@csrf_exempt
+def assign_tags_to_client(request):
+    if request.method == "POST":
+        try:
+            # 获取传递的参数
+            data = json.loads(request.body)
+            client_id = data.get("client_id")
+            tag_ids = data.get("tags", [])
+
+            # 获取客户对象
+            client = ClientData.objects.get(id=client_id)
+
+            # 获取标签对象
+            tags = Tag.objects.filter(id__in=tag_ids)
+
+            # 更新客户标签
+            client.tags.set(tags)  # 将标签与客户关联
+
+            # 返回成功信息
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+
+    return JsonResponse({"success": False, "message": "Invalid request"})

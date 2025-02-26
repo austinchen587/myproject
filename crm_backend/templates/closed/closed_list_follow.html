@@ -17,8 +17,8 @@
         <!-- 筛选功能 -->
         {% include 'closed/closed_list_follow_filter.html' %}
 
-
         <div class="action-buttons">
+            <a href="{% url 'closed:tag_statistics' %}" class="btn btn-primary">查看标签统计</a>
             <a href="{% url 'closed:client_data_list' %}" class="btn btn-primary">返回成交清单</a>
         </div>
 
@@ -31,29 +31,52 @@
                         <th>跟进记录</th>
                         <th>学习进度</th>
                         <th>情况分析</th>
-                        <th>请假</th>
                         <th>是否学完就业</th>
                         <th>负责人</th>
+                        <th>已选择标签</th>  <!-- 新增列 -->
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for client in clients %}
-                    <tr>
+                    <tr id="client-row-{{ client.id }}">
                         <td>{{ client.name }}</td>
                         <td>{{ client.registration_date }}</td>
                         <td>{{ client.follow_up_record }}</td>
                         <td>{{ client.study_progress }}</td>
                         <td>{{ client.situation_analysis }}</td>
-                        <td>{% if client.is_on_leave %}是 {% else %}否 {% endif %}</td>
                         <td>{{ client.is_employed_after_study }}</td>
                         <td>{{ client.responsible_person }}</td>
+                                                <!-- 新增显示标签列 -->
+                        <td class="tag-column">
+                            {% for tag in client.tags.all %}
+                                <div class="tag-item">{{ tag.name }}</div> <!-- 每个标签单独一行 -->
+                            {% empty %}
+                                <span>暂无标签</span>
+                            {% endfor %}
+                        </td>
                         <td>
                             <a href="{% url 'closed:update_client_follow' client.id %}?page={{ clients.number }}&{{ query_string }}" 
-   class="btn btn-warning btn-sm">更新</a>
+                               class="btn btn-warning btn-sm">更新</a>
                             <button class="btn btn-info btn-sm toggle-history" data-target="history-{{ client.id }}">
                                 查看历史
                             </button>
+                            <!-- 打标签按钮 -->
+                            <button class="btn btn-success btn-sm" onclick="toggleTagDropdown({{ client.id }})">打标签</button>
+
+                            <!-- 标签选择下拉框 -->
+                            <div id="tag-dropdown-{{ client.id }}" class="tag-dropdown" style="display:none;">
+                                <form>
+                                    {% for tag in tags %}
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="tag-{{ tag.id }}" value="{{ tag.id }}"
+                                            {% if tag in client.tags.all %}checked{% endif %}>
+                                            <label class="form-check-label" for="tag-{{ tag.id }}">{{ tag.name }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </form>
+                                <button type="button" class="btn btn-primary" onclick="submitTags({{ client.id }})">提交标签</button>
+                            </div>
                         </td>
                     </tr>
                     <tr class="history-row" id="history-{{ client.id }}">
@@ -153,7 +176,11 @@
                 button.addEventListener("click", function() {
                     const targetId = this.getAttribute("data-target");
                     const targetRow = document.getElementById(targetId);
-                    targetRow.style.display = targetRow.style.display === "none" ? "table-row" : "none";
+                    if (targetRow.style.display === "none" || targetRow.style.display === "") {
+                        targetRow.style.display = "table-row";  // 显示
+                    } else {
+                        targetRow.style.display = "none";  // 隐藏
+                    }
                 });
             });
         });
@@ -172,5 +199,67 @@
             modal.style.display = "none";
         }
     </script>
+
+<script>
+    // 显示标签选择下拉框
+    function toggleTagDropdown(clientId) {
+        const dropdown = document.getElementById(`tag-dropdown-${clientId}`);
+        dropdown.style.display = dropdown.style.display === "none" || dropdown.style.display === "" ? "block" : "none";
+    }
+
+    // 提交选中的标签
+    function submitTags(clientId) {
+        const selectedTags = [];
+        document.querySelectorAll(`#tag-dropdown-${clientId} .form-check-input:checked`).forEach(function(checkbox) {
+            selectedTags.push(checkbox.value);
+        });
+
+        // 使用 AJAX 将标签提交到后端
+        fetch("{% url 'closed:assign_tags_to_client' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                client_id: clientId,
+                tags: selectedTags
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 更新表格中的标签显示
+                updateClientTags(clientId, selectedTags);
+                alert('标签提交成功');
+                location.reload(); // 刷新页面
+            } else {
+                alert('标签添加失败，请重试');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('发生错误，请稍后重试');
+        });
+    }
+
+    // 更新客户标签显示
+    function updateClientTags(clientId, selectedTags) {
+        const clientRow = document.querySelector(`#client-row-${clientId}`);
+        const tagContainer = clientRow.querySelector('.tag-column');
+
+        // 清空现有标签
+        tagContainer.innerHTML = '';
+
+        // 将选中的标签显示出来
+        selectedTags.forEach(tagId => {
+            const tagText = document.querySelector(`#tag-${tagId}`).nextElementSibling.innerText; // 获取标签文本
+            const tag = document.createElement('div');
+            tag.classList.add('tag-item');
+            tag.innerText = tagText; // 获取标签文本
+            tagContainer.appendChild(tag);
+        });
+    }
+</script>
 </body>
 </html>

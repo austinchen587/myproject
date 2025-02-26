@@ -87,7 +87,7 @@ def mobile_view(request):
     )
 
     # 获取所有 SalesUser 信息供筛选使用
-    all_users = SalesUser.objects.all()
+    all_users = SalesUser.objects.filter(status='active')
 
     # 渲染模板，传递筛选上下文
     return render(request, 'mobile/mobile_sub/customer_list.html', {

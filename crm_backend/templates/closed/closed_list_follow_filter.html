@@ -29,13 +29,7 @@
         <label for="name">客户名称</label>
         <input type="text" id="name" name="name" class="form-control" placeholder="输入客户名称" value="{{ request.GET.name }}">
 
-        <!-- 是否请假筛选 -->
-        <label for="is_on_leave">是否请假</label>
-        <select id="is_on_leave" name="is_on_leave" class="form-control">
-            <option value="" {% if not is_on_leave %}selected{% endif %}>全部</option>
-            <option value="true" {% if is_on_leave == "true" %}selected{% endif %}>是</option>
-            <option value="false" {% if is_on_leave == "false" %}selected{% endif %}>否</option>
-        </select>
+
 
         <!-- 提交按钮 -->
         <button type="submit" class="btn btn-primary">筛选</button>
