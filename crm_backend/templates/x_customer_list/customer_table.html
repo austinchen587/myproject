@@ -674,158 +674,102 @@
     </script>
 </head>
 <body>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>姓名</th>
-                    <th>电话</th>
-                    <th>归属人</th>
-                    <th>创建时间</th>
-                    <th>数据源</th>
-                    <th>期数</th>
-                    <th>微信名</th>
-                    <th>城市</th>
-                    <th>接通</th>
-                    <th>感兴趣</th>
-                    <th>加微信</th>
-                    <th>入群</th>
-                    <th class="description-column" style="width: 150px;">情况描述</th>
-                    <th>客户等级</th>
-                    <th>评论</th>
-                    <th>考虑</th>
-                    <th>家人商量</th>
-                    <th>成交</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for customer in customers %}
-                <tr id="customer-{{ customer.id }}">
-                    <td>{{ customer.name }}</td>
-                    <td>{{ customer.phone }}</td>
-                    <td>{{ customer.created_by }}</td>
-                    <td>{{ customer.created_at|date:"Y-m-d" }}</td>
-                    <td>{{ customer.data_source }}</td>
-                    <td>{{ customer.student_batch }}</td>
-                    <td>{{ customer.wechat_name }}</td>
-                    <td>{{ customer.city }}</td>
-                    <td>{% if customer.is_contacted %}✔️{% else %}✘{% endif %}</td>
-                    <td>{% if customer.is_invited %}✔️{% else %}✘{% endif %}</td>
-                    <td>{% if customer.is_wechat_added %}✔️{% else %}✘{% endif %}</td>
-                    <td>{% if customer.is_joined %}✔️{% else %}✘{% endif %}</td>
-                    <td class="description-column">
-                        {% if customer.description_history_list.exists %}
-                            <ul>
-                                {% for history in customer.description_history_list %}
-                                    <li>
-                                        <p>{{ history.new_description }}</p>
-                                        <small>
-                                            <strong>更新时间:</strong> {{ history.modified_at|date:"Y-m-d H:i" }}<br>
-                                            <strong>更新人:</strong> {{ history.modified_by.username }}
-                                        </small>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            无描述历史
-                        {% endif %}
-                    </td>
-                    <td>{{ customer.customer_level }}</td>
-                    <td class="comments-column">
-                        {% if customer.comments.exists %}
-                            {% for comment in customer.comments.all %}
-                                <p>
-                                    <strong>{{ comment.created_by.username }}:</strong>
-                                    {{ comment.content }}
-                                </p>
-                            {% endfor %}
-                        {% else %}
-                            无评论
-                        {% endif %}
-                    </td>
-                    <td>{% if customer.reconsider_checked %}✔️{% else %}✘{% endif %}</td>
-                    <td>{% if customer.discuss_checked %}✔️{% else %}✘{% endif %}</td>
-                    <td>{% if customer.is_closed %}✔️{% else %}✘{% endif %}</td>
-                    <td>
-                        <button class="update-btn" data-id="{{ customer.id }}" onclick="showUpdateForm({{ customer.id }})">更新</button>
-                        <button class="delete-btn" data-id="{{ customer.id }}" onclick="deleteCustomer(this)">删除</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
 
-    <!-- 隐藏的更新表单 -->
-    <div id="update-form" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,0.1);">
-        <h3>更新客户信息</h3>
-        <input type="hidden" id="update-customer-id">
-        <div>
-            <label for="update-name">姓名:</label>
-            <input type="text" id="update-name">
-        </div>
-        <div>
-            <label for="update-phone">电话:</label>
-            <input type="text" id="update-phone">
-        </div>
-        <div>
-            <label for="update-created_by">归属人:</label>
-            <input type="text" id="update-created_by">
-        </div>
-        <div>
-            <label for="update-created_at">创建时间:</label>
-            <input type="text" id="update-created_at">
-        </div>
-        <div>
-            <label for="update-data_source">数据源:</label>
-            <input type="text" id="update-data_source">
-        </div>
-        <div>
-            <label for="update-student_batch">期数:</label>
-            <input type="text" id="update-student_batch">
-        </div>
-        <div>
-            <label for="update-wechat_name">微信名:</label>
-            <input type="text" id="update-wechat_name">
-        </div>
-        <div>
-            <label for="update-city">城市:</label>
-            <input type="text" id="update-city">
-        </div>
-        <div>
-            <label for="update-is_contacted">接通:</label>
-            <input type="checkbox" id="update-is_contacted">
-        </div>
-        <div>
-            <label for="update-is_invited">感兴趣:</label>
-            <input type="checkbox" id="update-is_invited">
-        </div>
-        <div>
-            <label for="update-is_wechat_added">加微信:</label>
-            <input type="checkbox" id="update-is_wechat_added">
-        </div>
-        <div>
-            <label for="update-is_joined">入群:</label>
-            <input type="checkbox" id="update-is_joined">
-        </div>
-        <div>
-            <label for="update-customer_level">客户等级:</label>
-            <input type="text" id="update-customer_level">
-        </div>
-        <div>
-            <label for="update-reconsider_checked">考虑:</label>
-            <input type="checkbox" id="update-reconsider_checked">
-        </div>
-        <div>
-            <label for="update-discuss_checked">家人商量:</label>
-            <input type="checkbox" id="update-discuss_checked">
-        </div>
-        <div>
-            <label for="update-is_closed">成交:</label>
-            <input type="checkbox" id="update-is_closed">
-        </div>
-        <button onclick="updateCustomer()">提交</button>
-        <button onclick="document.getElementById('update-form').style.display='none'">取消</button>
+    <style>
+        #update-form {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 10000; /* 确保弹出框在最上层 */
+        }
+    </style>
+    
+   <!-- 隐藏的更新表单 -->
+   <div id="update-form" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+    <h3>更新客户信息</h3>
+    <input type="hidden" id="update-customer-id">
+    <div>
+        <label for="update-name">姓名:</label>
+        <input type="text" id="update-name">
     </div>
+    <div>
+        <label for="update-phone">电话:</label>
+        <input type="text" id="update-phone">
+    </div>
+    <div>
+        <label for="update-created_by">归属人:</label>
+        <input type="text" id="update-created_by">
+    </div>
+    <div>
+        <label for="update-data_source">数据源:</label>
+        <select id="update-data_source">
+            <option value="AI数据">AI数据</option>
+            <option value="视频号">视频号</option>
+            <option value="其他">其他</option>
+            <option value="国开数据">国开数据</option>
+            <option value="未知">未知</option>
+        </select>
+    </div>
+    <div>
+        <label for="update-student_batch">期数:</label>
+        <input type="number" id="update-student_batch" min="0">
+    </div>
+    <div>
+        <label for="update-wechat_name">微信名:</label>
+        <input type="text" id="update-wechat_name">
+    </div>
+    <div>
+        <label for="update-city">城市:</label>
+        <input type="text" id="update-city">
+    </div>
+    <div>
+        <label for="update-is_contacted">接通:</label>
+        <input type="checkbox" id="update-is_contacted">
+    </div>
+    <div>
+        <label for="update-is_invited">感兴趣:</label>
+        <input type="checkbox" id="update-is_invited">
+    </div>
+    <div>
+        <label for="update-is_wechat_added">加微信:</label>
+        <input type="checkbox" id="update-is_wechat_added">
+    </div>
+    <div>
+        <label for="update-is_joined">入群:</label>
+        <input type="checkbox" id="update-is_joined">
+    </div>
+    <div>
+        <label for="update-customer_level">客户等级:</label>
+        <select id="update-customer_level">
+            <option value="A">A 等级</option>
+            <option value="B">B 等级</option>
+            <option value="C">C 等级</option>
+            <option value="未知">未知</option>
+        </select>
+    </div>
+    <div>
+        <label for="update-reconsider_checked">考虑:</label>
+        <input type="checkbox" id="update-reconsider_checked">
+    </div>
+    <div>
+        <label for="update-discuss_checked">家人商量:</label>
+        <input type="checkbox" id="update-discuss_checked">
+    </div>
+    <div>
+        <label for="update-is_closed">成交:</label>
+        <input type="checkbox" id="update-is_closed">
+    </div>
+    <div>
+        <label for="update-description">情况描述:</label>
+        <textarea id="update-description"></textarea>
+    </div>
+    <button onclick="updateCustomer()">提交</button>
+    <button onclick="document.getElementById('update-form').style.display='none'">取消</button>
+</div>
 </body>
