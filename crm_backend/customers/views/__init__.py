@@ -4,7 +4,7 @@
 from .views_customer_list import customerlist,check_new_comments,get_customer_detail,add_comment
 from .views_daily_report import daily_report
 from .views_customer_add import add_customer
-from .views_customer_edit import edit_customer
+from .views_customer_edit import edit_customer,update_customer
 from .views_analysis import data_analysis,analysis_data_json,product_manager_daily_report,get_completion_data
 from .views_customer_detail import customer_detail
 from .views_customer_delete import delete_customer
@@ -26,4 +26,5 @@ __all__ = [
     "check_new_comments",
     "get_customer_detail",
     "add_comment",
+    "update_customer",
 ]

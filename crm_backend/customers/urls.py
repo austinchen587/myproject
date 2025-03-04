@@ -18,6 +18,7 @@ from .views import (
     check_new_comments,
     get_customer_detail,
     add_comment,
+    update_customer,
 )
 
 urlpatterns = [
@@ -52,6 +53,7 @@ urlpatterns = [
     path('add_customer/', add_customer, name='add_customer'),
     path('customer/<int:id>/', customer_detail, name='customer_detail'),
     path('edit-customer/<int:id>/', edit_customer, name='edit_customer'),
+    path('api/update_customer/<int:customer_id>/', update_customer, name='update_customer'),
     path('delete_customer/<int:customer_id>/', delete_customer, name='delete_customer'),
     path('dashboard/', dashboard, name='dashboard'),
     path('data_analysis/', data_analysis, name='data_analysis'),

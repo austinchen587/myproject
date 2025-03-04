@@ -11,113 +11,113 @@
         let checkCommentsInterval;
     
         function checkNewComments() {
-    if (isCommenting) {
-        return; // 如果用户正在输入评论，暂停检查新评论
-    }
-
-    fetch("{% url 'check_new_comments' %}")
-        .then(response => response.json())
-        .then(data => {
-            let alertBox = document.getElementById("alert-box");
-
-            if (data.new_comments.length === 0) {
-                if (alertBox) {
-                    alertBox.remove();
-                }
-                return;
+            if (isCommenting) {
+                return; // 如果用户正在输入评论，暂停检查新评论
             }
 
-            if (!alertBox) {
-                alertBox = document.createElement("div");
-                alertBox.id = "alert-box";
-                alertBox.style.position = "fixed";
-                alertBox.style.top = "10px";
-                alertBox.style.right = "10px";
-                alertBox.style.background = "#ffeb3b";
-                alertBox.style.padding = "15px";
-                alertBox.style.border = "2px solid #ff9800";
-                alertBox.style.borderRadius = "5px";
-                alertBox.style.cursor = "pointer";
-                alertBox.style.zIndex = "1000";
-                alertBox.style.maxWidth = "400px";
-                alertBox.style.boxShadow = "2px 2px 10px rgba(0,0,0,0.2)";
-                document.body.appendChild(alertBox);
-            }
+            fetch("{% url 'check_new_comments' %}")
+                .then(response => response.json())
+                .then(data => {
+                    let alertBox = document.getElementById("alert-box");
 
-            let html = `<strong>注意：</strong> 你有 ${data.new_comments.length} 个客户被主管提示！<br><ul>`;
-            data.new_comments.forEach(customer => {
-                html += `<li>
-                    <a href="#" data-customer-id="${customer.id}">${customer.name} (${customer.phone})</a>
-                    <p style="margin:5px 0 0; font-size:12px; color:gray;">最近评论: ${customer.latest_comment || "无评论"}</p>
-                    <input type="text" id="comment-input-${customer.id}" placeholder="输入评论" style="margin-top:5px; width:100%;" onfocus="pauseChecking()" onblur="resumeChecking()"/>
-                    <button onclick="addComment(${customer.id})" style="margin-top:5px;">提交评论</button>
-                </li>`;
-            });
-            html += `</ul><p style="margin-top:5px;font-size:12px;color:red;">点击客户姓名跳转</p>`;
-            alertBox.innerHTML = html;
-
-            alertBox.addEventListener("click", function (event) {
-                if (event.target.tagName === "A") {
-                    event.preventDefault();
-                    let customerId = event.target.getAttribute("data-customer-id");
-                    let targetRow = document.getElementById("customer-" + customerId);
-
-                    if (targetRow) {
-                        targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
-                        targetRow.classList.add("highlighted-row");
-                        setTimeout(() => targetRow.classList.remove("highlighted-row"), 2000);
-                    } else {
-                        // **请求客户详情，并检查是否有权限访问**
-                        fetch(`/api/customer/${customerId}/`)
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error("无权限访问");
-                                }
-                                return response.json();
-                            })
-                            .then(customer => {
-                                let tbody = document.querySelector("table tbody");
-                                if (!document.getElementById("customer-" + customer.id)) {
-                                    let newRow = document.createElement("tr");
-                                    newRow.id = "customer-" + customer.id;
-                                    newRow.innerHTML = `
-                                        <td>${customer.name}</td>
-                                        <td>${customer.phone}</td>
-                                        <td>${customer.created_by}</td>
-                                        <td>${customer.created_at}</td>
-                                        <td>${customer.data_source}</td>
-                                        <td>${customer.student_batch}</td>
-                                        <td>${customer.wechat_name}</td>
-                                        <td>${customer.city}</td>
-                                        <td>${customer.is_contacted ? '✔️' : '✘'}</td>
-                                        <td>${customer.is_invited ? '✔️' : '✘'}</td>
-                                        <td>${customer.is_wechat_added ? '✔️' : '✘'}</td>
-                                        <td>${customer.is_joined ? '✔️' : '✘'}</td>
-                                        <td>${customer.description_history_list.map(h => 
-                                            `<p>${h.new_description}<br><small>更新时间: ${h.modified_at}, 更新人: ${h.modified_by}</small></p>`
-                                        ).join('')}</td>
-                                        <td>${customer.customer_level}</td>
-                                        <td>${customer.comments.map(c => `<p><strong>${c.created_by}:</strong> ${c.content}</p>`).join('')}</td>
-                                        <td>${customer.reconsider_checked ? '✔️' : '✘'}</td>
-                                        <td>${customer.discuss_checked ? '✔️' : '✘'}</td>
-                                        <td>${customer.is_closed ? '✔️' : '✘'}</td>
-                                        <td>${customer.id ? `<a href="/edit-customer/${customer.id}/">更新</a>` : '无法更新'}</td>
-                                    `;
-                                    tbody.appendChild(newRow);
-                                    newRow.scrollIntoView({ behavior: "smooth", block: "center" });
-                                    newRow.classList.add("highlighted-row");
-                                    setTimeout(() => newRow.classList.remove("highlighted-row"), 2000);
-                                }
-                            })
-                            .catch(error => {
-                                console.warn(`❌ 过滤掉无权限客户 ID: ${customerId}`);
-                            });
+                    if (data.new_comments.length === 0) {
+                        if (alertBox) {
+                            alertBox.remove();
+                        }
+                        return;
                     }
-                }
-            });
-        })
-        .catch(error => console.error("检查新评论时出错：", error));
-}
+
+                    if (!alertBox) {
+                        alertBox = document.createElement("div");
+                        alertBox.id = "alert-box";
+                        alertBox.style.position = "fixed";
+                        alertBox.style.top = "10px";
+                        alertBox.style.right = "10px";
+                        alertBox.style.background = "#ffeb3b";
+                        alertBox.style.padding = "15px";
+                        alertBox.style.border = "2px solid #ff9800";
+                        alertBox.style.borderRadius = "5px";
+                        alertBox.style.cursor = "pointer";
+                        alertBox.style.zIndex = "1000";
+                        alertBox.style.maxWidth = "400px";
+                        alertBox.style.boxShadow = "2px 2px 10px rgba(0,0,0,0.2)";
+                        document.body.appendChild(alertBox);
+                    }
+
+                    let html = `<strong>注意：</strong> 你有 ${data.new_comments.length} 个客户被主管提示！<br><ul>`;
+                    data.new_comments.forEach(customer => {
+                        html += `<li>
+                            <a href="#" data-customer-id="${customer.id}">${customer.name} (${customer.phone})</a>
+                            <p style="margin:5px 0 0; font-size:12px; color:gray;">最近评论: ${customer.latest_comment || "无评论"}</p>
+                            <input type="text" id="comment-input-${customer.id}" placeholder="输入评论" style="margin-top:5px; width:100%;" onfocus="pauseChecking()" onblur="resumeChecking()"/>
+                            <button onclick="addComment(${customer.id})" style="margin-top:5px;">提交评论</button>
+                        </li>`;
+                    });
+                    html += `</ul><p style="margin-top:5px;font-size:12px;color:red;">点击客户姓名跳转</p>`;
+                    alertBox.innerHTML = html;
+
+                    alertBox.addEventListener("click", function (event) {
+                        if (event.target.tagName === "A") {
+                            event.preventDefault();
+                            let customerId = event.target.getAttribute("data-customer-id");
+                            let targetRow = document.getElementById("customer-" + customerId);
+
+                            if (targetRow) {
+                                targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+                                targetRow.classList.add("highlighted-row");
+                                setTimeout(() => targetRow.classList.remove("highlighted-row"), 2000);
+                            } else {
+                                // **请求客户详情，并检查是否有权限访问**
+                                fetch(`/api/customer/${customerId}/`)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error("无权限访问");
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(customer => {
+                                        let tbody = document.querySelector("table tbody");
+                                        if (!document.getElementById("customer-" + customer.id)) {
+                                            let newRow = document.createElement("tr");
+                                            newRow.id = "customer-" + customer.id;
+                                            newRow.innerHTML = `
+                                                <td>${customer.name}</td>
+                                                <td>${customer.phone}</td>
+                                                <td>${customer.created_by}</td>
+                                                <td>${customer.created_at}</td>
+                                                <td>${customer.data_source}</td>
+                                                <td>${customer.student_batch}</td>
+                                                <td>${customer.wechat_name}</td>
+                                                <td>${customer.city}</td>
+                                                <td>${customer.is_contacted ? '✔️' : '✘'}</td>
+                                                <td>${customer.is_invited ? '✔️' : '✘'}</td>
+                                                <td>${customer.is_wechat_added ? '✔️' : '✘'}</td>
+                                                <td>${customer.is_joined ? '✔️' : '✘'}</td>
+                                                <td>${customer.description_history_list.map(h => 
+                                                    `<p>${h.new_description}<br><small>更新时间: ${h.modified_at}, 更新人: ${h.modified_by}</small></p>`
+                                                ).join('')}</td>
+                                                <td>${customer.customer_level}</td>
+                                                <td>${customer.comments.map(c => `<p><strong>${c.created_by}:</strong> ${c.content}</p>`).join('')}</td>
+                                                <td>${customer.reconsider_checked ? '✔️' : '✘'}</td>
+                                                <td>${customer.discuss_checked ? '✔️' : '✘'}</td>
+                                                <td>${customer.is_closed ? '✔️' : '✘'}</td>
+                                                <td><button class="update-btn" data-id="${customer.id}" onclick="showUpdateForm(${customer.id})">更新</button></td>
+                                            `;
+                                            tbody.appendChild(newRow);
+                                            newRow.scrollIntoView({ behavior: "smooth", block: "center" });
+                                            newRow.classList.add("highlighted-row");
+                                            setTimeout(() => newRow.classList.remove("highlighted-row"), 2000);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.warn(`❌ 过滤掉无权限客户 ID: ${customerId}`);
+                                    });
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("检查新评论时出错：", error));
+        }
     
         function addComment(customerId) {
             const commentInput = document.getElementById(`comment-input-${customerId}`);
@@ -176,6 +176,123 @@
     
         // 设置检查间隔为 60 秒
         checkCommentsInterval = setInterval(checkNewComments, 60000);
+
+        function showUpdateForm(customerId) {
+            const updateForm = document.getElementById('update-form');
+            updateForm.style.display = 'block';
+            const customerRow = document.getElementById(`customer-${customerId}`);
+            const name = customerRow.querySelector('td:nth-child(1)').innerText;
+            const phone = customerRow.querySelector('td:nth-child(2)').innerText;
+            const created_by = customerRow.querySelector('td:nth-child(3)').innerText;
+            const created_at = customerRow.querySelector('td:nth-child(4)').innerText;
+            const data_source = customerRow.querySelector('td:nth-child(5)').innerText;
+            const student_batch = customerRow.querySelector('td:nth-child(6)').innerText;
+            const wechat_name = customerRow.querySelector('td:nth-child(7)').innerText;
+            const city = customerRow.querySelector('td:nth-child(8)').innerText;
+            const is_contacted = customerRow.querySelector('td:nth-child(9)').innerText === '✔️';
+            const is_invited = customerRow.querySelector('td:nth-child(10)').innerText === '✔️';
+            const is_wechat_added = customerRow.querySelector('td:nth-child(11)').innerText === '✔️';
+            const is_joined = customerRow.querySelector('td:nth-child(12)').innerText === '✔️';
+            const customer_level = customerRow.querySelector('td:nth-child(13)').innerText;
+            const reconsider_checked = customerRow.querySelector('td:nth-child(14)').innerText === '✔️';
+            const discuss_checked = customerRow.querySelector('td:nth-child(15)').innerText === '✔️';
+            const is_closed = customerRow.querySelector('td:nth-child(16)').innerText === '✔️';
+
+            // 填充表单
+            document.getElementById('update-name').value = name;
+            document.getElementById('update-phone').value = phone;
+            document.getElementById('update-created_by').value = created_by;
+            document.getElementById('update-created_at').value = created_at;
+            document.getElementById('update-data_source').value = data_source;
+            document.getElementById('update-student_batch').value = student_batch;
+            document.getElementById('update-wechat_name').value = wechat_name;
+            document.getElementById('update-city').value = city;
+            document.getElementById('update-is_contacted').checked = is_contacted;
+            document.getElementById('update-is_invited').checked = is_invited;
+            document.getElementById('update-is_wechat_added').checked = is_wechat_added;
+            document.getElementById('update-is_joined').checked = is_joined;
+            document.getElementById('update-customer_level').value = customer_level;
+            document.getElementById('update-reconsider_checked').checked = reconsider_checked;
+            document.getElementById('update-discuss_checked').checked = discuss_checked;
+            document.getElementById('update-is_closed').checked = is_closed;
+            document.getElementById('update-customer-id').value = customerId;
+        }
+
+        function updateCustomer() {
+            const customerId = document.getElementById('update-customer-id').value;
+            const name = document.getElementById('update-name').value;
+            const phone = document.getElementById('update-phone').value;
+            const created_by = document.getElementById('update-created_by').value;
+            const created_at = document.getElementById('update-created_at').value;
+            const data_source = document.getElementById('update-data_source').value;
+            const student_batch = document.getElementById('update-student_batch').value;
+            const wechat_name = document.getElementById('update-wechat_name').value;
+            const city = document.getElementById('update-city').value;
+            const is_contacted = document.getElementById('update-is_contacted').checked;
+            const is_invited = document.getElementById('update-is_invited').checked;
+            const is_wechat_added = document.getElementById('update-is_wechat_added').checked;
+            const is_joined = document.getElementById('update-is_joined').checked;
+            const customer_level = document.getElementById('update-customer_level').value;
+            const reconsider_checked = document.getElementById('update-reconsider_checked').checked;
+            const discuss_checked = document.getElementById('update-discuss_checked').checked;
+            const is_closed = document.getElementById('update-is_closed').checked;
+
+            fetch(`/api/update_customer/${customerId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    name,
+                    phone,
+                    created_by,
+                    created_at,
+                    data_source,
+                    student_batch,
+                    wechat_name,
+                    city,
+                    is_contacted,
+                    is_invited,
+                    is_wechat_added,
+                    is_joined,
+                    customer_level,
+                    reconsider_checked,
+                    discuss_checked,
+                    is_closed
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('客户信息更新成功！');
+                    const customerRow = document.getElementById(`customer-${customerId}`);
+                    customerRow.querySelector('td:nth-child(1)').innerText = name;
+                    customerRow.querySelector('td:nth-child(2)').innerText = phone;
+                    customerRow.querySelector('td:nth-child(3)').innerText = created_by;
+                    customerRow.querySelector('td:nth-child(4)').innerText = created_at;
+                    customerRow.querySelector('td:nth-child(5)').innerText = data_source;
+                    customerRow.querySelector('td:nth-child(6)').innerText = student_batch;
+                    customerRow.querySelector('td:nth-child(7)').innerText = wechat_name;
+                    customerRow.querySelector('td:nth-child(8)').innerText = city;
+                    customerRow.querySelector('td:nth-child(9)').innerText = is_contacted ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(10)').innerText = is_invited ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(11)').innerText = is_wechat_added ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(12)').innerText = is_joined ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(13)').innerText = customer_level;
+                    customerRow.querySelector('td:nth-child(14)').innerText = reconsider_checked ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(15)').innerText = discuss_checked ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(16)').innerText = is_closed ? '✔️' : '✘';
+                    document.getElementById('update-form').style.display = 'none';
+                } else {
+                    alert(`更新失败：${data.message}`);
+                }
+            })
+            .catch(error => {
+                alert('更新客户信息时出错，请重试！');
+                console.error(error);
+            });
+        }
     </script>
 </head>
 <body>
@@ -253,7 +370,385 @@
                     <td>{% if customer.discuss_checked %}✔️{% else %}✘{% endif %}</td>
                     <td>{% if customer.is_closed %}✔️{% else %}✘{% endif %}</td>
                     <td>
-                        <a href="{% url 'edit_customer' customer.id %}">更新</a>
+                        <button class="update-btn" data-id="{{ customer.id }}" onclick="showUpdateForm({{ customer.id }})">更新</button>
+                        <button class="delete-btn" data-id="{{ customer.id }}" onclick="deleteCustomer(this)">删除</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户列表</title>
+    {% load static %} <!-- 加载 Django 的 static 标签库 -->
+    <link rel="stylesheet" href="{% static 'css/x_list_table.css' %}"> <!-- 引入 CSS 文件 -->
+    <script>
+        let isCommenting = false; // 用于标记用户是否正在输入评论
+        let checkCommentsInterval;
+    
+        function checkNewComments() {
+            if (isCommenting) {
+                return; // 如果用户正在输入评论，暂停检查新评论
+            }
+
+            fetch("{% url 'check_new_comments' %}")
+                .then(response => response.json())
+                .then(data => {
+                    let alertBox = document.getElementById("alert-box");
+
+                    if (data.new_comments.length === 0) {
+                        if (alertBox) {
+                            alertBox.remove();
+                        }
+                        return;
+                    }
+
+                    if (!alertBox) {
+                        alertBox = document.createElement("div");
+                        alertBox.id = "alert-box";
+                        alertBox.style.position = "fixed";
+                        alertBox.style.top = "10px";
+                        alertBox.style.right = "10px";
+                        alertBox.style.background = "#ffeb3b";
+                        alertBox.style.padding = "15px";
+                        alertBox.style.border = "2px solid #ff9800";
+                        alertBox.style.borderRadius = "5px";
+                        alertBox.style.cursor = "pointer";
+                        alertBox.style.zIndex = "1000";
+                        alertBox.style.maxWidth = "400px";
+                        alertBox.style.boxShadow = "2px 2px 10px rgba(0,0,0,0.2)";
+                        document.body.appendChild(alertBox);
+                    }
+
+                    let html = `<strong>注意：</strong> 你有 ${data.new_comments.length} 个客户被主管提示！<br><ul>`;
+                    data.new_comments.forEach(customer => {
+                        html += `<li>
+                            <a href="#" data-customer-id="${customer.id}">${customer.name} (${customer.phone})</a>
+                            <p style="margin:5px 0 0; font-size:12px; color:gray;">最近评论: ${customer.latest_comment || "无评论"}</p>
+                            <input type="text" id="comment-input-${customer.id}" placeholder="输入评论" style="margin-top:5px; width:100%;" onfocus="pauseChecking()" onblur="resumeChecking()"/>
+                            <button onclick="addComment(${customer.id})" style="margin-top:5px;">提交评论</button>
+                        </li>`;
+                    });
+                    html += `</ul><p style="margin-top:5px;font-size:12px;color:red;">点击客户姓名跳转</p>`;
+                    alertBox.innerHTML = html;
+
+                    alertBox.addEventListener("click", function (event) {
+                        if (event.target.tagName === "A") {
+                            event.preventDefault();
+                            let customerId = event.target.getAttribute("data-customer-id");
+                            let targetRow = document.getElementById("customer-" + customerId);
+
+                            if (targetRow) {
+                                targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+                                targetRow.classList.add("highlighted-row");
+                                setTimeout(() => targetRow.classList.remove("highlighted-row"), 2000);
+                            } else {
+                                // **请求客户详情，并检查是否有权限访问**
+                                fetch(`/api/customer/${customerId}/`)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error("无权限访问");
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(customer => {
+                                        let tbody = document.querySelector("table tbody");
+                                        if (!document.getElementById("customer-" + customer.id)) {
+                                            let newRow = document.createElement("tr");
+                                            newRow.id = "customer-" + customer.id;
+                                            newRow.innerHTML = `
+                                                <td>${customer.name}</td>
+                                                <td>${customer.phone}</td>
+                                                <td>${customer.created_by}</td>
+                                                <td>${customer.created_at}</td>
+                                                <td>${customer.data_source}</td>
+                                                <td>${customer.student_batch}</td>
+                                                <td>${customer.wechat_name}</td>
+                                                <td>${customer.city}</td>
+                                                <td>${customer.is_contacted ? '✔️' : '✘'}</td>
+                                                <td>${customer.is_invited ? '✔️' : '✘'}</td>
+                                                <td>${customer.is_wechat_added ? '✔️' : '✘'}</td>
+                                                <td>${customer.is_joined ? '✔️' : '✘'}</td>
+                                                <td>${customer.description_history_list.map(h => 
+                                                    `<p>${h.new_description}<br><small>更新时间: ${h.modified_at}, 更新人: ${h.modified_by}</small></p>`
+                                                ).join('')}</td>
+                                                <td>${customer.customer_level}</td>
+                                                <td>${customer.comments.map(c => `<p><strong>${c.created_by}:</strong> ${c.content}</p>`).join('')}</td>
+                                                <td>${customer.reconsider_checked ? '✔️' : '✘'}</td>
+                                                <td>${customer.discuss_checked ? '✔️' : '✘'}</td>
+                                                <td>${customer.is_closed ? '✔️' : '✘'}</td>
+                                                <td><button class="update-btn" data-id="${customer.id}" onclick="showUpdateForm(${customer.id})">更新</button></td>
+                                            `;
+                                            tbody.appendChild(newRow);
+                                            newRow.scrollIntoView({ behavior: "smooth", block: "center" });
+                                            newRow.classList.add("highlighted-row");
+                                            setTimeout(() => newRow.classList.remove("highlighted-row"), 2000);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.warn(`❌ 过滤掉无权限客户 ID: ${customerId}`);
+                                    });
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("检查新评论时出错：", error));
+        }
+    
+        function addComment(customerId) {
+            const commentInput = document.getElementById(`comment-input-${customerId}`);
+            const commentContent = commentInput.value;
+    
+            if (!commentContent) {
+                alert("评论内容不能为空！");
+                return;
+            }
+    
+            fetch("{% url 'add_comment' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    customer_id: customerId,
+                    comment_content: commentContent
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("评论添加成功！");
+                        commentInput.value = ""; // 清空输入框
+    
+                        // 移除弹出框中对应的客户提示条目
+                        const customerItem = document.querySelector(`[data-customer-id="${customerId}"]`).parentElement;
+                        customerItem.remove();
+    
+                        // 如果弹出框为空，则移除整个提示框
+                        const alertBox = document.getElementById("alert-box");
+                        if (alertBox && alertBox.querySelectorAll("li").length === 0) {
+                            alertBox.remove();
+                        }
+    
+                        resumeChecking(); // 评论成功后重新启动检查
+                    } else {
+                        alert(`评论添加失败：${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    alert("添加评论时出错，请重试！");
+                    console.error(error);
+                });
+        }
+    
+        function pauseChecking() {
+            isCommenting = true;
+        }
+    
+        function resumeChecking() {
+            isCommenting = false;
+        }
+    
+        // 设置检查间隔为 60 秒
+        checkCommentsInterval = setInterval(checkNewComments, 60000);
+
+        function showUpdateForm(customerId) {
+            const updateForm = document.getElementById('update-form');
+            updateForm.style.display = 'block';
+            const customerRow = document.getElementById(`customer-${customerId}`);
+            const name = customerRow.querySelector('td:nth-child(1)').innerText;
+            const phone = customerRow.querySelector('td:nth-child(2)').innerText;
+            const created_by = customerRow.querySelector('td:nth-child(3)').innerText;
+            const created_at = customerRow.querySelector('td:nth-child(4)').innerText;
+            const data_source = customerRow.querySelector('td:nth-child(5)').innerText;
+            const student_batch = customerRow.querySelector('td:nth-child(6)').innerText;
+            const wechat_name = customerRow.querySelector('td:nth-child(7)').innerText;
+            const city = customerRow.querySelector('td:nth-child(8)').innerText;
+            const is_contacted = customerRow.querySelector('td:nth-child(9)').innerText === '✔️';
+            const is_invited = customerRow.querySelector('td:nth-child(10)').innerText === '✔️';
+            const is_wechat_added = customerRow.querySelector('td:nth-child(11)').innerText === '✔️';
+            const is_joined = customerRow.querySelector('td:nth-child(12)').innerText === '✔️';
+            const customer_level = customerRow.querySelector('td:nth-child(13)').innerText;
+            const reconsider_checked = customerRow.querySelector('td:nth-child(14)').innerText === '✔️';
+            const discuss_checked = customerRow.querySelector('td:nth-child(15)').innerText === '✔️';
+            const is_closed = customerRow.querySelector('td:nth-child(16)').innerText === '✔️';
+
+            // 填充表单
+            document.getElementById('update-name').value = name;
+            document.getElementById('update-phone').value = phone;
+            document.getElementById('update-created_by').value = created_by;
+            document.getElementById('update-created_at').value = created_at;
+            document.getElementById('update-data_source').value = data_source;
+            document.getElementById('update-student_batch').value = student_batch;
+            document.getElementById('update-wechat_name').value = wechat_name;
+            document.getElementById('update-city').value = city;
+            document.getElementById('update-is_contacted').checked = is_contacted;
+            document.getElementById('update-is_invited').checked = is_invited;
+            document.getElementById('update-is_wechat_added').checked = is_wechat_added;
+            document.getElementById('update-is_joined').checked = is_joined;
+            document.getElementById('update-customer_level').value = customer_level;
+            document.getElementById('update-reconsider_checked').checked = reconsider_checked;
+            document.getElementById('update-discuss_checked').checked = discuss_checked;
+            document.getElementById('update-is_closed').checked = is_closed;
+            document.getElementById('update-customer-id').value = customerId;
+        }
+
+        function updateCustomer() {
+            const customerId = document.getElementById('update-customer-id').value;
+            const name = document.getElementById('update-name').value;
+            const phone = document.getElementById('update-phone').value;
+            const created_by = document.getElementById('update-created_by').value;
+            const created_at = document.getElementById('update-created_at').value;
+            const data_source = document.getElementById('update-data_source').value;
+            const student_batch = document.getElementById('update-student_batch').value;
+            const wechat_name = document.getElementById('update-wechat_name').value;
+            const city = document.getElementById('update-city').value;
+            const is_contacted = document.getElementById('update-is_contacted').checked;
+            const is_invited = document.getElementById('update-is_invited').checked;
+            const is_wechat_added = document.getElementById('update-is_wechat_added').checked;
+            const is_joined = document.getElementById('update-is_joined').checked;
+            const customer_level = document.getElementById('update-customer_level').value;
+            const reconsider_checked = document.getElementById('update-reconsider_checked').checked;
+            const discuss_checked = document.getElementById('update-discuss_checked').checked;
+            const is_closed = document.getElementById('update-is_closed').checked;
+
+            fetch(`/api/update_customer/${customerId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    name,
+                    phone,
+                    created_by,
+                    created_at,
+                    data_source,
+                    student_batch,
+                    wechat_name,
+                    city,
+                    is_contacted,
+                    is_invited,
+                    is_wechat_added,
+                    is_joined,
+                    customer_level,
+                    reconsider_checked,
+                    discuss_checked,
+                    is_closed
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('客户信息更新成功！');
+                    const customerRow = document.getElementById(`customer-${customerId}`);
+                    customerRow.querySelector('td:nth-child(1)').innerText = name;
+                    customerRow.querySelector('td:nth-child(2)').innerText = phone;
+                    customerRow.querySelector('td:nth-child(3)').innerText = created_by;
+                    customerRow.querySelector('td:nth-child(4)').innerText = created_at;
+                    customerRow.querySelector('td:nth-child(5)').innerText = data_source;
+                    customerRow.querySelector('td:nth-child(6)').innerText = student_batch;
+                    customerRow.querySelector('td:nth-child(7)').innerText = wechat_name;
+                    customerRow.querySelector('td:nth-child(8)').innerText = city;
+                    customerRow.querySelector('td:nth-child(9)').innerText = is_contacted ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(10)').innerText = is_invited ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(11)').innerText = is_wechat_added ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(12)').innerText = is_joined ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(13)').innerText = customer_level;
+                    customerRow.querySelector('td:nth-child(14)').innerText = reconsider_checked ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(15)').innerText = discuss_checked ? '✔️' : '✘';
+                    customerRow.querySelector('td:nth-child(16)').innerText = is_closed ? '✔️' : '✘';
+                    document.getElementById('update-form').style.display = 'none';
+                } else {
+                    alert(`更新失败：${data.message}`);
+                }
+            })
+            .catch(error => {
+                alert('更新客户信息时出错，请重试！');
+                console.error(error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>电话</th>
+                    <th>归属人</th>
+                    <th>创建时间</th>
+                    <th>数据源</th>
+                    <th>期数</th>
+                    <th>微信名</th>
+                    <th>城市</th>
+                    <th>接通</th>
+                    <th>感兴趣</th>
+                    <th>加微信</th>
+                    <th>入群</th>
+                    <th class="description-column" style="width: 150px;">情况描述</th>
+                    <th>客户等级</th>
+                    <th>评论</th>
+                    <th>考虑</th>
+                    <th>家人商量</th>
+                    <th>成交</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr id="customer-{{ customer.id }}">
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.phone }}</td>
+                    <td>{{ customer.created_by }}</td>
+                    <td>{{ customer.created_at|date:"Y-m-d" }}</td>
+                    <td>{{ customer.data_source }}</td>
+                    <td>{{ customer.student_batch }}</td>
+                    <td>{{ customer.wechat_name }}</td>
+                    <td>{{ customer.city }}</td>
+                    <td>{% if customer.is_contacted %}✔️{% else %}✘{% endif %}</td>
+                    <td>{% if customer.is_invited %}✔️{% else %}✘{% endif %}</td>
+                    <td>{% if customer.is_wechat_added %}✔️{% else %}✘{% endif %}</td>
+                    <td>{% if customer.is_joined %}✔️{% else %}✘{% endif %}</td>
+                    <td class="description-column">
+                        {% if customer.description_history_list.exists %}
+                            <ul>
+                                {% for history in customer.description_history_list %}
+                                    <li>
+                                        <p>{{ history.new_description }}</p>
+                                        <small>
+                                            <strong>更新时间:</strong> {{ history.modified_at|date:"Y-m-d H:i" }}<br>
+                                            <strong>更新人:</strong> {{ history.modified_by.username }}
+                                        </small>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            无描述历史
+                        {% endif %}
+                    </td>
+                    <td>{{ customer.customer_level }}</td>
+                    <td class="comments-column">
+                        {% if customer.comments.exists %}
+                            {% for comment in customer.comments.all %}
+                                <p>
+                                    <strong>{{ comment.created_by.username }}:</strong>
+                                    {{ comment.content }}
+                                </p>
+                            {% endfor %}
+                        {% else %}
+                            无评论
+                        {% endif %}
+                    </td>
+                    <td>{% if customer.reconsider_checked %}✔️{% else %}✘{% endif %}</td>
+                    <td>{% if customer.discuss_checked %}✔️{% else %}✘{% endif %}</td>
+                    <td>{% if customer.is_closed %}✔️{% else %}✘{% endif %}</td>
+                    <td>
+                        <button class="update-btn" data-id="{{ customer.id }}" onclick="showUpdateForm({{ customer.id }})">更新</button>
                         <button class="delete-btn" data-id="{{ customer.id }}" onclick="deleteCustomer(this)">删除</button>
                     </td>
                 </tr>
@@ -261,5 +756,76 @@
             </tbody>
         </table>
     </div>
+
+    <!-- 隐藏的更新表单 -->
+    <div id="update-form" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+        <h3>更新客户信息</h3>
+        <input type="hidden" id="update-customer-id">
+        <div>
+            <label for="update-name">姓名:</label>
+            <input type="text" id="update-name">
+        </div>
+        <div>
+            <label for="update-phone">电话:</label>
+            <input type="text" id="update-phone">
+        </div>
+        <div>
+            <label for="update-created_by">归属人:</label>
+            <input type="text" id="update-created_by">
+        </div>
+        <div>
+            <label for="update-created_at">创建时间:</label>
+            <input type="text" id="update-created_at">
+        </div>
+        <div>
+            <label for="update-data_source">数据源:</label>
+            <input type="text" id="update-data_source">
+        </div>
+        <div>
+            <label for="update-student_batch">期数:</label>
+            <input type="text" id="update-student_batch">
+        </div>
+        <div>
+            <label for="update-wechat_name">微信名:</label>
+            <input type="text" id="update-wechat_name">
+        </div>
+        <div>
+            <label for="update-city">城市:</label>
+            <input type="text" id="update-city">
+        </div>
+        <div>
+            <label for="update-is_contacted">接通:</label>
+            <input type="checkbox" id="update-is_contacted">
+        </div>
+        <div>
+            <label for="update-is_invited">感兴趣:</label>
+            <input type="checkbox" id="update-is_invited">
+        </div>
+        <div>
+            <label for="update-is_wechat_added">加微信:</label>
+            <input type="checkbox" id="update-is_wechat_added">
+        </div>
+        <div>
+            <label for="update-is_joined">入群:</label>
+            <input type="checkbox" id="update-is_joined">
+        </div>
+        <div>
+            <label for="update-customer_level">客户等级:</label>
+            <input type="text" id="update-customer_level">
+        </div>
+        <div>
+            <label for="update-reconsider_checked">考虑:</label>
+            <input type="checkbox" id="update-reconsider_checked">
+        </div>
+        <div>
+            <label for="update-discuss_checked">家人商量:</label>
+            <input type="checkbox" id="update-discuss_checked">
+        </div>
+        <div>
+            <label for="update-is_closed">成交:</label>
+            <input type="checkbox" id="update-is_closed">
+        </div>
+        <button onclick="updateCustomer()">提交</button>
+        <button onclick="document.getElementById('update-form').style.display='none'">取消</button>
+    </div>
 </body>
-</html>
