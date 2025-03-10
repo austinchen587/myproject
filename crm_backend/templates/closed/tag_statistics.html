@@ -1,4 +1,6 @@
+
 {% load static %}
+
 <link rel="stylesheet" href="{% static 'css/closed/tag_statistics.css' %}">
 
 {% block content %}
@@ -9,6 +11,9 @@
         
         <label for="end_date">结束日期：</label>
         <input type="date" name="end_date" value="{{ request.GET.end_date }}">
+
+        <label for="responsible_person">负责人：</label>
+        <input type="text" name="responsible_person" value="{{ request.GET.responsible_person }}">
         
         <button type="submit">筛选</button>
     </form>
@@ -22,15 +27,15 @@
         </thead>
         <tbody>
             {% for tag in tag_counts %}
-                <tr>
-                    <td>{{ tag.name }}</td>
-                    <td>{{ tag.tag_count }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="2">没有标签统计数据</td>
-                </tr>
-            {% endfor %}
+            <tr>
+                <td>{{ tag.name }}</td>
+                <td>{{ tag.tag_count }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="2">没有标签统计数据</td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 {% endblock %}
