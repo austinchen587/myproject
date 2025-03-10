@@ -8,7 +8,7 @@ def tag_statistics(request):
     start_date = request.GET.get('start_date', None)
     end_date = request.GET.get('end_date', None)
     project = request.GET.get('project', None)
-    person_in_charge = request.GET.get('person_in_charge', None)
+    responsible_person = request.GET.get('responsible_person', None)
 
     # 构建过滤条件
     filter_kwargs = {}
@@ -18,8 +18,8 @@ def tag_statistics(request):
         filter_kwargs['registration_date__lte'] = end_date  # 日期小于等于结束日期
     if project:
         filter_kwargs['project'] = project  # 筛选项目
-    if person_in_charge:
-        filter_kwargs['person_in_charge'] = person_in_charge  # 筛选负责人
+    if responsible_person:
+        filter_kwargs['responsible_person__icontains'] = responsible_person  # 使用 responsible_person 进行筛选
 
     # 获取在时间范围内的客户数据
     clients_in_range = ClientData.objects.filter(**filter_kwargs)
