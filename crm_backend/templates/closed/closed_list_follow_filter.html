@@ -21,6 +21,14 @@
             <option value="30_plus_days" {% if quick_filter == "30_plus_days" %}selected{% endif %}>30天以后</option>
         </select>
 
+        <label for="tag_name">标签筛选:</label>
+        <select name="tag_name" id="tag_name" class="form-control">
+            <option value="">全部</option>
+            {% for tag in tags %}
+                <option value="{{ tag.name }}" {% if tag.name == tag_name %}selected{% endif %}>{{ tag.name }}</option>
+            {% endfor %}
+        </select>
+
         <!-- 负责人筛选 -->
         <label for="responsible_person">负责人</label>
         <input type="text" id="responsible_person" name="responsible_person" class="form-control" placeholder="输入负责人" value="{{ request.GET.responsible_person }}">

@@ -15,6 +15,7 @@ def client_data_list_follow(request):
     responsible_person = request.GET.get("responsible_person", "")
     name = request.GET.get("name", "")
     is_on_leave = request.GET.get("is_on_leave", "")
+    tag_name = request.GET.get("tag_name", "")  # 新增标签筛选参数
 
     # 初始查询集
     clients = ClientData.objects.order_by('-registration_date')
@@ -53,6 +54,10 @@ def client_data_list_follow(request):
         clients = clients.filter(is_on_leave=True)
     elif is_on_leave == "false":
         clients = clients.filter(is_on_leave=False)
+
+        # 标签筛选
+    if tag_name:
+        clients = clients.filter(tags__name=tag_name)
 
 
     # 分页逻辑
