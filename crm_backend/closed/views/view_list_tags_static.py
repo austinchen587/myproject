@@ -27,10 +27,6 @@ def tag_statistics(request):
     # 获取标签统计，每个标签的客户数量
     tag_counts = Tag.objects.filter(clients__in=clients_in_range).annotate(tag_count=Count('clients')).order_by('-tag_count')
 
-    # 获取每个标签对应的客户名字和日期时间
-    tag_details = {}
-    for tag in tag_counts:
-        clients = clients_in_range.filter(tags=tag)
-        tag_details[tag.id] = clients.values('name', 'registration_date')
+
 
     return render(request, 'closed/tag_statistics.html', {'tag_counts': tag_counts, 'tag_details': tag_details})
